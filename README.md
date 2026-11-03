@@ -9,7 +9,8 @@ Cada pregunta tiene cuatro opciones y una única respuesta correcta. Al responde
 - [Astro](https://astro.build) 7 — framework y generación del sitio estático.
 - [Tailwind CSS](https://tailwindcss.com) 4 — estilos, integrado mediante el plugin de Vite.
 - [TypeScript](https://www.typescriptlang.org) 6 — en modo `strictest`.
-- [Vitest](https://vitest.dev) 5 — tests automatizados.
+- [Vitest](https://vitest.dev) 5 — tests unitarios.
+- [Playwright](https://playwright.dev) 1.64 — tests de interfaz (end-to-end).
 
 ## Requisitos
 
@@ -25,20 +26,20 @@ npm run dev      # servidor de desarrollo en http://localhost:4321
 
 ## Comandos disponibles
 
-| Comando              | Descripción                                                              |
-| -------------------- | ------------------------------------------------------------------------ |
-| `npm run dev`        | Inicia el servidor de desarrollo con recarga en caliente.                |
-| `npm run build`      | Genera el sitio de producción en `dist/`.                                |
-| `npm run preview`    | Sirve localmente el build de `dist/`.                                    |
-| `npm run check`      | Verifica tipos de TypeScript y archivos `.astro` (`astro check`).        |
-| `npm test`           | Ejecuta los tests una vez.                                               |
-| `npm run test:watch` | Ejecuta los tests en modo observación.                                   |
-| `npm run test:e2e`   | Tests de interfaz con Playwright (escritorio y celular) sobre el build.  |
-| `npm run test:e2e:ui`| Abre la interfaz de Playwright para ver y depurar los tests de interfaz.  |
-| `npm run verify`     | Ejecuta `check`, `test`, `build` y `test:e2e`. Útil antes de subir cambios. |
+| Comando               | Descripción                                                                  |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `npm run dev`         | Inicia el servidor de desarrollo con recarga en caliente.                    |
+| `npm run build`       | Genera el sitio de producción en `dist/`.                                    |
+| `npm run preview`     | Sirve localmente el build de `dist/`.                                        |
+| `npm run check`       | Verifica tipos de TypeScript y archivos `.astro` (`astro check`).            |
+| `npm test`            | Ejecuta los tests unitarios una vez.                                         |
+| `npm run test:watch`  | Ejecuta los tests unitarios en modo observación.                             |
+| `npm run test:e2e`    | Tests de interfaz con Playwright (escritorio y celular) sobre el build.      |
+| `npm run test:e2e:ui` | Abre la interfaz de Playwright para ver y depurar los tests de interfaz.     |
+| `npm run verify`      | Ejecuta `check`, `test`, `build` y `test:e2e`. Útil antes de subir cambios.  |
+| `npm run astro`       | Acceso directo a la CLI de Astro (p. ej. `npm run astro -- --help`).         |
 
 Los tests de interfaz usan el Google Chrome instalado en la máquina (no descargan navegadores) y simulan dos dispositivos: escritorio y un celular (Pixel 7). Cubren el inicio, el tema claro/oscuro, el cuestionario completo, la posición de la respuesta correcta, el modo juego (configuración, votación, revelación, orden de jugadores y ranking) y que ninguna pantalla desborde en el celular.
-| `npm run astro`      | Acceso directo a la CLI de Astro (p. ej. `npm run astro -- --help`).     |
 
 ## Estructura del proyecto
 
@@ -68,8 +69,11 @@ QuizBDD/
 │   ├── types/                    # Tipos e interfaces TypeScript del dominio
 │   ├── utils/                    # Funciones auxiliares puras
 │   └── content.config.ts         # Definición y validación de las colecciones de contenido
-├── tests/                        # Tests automatizados (Vitest)
+├── tests/
+│   ├── unit/                     # Tests unitarios (Vitest)
+│   └── e2e/                      # Tests de interfaz (Playwright)
 ├── astro.config.mjs
+├── playwright.config.ts
 ├── tsconfig.json
 └── vitest.config.ts
 ```
