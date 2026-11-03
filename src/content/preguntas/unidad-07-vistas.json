@@ -1,0 +1,1906 @@
+{
+  "unidad": 7,
+  "titulo": "Vistas",
+  "preguntas": [
+    {
+      "id": "u07-que-se-guarda",
+      "tema": "Qué es una vista",
+      "enunciado": "Al crear una vista común en MySQL, ¿qué queda guardado en la base de datos?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una copia de las filas que devuelve la consulta.",
+          "explicacion": "La vista común de MySQL no almacena una segunda copia independiente de las filas."
+        },
+        {
+          "id": "b",
+          "texto": "Un índice sobre las tablas consultadas.",
+          "explicacion": "Crear una vista no crea índices; son objetos distintos."
+        },
+        {
+          "id": "c",
+          "texto": "La definición del SELECT, con un nombre.",
+          "explicacion": "Correcto: la vista es una consulta guardada con nombre que, al consultarla, presenta filas y columnas como una tabla."
+        },
+        {
+          "id": "d",
+          "texto": "Una tabla temporal que se borra al cerrar la sesión.",
+          "explicacion": "La vista no es temporal: su definición permanece hasta que se modifica o se elimina."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una vista es un objeto de la base de datos definido por una consulta SELECT. Se parece a una tabla cuando la consultamos, pero conceptualmente sigue siendo una consulta almacenada.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Qué es una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "idea"
+        }
+      ]
+    },
+    {
+      "id": "u07-duracion-vista-vs-cte",
+      "tema": "Vista vs. CTE",
+      "enunciado": "¿Cuál es la principal diferencia de duración entre una CTE y una vista?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La CTE existe dentro de una única sentencia; la definición de la vista queda almacenada hasta modificarla o eliminarla.",
+          "explicacion": "Correcto: por eso la vista puede reutilizarse desde múltiples sentencias posteriores."
+        },
+        {
+          "id": "b",
+          "texto": "Ambas duran hasta que se cierra la sesión.",
+          "explicacion": "Ninguna de las dos depende de la sesión: la CTE termina con la sentencia y la vista persiste en el esquema."
+        },
+        {
+          "id": "c",
+          "texto": "La vista dura una sentencia y la CTE queda guardada en la base.",
+          "explicacion": "Es exactamente al revés."
+        },
+        {
+          "id": "d",
+          "texto": "Ambas guardan una copia de los datos mientras existen.",
+          "explicacion": "Ni la CTE ni la vista común de MySQL tienen datos propios."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Regla práctica: si el resultado con nombre solo sirve para la consulta actual, una CTE suele ser natural; si queremos volver a consultar esa lógica desde distintas sentencias, una vista puede tener más sentido.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vista vs. CTE",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "cte"
+        },
+        {
+          "titulo": "Unidad 7 · Puente desde CTE",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "puente"
+        }
+      ]
+    },
+    {
+      "id": "u07-vista-refleja-cambios",
+      "tema": "Una vista no es una foto ni una copia de los datos",
+      "enunciado": "La vista v_productos_tecnologia se definió como SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia'. El producto con id_producto = 1 es de esa categoría y la vista lo muestra con precio 18000. Luego se ejecuta UPDATE productos SET precio = 20000 WHERE id_producto = 1. ¿Qué precio muestra la vista para ese producto?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "18000, porque la vista conserva los datos del momento en que se creó.",
+          "explicacion": "La vista no es una foto: no guarda una copia de los datos."
+        },
+        {
+          "id": "b",
+          "texto": "20000, porque la vista presenta los datos actuales de la tabla base.",
+          "explicacion": "Correcto: la vista ejecuta su consulta sobre productos, que ya tiene el nuevo precio."
+        },
+        {
+          "id": "c",
+          "texto": "Ninguno: la vista da error hasta que se la vuelva a crear.",
+          "explicacion": "Modificar datos de la tabla base no invalida la vista ni obliga a recrearla."
+        },
+        {
+          "id": "d",
+          "texto": "El producto deja de aparecer en la vista.",
+          "explicacion": "El UPDATE cambió el precio, no la categoría: el producto sigue cumpliendo categoria = 'Tecnologia'."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Crear una vista no duplica los datos. Si cambian las tablas sobre las que se apoya, el resultado que vemos a través de la vista también puede cambiar.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Una vista no es una copia",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "reflejo"
+        }
+      ]
+    },
+    {
+      "id": "u07-filtro-sobre-vista",
+      "tema": "Consultar una vista y seguir trabajando sobre ella",
+      "enunciado": "La vista v_productos_tecnologia se definió como SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia'. ¿Qué devuelve SELECT nombre, precio FROM v_productos_tecnologia WHERE precio > 10000 ORDER BY precio DESC?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Todos los productos de la tabla con precio mayor que 10000, sin importar su categoría.",
+          "explicacion": "La consulta externa trabaja sobre lo que presenta la vista, que ya está limitado a la categoría 'Tecnologia'."
+        },
+        {
+          "id": "b",
+          "texto": "Todos los productos de Tecnología, porque el WHERE externo se ignora cuando la vista ya tiene su propio filtro.",
+          "explicacion": "El filtro externo no se ignora: se aplica sobre las filas que presenta la vista."
+        },
+        {
+          "id": "c",
+          "texto": "Un error, porque sobre una vista no se puede usar ORDER BY.",
+          "explicacion": "Sobre una vista se pueden agregar filtros y ordenamientos en la consulta externa, como sobre una tabla."
+        },
+        {
+          "id": "d",
+          "texto": "Los productos de Tecnología con precio mayor que 10000, del más caro al más barato.",
+          "explicacion": "Correcto: el filtro de la vista y el WHERE externo se combinan, y ORDER BY precio DESC ordena de mayor a menor precio."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una vista puede usarse en un FROM como cualquier fuente de datos, y sobre ella se pueden agregar filtros, ordenamientos o relaciones.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Consultar una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "consultar"
+        }
+      ]
+    },
+    {
+      "id": "u07-ventaja-vista-join",
+      "tema": "Vista con JOIN",
+      "enunciado": "¿Cuál es la ventaja de guardar en una vista, como v_ventas_clientes, un JOIN entre ventas y clientes?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Centraliza una combinación de tablas que se consulta repetidamente y simplifica las consultas posteriores.",
+          "explicacion": "Correcto: el JOIN sigue existiendo dentro de la definición; la vista evita reescribirlo cada vez."
+        },
+        {
+          "id": "b",
+          "texto": "Permite dejar de usar JOIN, porque la vista copia los datos de ambas tablas.",
+          "explicacion": "La vista no copia datos y el JOIN sigue presente en su definición."
+        },
+        {
+          "id": "c",
+          "texto": "Duplica los datos de ventas como respaldo de seguridad.",
+          "explicacion": "Una vista común no almacena filas propias, así que no sirve como respaldo."
+        },
+        {
+          "id": "d",
+          "texto": "Acelera automáticamente cualquier consulta sobre esas tablas.",
+          "explicacion": "Una vista no es una aceleración automática: el rendimiento depende de la consulta y de las tablas que utiliza."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El valor principal de una vista es la reutilización, organización y presentación de consultas, no evitar aprender JOIN ni mejorar el rendimiento.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vista con JOIN",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "join"
+        },
+        {
+          "titulo": "Unidad 7 · Cuándo una vista aporta valor",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u07-show-create-view",
+      "tema": "Ver la definición, modificarla y eliminarla",
+      "enunciado": "¿Qué instrucción permite ver cómo fue definida la vista v_productos_tecnologia?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "SELECT * FROM v_productos_tecnologia;",
+          "explicacion": "Esa consulta muestra los datos que presenta la vista, no su definición."
+        },
+        {
+          "id": "b",
+          "texto": "SHOW CREATE VIEW v_productos_tecnologia;",
+          "explicacion": "Correcto: muestra la sentencia con la que fue creada la vista."
+        },
+        {
+          "id": "c",
+          "texto": "ALTER VIEW v_productos_tecnologia;",
+          "explicacion": "ALTER VIEW sirve para modificar la definición, y necesita el nuevo AS SELECT ..."
+        },
+        {
+          "id": "d",
+          "texto": "DROP VIEW IF EXISTS v_productos_tecnologia;",
+          "explicacion": "DROP VIEW elimina la vista; no muestra su definición."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El ciclo de vida de una vista incluye crearla (CREATE VIEW), revisarla (SHOW CREATE VIEW), modificarla (CREATE OR REPLACE VIEW o ALTER VIEW) y eliminarla (DROP VIEW).",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Ver, modificar y eliminar",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "modificar"
+        }
+      ]
+    },
+    {
+      "id": "u07-modificar-definicion",
+      "tema": "Ver la definición, modificarla y eliminarla",
+      "enunciado": "Se quiere agregar la columna categoria a la vista v_productos_tecnologia ya existente. ¿Qué instrucciones permiten modificar su definición?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "UPDATE VIEW v_productos_tecnologia SET ...",
+          "explicacion": "UPDATE VIEW no existe: UPDATE modifica datos, no la definición de una vista."
+        },
+        {
+          "id": "b",
+          "texto": "INSERT INTO v_productos_tecnologia (categoria) ...",
+          "explicacion": "INSERT agrega filas; no cambia las columnas que define la vista."
+        },
+        {
+          "id": "c",
+          "texto": "DROP TABLE productos y volver a crear la tabla.",
+          "explicacion": "Eso eliminaría la tabla base con todos sus datos; no es una forma de modificar la vista."
+        },
+        {
+          "id": "d",
+          "texto": "CREATE OR REPLACE VIEW o ALTER VIEW, con el nuevo SELECT.",
+          "explicacion": "Correcto: ambas reemplazan la definición de la vista con una estructura muy similar."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "CREATE OR REPLACE VIEW nombre AS SELECT ... es una forma cómoda de redefinir una vista; ALTER VIEW nombre AS SELECT ... cumple la misma función.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Ver, modificar y eliminar",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "modificar"
+        }
+      ]
+    },
+    {
+      "id": "u07-drop-view",
+      "tema": "Ver la definición, modificarla y eliminarla",
+      "enunciado": "¿Qué ocurre al ejecutar DROP VIEW IF EXISTS v_productos_tecnologia?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se eliminan de la tabla productos los productos de Tecnología.",
+          "explicacion": "Eliminar una vista no borra filas de las tablas base."
+        },
+        {
+          "id": "b",
+          "texto": "Se elimina la tabla productos.",
+          "explicacion": "La tabla base no se ve afectada; para eliminar una tabla se usa DROP TABLE."
+        },
+        {
+          "id": "c",
+          "texto": "Solo desaparece la definición de la vista; las tablas y los datos quedan intactos.",
+          "explicacion": "Correcto: la vista es solo una consulta guardada, así que eliminarla no toca los datos."
+        },
+        {
+          "id": "d",
+          "texto": "La vista sigue existiendo, pero queda vacía.",
+          "explicacion": "DROP VIEW elimina el objeto vista por completo."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Como la vista no tiene datos propios, eliminarla solo borra su definición del esquema.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Ver, modificar y eliminar",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "modificar"
+        }
+      ]
+    },
+    {
+      "id": "u07-update-a-traves-de-vista",
+      "tema": "Vistas actualizables",
+      "enunciado": "La vista v_productos_libreria se definió como SELECT id_producto, nombre, categoria, precio FROM productos WHERE categoria = 'Libreria'. El producto con id_producto = 10 pertenece a esa categoría. ¿Qué sucede al ejecutar UPDATE v_productos_libreria SET precio = 4000 WHERE id_producto = 10?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El cambio se realiza en la tabla productos: ese producto pasa a costar 4000.",
+          "explicacion": "Correcto: la vista es actualizable y el UPDATE se aplica realmente sobre la tabla base."
+        },
+        {
+          "id": "b",
+          "texto": "El precio cambia solo en la vista; la tabla productos no se modifica.",
+          "explicacion": "La vista no tiene datos propios: cualquier modificación a través de ella afecta a la tabla base."
+        },
+        {
+          "id": "c",
+          "texto": "Produce un error, porque las vistas nunca admiten modificaciones.",
+          "explicacion": "Algunas vistas sí son actualizables, como esta: una sola tabla y relación directa 1 a 1 con sus filas."
+        },
+        {
+          "id": "d",
+          "texto": "Se crea una copia de ese producto con el nuevo precio.",
+          "explicacion": "UPDATE modifica la fila existente; no inserta copias."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Una vista simple, basada en una tabla y con correspondencia directa entre sus filas y las de la tabla base, es claramente actualizable.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vistas actualizables",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "actualizable"
+        }
+      ]
+    },
+    {
+      "id": "u07-vista-no-actualizable",
+      "tema": "Vistas actualizables",
+      "enunciado": "Según la regla conceptual del curso, ¿cuál de estas vistas NO es actualizable?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "v_productos_libreria: productos filtrados por categoria = 'Libreria'.",
+          "explicacion": "Es una vista simple sobre una tabla con relación 1 a 1 con sus filas: es actualizable."
+        },
+        {
+          "id": "b",
+          "texto": "v_resumen_categorias: categoria, COUNT(*) y AVG(precio) agrupados con GROUP BY.",
+          "explicacion": "Correcto: cada fila resume varios productos, así que no tiene sentido asignar, por ejemplo, un nuevo precio promedio."
+        },
+        {
+          "id": "c",
+          "texto": "v_productos_tecnologia: id_producto, nombre y precio de los productos de Tecnología.",
+          "explicacion": "Es una vista simple sobre una sola tabla, con correspondencia directa con sus filas."
+        },
+        {
+          "id": "d",
+          "texto": "Una vista con id_cliente, nombre y ciudad de la tabla clientes, sin agrupar.",
+          "explicacion": "Selecciona columnas de una sola tabla sin agregaciones: cada fila corresponde a un cliente."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Las vistas con agregaciones como AVG, COUNT, GROUP BY, HAVING, DISTINCT o UNION son claramente no actualizables. En el curso se las trata como de solo lectura.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vistas actualizables",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "actualizable"
+        },
+        {
+          "titulo": "Unidad 7 · Vista con agregación",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "agregacion"
+        }
+      ]
+    },
+    {
+      "id": "u07-with-check-option",
+      "tema": "WITH CHECK OPTION",
+      "enunciado": "La vista v_productos_libreria se definió como SELECT id_producto, nombre, categoria, precio FROM productos WHERE categoria = 'Libreria' WITH CHECK OPTION. El producto con id_producto = 10 pertenece a 'Libreria'. ¿Qué pasa al ejecutar UPDATE v_productos_libreria SET categoria = 'Tecnologia' WHERE id_producto = 10?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se actualiza y ese producto pasa a la categoría Tecnología.",
+          "explicacion": "Eso ocurriría sin CHECK OPTION; con ella la modificación no se permite."
+        },
+        {
+          "id": "b",
+          "texto": "Se actualiza solo dentro de la vista.",
+          "explicacion": "Las modificaciones a través de una vista nunca quedan “solo en la vista”: afectan a la tabla base o se rechazan."
+        },
+        {
+          "id": "c",
+          "texto": "Se elimina ese producto de la tabla productos.",
+          "explicacion": "Un UPDATE no elimina filas."
+        },
+        {
+          "id": "d",
+          "texto": "MySQL rechaza la modificación, porque la fila dejaría de cumplir categoria = 'Libreria'.",
+          "explicacion": "Correcto: CHECK OPTION impide cambios hechos a través de la vista que dejen la fila fuera de su filtro."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Con WITH CHECK OPTION, un cambio de precio es válido porque la fila sigue cumpliendo el filtro; mover el producto a otra categoría a través de la vista, no.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · WITH CHECK OPTION",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "check"
+        }
+      ]
+    },
+    {
+      "id": "u07-cuando-usar-vista",
+      "tema": "Cuándo una vista aporta valor",
+      "enunciado": "Se necesita un resultado intermedio que solo sirve dentro de una consulta puntual. ¿Qué conviene usar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una vista, porque toda consulta con varios pasos debería guardarse.",
+          "explicacion": "No hay que crear vistas por crear: si la lógica no se va a reutilizar, no hace falta un objeto permanente."
+        },
+        {
+          "id": "b",
+          "texto": "Una tabla nueva que copie esos datos.",
+          "explicacion": "Copiar datos en otra tabla agrega trabajo de mantenimiento y no es necesario para un paso intermedio."
+        },
+        {
+          "id": "c",
+          "texto": "Probablemente una CTE, porque no hace falta crear un objeto permanente en el esquema.",
+          "explicacion": "Correcto: la CTE resuelve el paso intermedio dentro de la sentencia y desaparece al terminar."
+        },
+        {
+          "id": "d",
+          "texto": "Una vista con WITH CHECK OPTION.",
+          "explicacion": "CHECK OPTION controla modificaciones a través de una vista; no cambia cuándo conviene crearla."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una vista aporta valor cuando una combinación de tablas o un resumen se consulta repetidamente. Para un paso que solo sirve dentro de una consulta, la CTE suele ser más natural.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Cuándo una vista aporta valor",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "criterio"
+        },
+        {
+          "titulo": "Unidad 7 · Vista vs. CTE",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "cte"
+        }
+      ]
+    },
+    {
+      "id": "u07-sintaxis-create-view",
+      "tema": "Crear una vista",
+      "enunciado": "¿Cuál de estas instrucciones crea una vista con los productos de Tecnología?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "WITH v_productos_tecnologia AS (SELECT … FROM productos WHERE categoria = 'Tecnologia')",
+          "explicacion": "Eso define una CTE, que solo existe dentro de la sentencia; no crea un objeto en la base."
+        },
+        {
+          "id": "b",
+          "texto": "CREATE VIEW v_productos_tecnologia AS SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia';",
+          "explicacion": "Correcto: CREATE VIEW crea el objeto, seguido del nombre y de AS SELECT con la consulta que lo define."
+        },
+        {
+          "id": "c",
+          "texto": "CREATE TABLE v_productos_tecnologia AS SELECT … FROM productos WHERE categoria = 'Tecnologia';",
+          "explicacion": "Eso crea una tabla nueva con una copia de los datos, que no se actualiza al cambiar productos."
+        },
+        {
+          "id": "d",
+          "texto": "INSERT INTO VIEW v_productos_tecnologia SELECT … FROM productos;",
+          "explicacion": "Esa sintaxis no existe: INSERT agrega filas, no crea vistas."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Conviene escribir y probar primero el SELECT y, cuando devuelve exactamente lo deseado, convertirlo en vista con CREATE VIEW … AS SELECT …",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Crear una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "crear"
+        }
+      ]
+    },
+    {
+      "id": "u07-prefijo-v",
+      "tema": "Crear una vista",
+      "enunciado": "¿Es obligatorio que el nombre de una vista empiece con el prefijo v_?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí, MySQL rechaza vistas sin ese prefijo.",
+          "explicacion": "MySQL no impone ningún prefijo para el nombre de una vista."
+        },
+        {
+          "id": "b",
+          "texto": "Sí, porque de lo contrario se crea una tabla.",
+          "explicacion": "Lo que define que sea una vista es CREATE VIEW, no el nombre."
+        },
+        {
+          "id": "c",
+          "texto": "No, y además está prohibido usar prefijos.",
+          "explicacion": "Los prefijos están permitidos; v_ es justamente una convención recomendada."
+        },
+        {
+          "id": "d",
+          "texto": "No, es una convención que ayuda a reconocer rápidamente que el objeto es una vista.",
+          "explicacion": "Correcto: no es obligatorio, pero mejora la legibilidad del esquema."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Elegir nombres claros, como v_ventas_clientes o v_resumen_categorias, facilita entender qué presenta cada vista.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Crear una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "crear"
+        }
+      ]
+    },
+    {
+      "id": "u07-nuevo-producto-en-vista",
+      "tema": "Una vista no es una foto ni una copia de los datos",
+      "enunciado": "Después de crear v_productos_tecnologia, se inserta en productos un nuevo producto de categoría 'Tecnologia'. ¿Aparece en la vista?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí, porque la vista ejecuta su consulta sobre los datos actuales de productos.",
+          "explicacion": "Correcto: el nuevo producto cumple el filtro categoria = 'Tecnologia', así que aparece al consultar la vista."
+        },
+        {
+          "id": "b",
+          "texto": "No, la vista solo contiene los productos que existían al crearla.",
+          "explicacion": "La vista no guarda una copia de las filas: siempre refleja el estado actual de la tabla base."
+        },
+        {
+          "id": "c",
+          "texto": "Solo después de ejecutar CREATE OR REPLACE VIEW.",
+          "explicacion": "No hace falta redefinir la vista para ver datos nuevos; solo se redefine para cambiar la consulta."
+        },
+        {
+          "id": "d",
+          "texto": "No, hay que insertar el producto también en la vista.",
+          "explicacion": "Los datos viven en la tabla base; la vista solo los presenta."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Crear una vista no duplica los datos: si cambian las tablas sobre las que se apoya, cambia lo que vemos a través de ella.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Una vista no es una copia",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "reflejo"
+        }
+      ]
+    },
+    {
+      "id": "u07-datos-propios",
+      "tema": "Vista vs. CTE",
+      "enunciado": "¿Cuál de estas tiene datos propios, es decir, una copia independiente de las filas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo la vista.",
+          "explicacion": "La vista común de MySQL guarda la definición de la consulta, no las filas."
+        },
+        {
+          "id": "b",
+          "texto": "Solo la CTE.",
+          "explicacion": "La CTE es un resultado intermedio con nombre dentro de una sentencia; no es una copia persistente."
+        },
+        {
+          "id": "c",
+          "texto": "Ambas.",
+          "explicacion": "Ninguna de las dos guarda una copia independiente de los datos."
+        },
+        {
+          "id": "d",
+          "texto": "Ninguna de las dos.",
+          "explicacion": "Correcto: ambas presentan datos que viven en las tablas base."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La diferencia entre CTE y vista está en la duración y la reutilización, no en tener datos propios: ninguna de las dos los tiene.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vista vs. CTE",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "cte"
+        }
+      ]
+    },
+    {
+      "id": "u07-check-option-cambio-valido",
+      "tema": "WITH CHECK OPTION",
+      "enunciado": "La vista v_productos_libreria se definió como SELECT id_producto, nombre, categoria, precio FROM productos WHERE categoria = 'Libreria' WITH CHECK OPTION. El producto con id_producto = 10 pertenece a 'Libreria'. ¿Qué pasa con UPDATE v_productos_libreria SET precio = 4500 WHERE id_producto = 10?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se rechaza, porque CHECK OPTION impide cualquier UPDATE.",
+          "explicacion": "CHECK OPTION solo impide los cambios que dejarían la fila fuera del filtro de la vista."
+        },
+        {
+          "id": "b",
+          "texto": "Se permite y ese producto pasa a costar 4500 en la tabla productos.",
+          "explicacion": "Correcto: cambiar el precio no altera la categoría, así que la fila sigue cumpliendo el filtro."
+        },
+        {
+          "id": "c",
+          "texto": "Se permite, pero el cambio solo se ve en la vista.",
+          "explicacion": "Los cambios hechos a través de una vista actualizable se aplican en la tabla base."
+        },
+        {
+          "id": "d",
+          "texto": "Se rechaza, porque las vistas con WHERE no son actualizables.",
+          "explicacion": "Un filtro WHERE no impide que una vista simple sobre una tabla sea actualizable."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Con CHECK OPTION, si trabajamos a través de v_productos_libreria, la fila tiene que seguir cumpliendo categoria = 'Libreria' después del cambio.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · WITH CHECK OPTION",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "check"
+        }
+      ]
+    },
+    {
+      "id": "u07-vista-y-permisos",
+      "tema": "Cuándo una vista aporta valor",
+      "enunciado": "Se crea una vista que muestra solo algunas columnas de clientes. ¿Qué se puede afirmar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Presenta una interfaz más controlada, pero los permisos reales dependen de la configuración de usuarios y privilegios.",
+          "explicacion": "Correcto: la vista limita lo que muestra, pero no reemplaza la gestión de privilegios."
+        },
+        {
+          "id": "b",
+          "texto": "Garantiza que nadie pueda acceder a las demás columnas de clientes.",
+          "explicacion": "Quien tenga privilegios sobre la tabla clientes puede consultarla directamente, sin usar la vista."
+        },
+        {
+          "id": "c",
+          "texto": "Borra las columnas que no se incluyeron en la vista.",
+          "explicacion": "Crear una vista no modifica la estructura ni los datos de la tabla base."
+        },
+        {
+          "id": "d",
+          "texto": "Hace que las consultas sobre clientes sean automáticamente más rápidas.",
+          "explicacion": "Una vista no es una aceleración automática; el rendimiento depende de la consulta y de las tablas."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Una vista aporta valor para reutilizar, organizar y presentar consultas. La seguridad real depende de los usuarios y privilegios configurados.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Cuándo una vista aporta valor",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u07-metodo-modificaciones",
+      "tema": "Método para diseñar una vista",
+      "enunciado": "Según el método recomendado, si se piensa modificar datos a través de una vista, ¿qué hay que hacer?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Nada especial: todas las vistas admiten INSERT, UPDATE y DELETE.",
+          "explicacion": "No todas son actualizables; por ejemplo, las vistas de resumen con agregaciones no lo son."
+        },
+        {
+          "id": "b",
+          "texto": "Copiar los datos a la vista antes de modificarlos.",
+          "explicacion": "Una vista no tiene datos propios: las modificaciones, cuando se permiten, se aplican en la tabla base."
+        },
+        {
+          "id": "c",
+          "texto": "Evaluar si la vista es actualizable, sin asumir que todas lo son.",
+          "explicacion": "Correcto: hay que revisar si tiene una relación clara 1 a 1 con las filas de la tabla base."
+        },
+        {
+          "id": "d",
+          "texto": "Eliminarla con DROP VIEW y modificar la tabla.",
+          "explicacion": "No hace falta eliminar la vista; si es actualizable, se puede modificar a través de ella."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "El método: escribir y probar el SELECT, evaluar si vale la pena reutilizarlo, crear la vista con un nombre claro, consultarla y, si habrá modificaciones, evaluar si es actualizable.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Método para diseñar una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "metodo"
+        },
+        {
+          "titulo": "Unidad 7 · Vistas actualizables",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "actualizable"
+        }
+      ]
+    },
+    {
+      "id": "u07-cte-fuera-de-su-sentencia",
+      "tema": "Puente desde CTE",
+      "enunciado": "Se ejecuta WITH productos_tecnologia AS (SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia') SELECT * FROM productos_tecnologia; y después, en otra sentencia, SELECT * FROM productos_tecnologia; ¿Qué ocurre con la segunda sentencia? (No existe ninguna tabla ni vista con ese nombre).",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Devuelve los productos de Tecnología, porque la CTE quedó guardada en la base.",
+          "explicacion": "La CTE no se guarda en la base: su nombre existe solo durante la sentencia que la define."
+        },
+        {
+          "id": "b",
+          "texto": "Devuelve un resultado vacío, porque la CTE se vació al terminar la primera sentencia.",
+          "explicacion": "No queda ningún objeto vacío: el nombre directamente deja de existir, así que no hay nada para consultar."
+        },
+        {
+          "id": "c",
+          "texto": "Produce un error: productos_tecnologia ya no existe.",
+          "explicacion": "Correcto: una vez ejecutada la sentencia, el nombre de la CTE deja de existir; para reutilizar esa lógica en otras sentencias habría que crear una vista."
+        },
+        {
+          "id": "d",
+          "texto": "Devuelve los productos, siempre que se ejecute en la misma sesión.",
+          "explicacion": "La CTE no depende de la sesión: termina junto con la sentencia que la define."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una CTE sirve dentro de una sentencia; una vista queda registrada en la base hasta que la modifiquemos o eliminemos.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Puente desde CTE",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "puente"
+        },
+        {
+          "titulo": "Unidad 7 · Vista vs. CTE",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "cte"
+        }
+      ]
+    },
+    {
+      "id": "u07-paso-evaluar",
+      "tema": "Presentación",
+      "enunciado": "La unidad propone cuatro pasos para trabajar con vistas: resolver, guardar, reutilizar y evaluar. ¿Qué significa el paso «evaluar»?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Medir cuánto más rápido responde la vista que la consulta original.",
+          "explicacion": "Una vista no es una aceleración automática; evaluar no se refiere a medir velocidad."
+        },
+        {
+          "id": "b",
+          "texto": "Revisar que la vista haya copiado correctamente las filas de las tablas.",
+          "explicacion": "La vista no copia filas, así que no hay ninguna copia que revisar."
+        },
+        {
+          "id": "c",
+          "texto": "Ejecutar SHOW CREATE VIEW para ver cómo quedó definida la vista.",
+          "explicacion": "SHOW CREATE VIEW muestra la definición, pero no es el paso de evaluación que propone la unidad."
+        },
+        {
+          "id": "d",
+          "texto": "Decidir si conviene una vista, una CTE o una consulta directa.",
+          "explicacion": "Correcto: no toda consulta necesita convertirse en vista; hay que elegir la herramienta adecuada para cada caso."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Resolver es escribir el SELECT; guardar, asignarle un nombre con CREATE VIEW; reutilizar, consultarla en sentencias posteriores; y evaluar, decidir qué herramienta conviene.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Presentación",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "inicio"
+        },
+        {
+          "titulo": "Unidad 7 · Cuándo una vista aporta valor",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u07-usar-vista-en-from",
+      "tema": "Qué es una vista",
+      "enunciado": "Una vez creada una vista, ¿cómo se la puede usar en una consulta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Con su nombre en el FROM, igual que una tabla.",
+          "explicacion": "Correcto: al consultarla, la vista presenta filas y columnas como si fuera una tabla, y sobre ella se puede filtrar, ordenar o relacionar."
+        },
+        {
+          "id": "b",
+          "texto": "Solo con SELECT * y sin condiciones, porque el filtro ya está dentro de la vista.",
+          "explicacion": "Sobre una vista se pueden agregar WHERE, ORDER BY y otras cláusulas en la consulta externa."
+        },
+        {
+          "id": "c",
+          "texto": "Solo dentro de una CTE que la invoque.",
+          "explicacion": "La vista se usa directamente en el FROM; no necesita ninguna CTE."
+        },
+        {
+          "id": "d",
+          "texto": "Mediante SHOW CREATE VIEW, que devuelve sus filas.",
+          "explicacion": "SHOW CREATE VIEW muestra la sentencia que define la vista, no las filas que presenta."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "La vista se parece a una tabla cuando la consultamos, pero conceptualmente sigue siendo una consulta almacenada.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Qué es una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "idea"
+        },
+        {
+          "titulo": "Unidad 7 · Consultar una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "consultar"
+        }
+      ]
+    },
+    {
+      "id": "u07-columnas-del-join",
+      "tema": "Base de trabajo",
+      "enunciado": "La tabla ventas tiene las columnas id_venta, id_cliente y fecha, y id_cliente es una clave foránea que referencia a clientes(id_cliente). La vista v_ventas_clientes une ventas con clientes para mostrar cada venta junto a la información de su cliente. ¿Qué columnas deben relacionarse en el JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "ventas.id_venta con clientes.id_cliente.",
+          "explicacion": "id_venta identifica la venta; compararla con id_cliente mezclaría identificadores que no se corresponden."
+        },
+        {
+          "id": "b",
+          "texto": "ventas.fecha con clientes.edad.",
+          "explicacion": "La fecha y la edad no relacionan las tablas: no hay ninguna clave entre ellas."
+        },
+        {
+          "id": "c",
+          "texto": "ventas.id_cliente con clientes.id_cliente.",
+          "explicacion": "Correcto: id_cliente de ventas es una clave foránea que referencia a clientes(id_cliente), y la vista usa ON v.id_cliente = c.id_cliente."
+        },
+        {
+          "id": "d",
+          "texto": "detalle_ventas.id_venta con clientes.id_cliente.",
+          "explicacion": "v_ventas_clientes no necesita detalle_ventas: solo une ventas con clientes."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "La vista guarda el JOIN tal como lo escribiríamos en una consulta común; la relación sigue siendo la clave foránea de ventas hacia clientes.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Base de trabajo",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "base"
+        },
+        {
+          "titulo": "Unidad 7 · Vista con JOIN",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "join"
+        }
+      ]
+    },
+    {
+      "id": "u07-create-view-repetido",
+      "tema": "Ver la definición, modificarla y eliminarla",
+      "enunciado": "La vista v_productos_tecnologia ya existe. Se vuelve a ejecutar CREATE VIEW v_productos_tecnologia AS SELECT id_producto, nombre, categoria, precio FROM productos WHERE categoria = 'Tecnologia'; ¿Qué ocurre?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La vista se reemplaza por la nueva definición, sin mostrar ningún aviso ni error.",
+          "explicacion": "Eso hace CREATE OR REPLACE VIEW; CREATE VIEW a secas no reemplaza una vista existente."
+        },
+        {
+          "id": "b",
+          "texto": "Se crea una segunda vista con el mismo nombre, junto a la anterior.",
+          "explicacion": "Dentro de un mismo esquema no puede haber dos vistas con el mismo nombre."
+        },
+        {
+          "id": "c",
+          "texto": "Se copian las filas de productos dentro de la vista existente.",
+          "explicacion": "Ninguna forma de CREATE VIEW copia filas: la vista guarda solo la definición del SELECT."
+        },
+        {
+          "id": "d",
+          "texto": "Da un error, porque ya existe una vista con ese nombre.",
+          "explicacion": "Correcto: CREATE VIEW crea un objeto nuevo; para cambiar la definición de uno existente están CREATE OR REPLACE VIEW y ALTER VIEW."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "CREATE OR REPLACE VIEW es una forma cómoda de redefinir una vista; ALTER VIEW cumple la misma función con una estructura muy similar.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Ver, modificar y eliminar",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "modificar"
+        },
+        {
+          "titulo": "Unidad 7 · Crear una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "crear"
+        }
+      ]
+    },
+    {
+      "id": "u07-drop-view-if-exists-inexistente",
+      "tema": "Ver la definición, modificarla y eliminarla",
+      "enunciado": "Se ejecuta DROP VIEW IF EXISTS v_resumen_ciudades, pero esa vista nunca fue creada. ¿Qué pasa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se produce un error que detiene el script, porque la vista no existe.",
+          "explicacion": "Eso pasaría con DROP VIEW sin IF EXISTS; la cláusula IF EXISTS evita justamente ese error."
+        },
+        {
+          "id": "b",
+          "texto": "La instrucción termina sin error.",
+          "explicacion": "Correcto: con IF EXISTS, si la vista existe se elimina, y si no existe la instrucción no falla."
+        },
+        {
+          "id": "c",
+          "texto": "Se eliminan las tablas en las que se apoyaría la vista.",
+          "explicacion": "DROP VIEW nunca elimina tablas base, exista o no la vista."
+        },
+        {
+          "id": "d",
+          "texto": "Se crea una vista vacía con ese nombre.",
+          "explicacion": "DROP VIEW elimina vistas; no crea ninguna."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "DROP VIEW IF EXISTS es útil en scripts que se ejecutan varias veces: elimina la vista solo si existe, sin tocar tablas ni datos.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Ver, modificar y eliminar",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "modificar"
+        }
+      ]
+    },
+    {
+      "id": "u07-eliminar-vista-resumen",
+      "tema": "Ver la definición, modificarla y eliminarla",
+      "enunciado": "¿Qué instrucción elimina la vista v_resumen_categorias sin afectar los datos de productos?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "DELETE FROM v_resumen_categorias;",
+          "explicacion": "DELETE intenta borrar filas, no el objeto vista; además, una vista con GROUP BY no es actualizable."
+        },
+        {
+          "id": "b",
+          "texto": "DROP TABLE v_resumen_categorias;",
+          "explicacion": "v_resumen_categorias es una vista, no una tabla: para eliminarla se usa DROP VIEW."
+        },
+        {
+          "id": "c",
+          "texto": "DROP VIEW v_resumen_categorias;",
+          "explicacion": "Correcto: elimina solo la definición de la vista; la tabla productos y sus datos quedan intactos."
+        },
+        {
+          "id": "d",
+          "texto": "ALTER VIEW v_resumen_categorias DROP;",
+          "explicacion": "Esa sintaxis no existe; ALTER VIEW sirve para redefinir la vista con un nuevo AS SELECT."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Eliminar una vista no elimina las tablas ni los datos base: solo desaparece la definición de ese objeto.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Ver, modificar y eliminar",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "modificar"
+        }
+      ]
+    },
+    {
+      "id": "u07-resumen-para-varios-reportes",
+      "tema": "Vista vs. CTE",
+      "enunciado": "Distintos reportes, ejecutados en días diferentes, necesitan la cantidad de productos y el precio promedio por categoría. ¿Qué conviene usar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una CTE, porque queda guardada para todos los reportes.",
+          "explicacion": "La CTE existe solo dentro de una sentencia; no se comparte entre reportes."
+        },
+        {
+          "id": "b",
+          "texto": "Una tabla nueva con el resumen copiado, que se recargue cada vez que cambie un precio.",
+          "explicacion": "Eso obliga a mantener una copia actualizada a mano; la vista siempre refleja los datos actuales."
+        },
+        {
+          "id": "c",
+          "texto": "Una subconsulta distinta en cada reporte, porque las vistas no admiten GROUP BY.",
+          "explicacion": "Las vistas sí pueden contener GROUP BY y funciones de agregación, como v_resumen_categorias."
+        },
+        {
+          "id": "d",
+          "texto": "Una vista que guarde esa consulta de resumen agrupada por categoría.",
+          "explicacion": "Correcto: un resumen que distintos reportes necesitan consultar es un caso típico donde una vista aporta valor, porque permite reutilizar la misma lógica de agrupación."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Si queremos volver a consultar una lógica desde distintas sentencias, una vista puede tener más sentido que una CTE, que solo vive dentro de una sentencia.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vista vs. CTE",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "cte"
+        },
+        {
+          "titulo": "Unidad 7 · Cuándo una vista aporta valor",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u07-select-simple-una-vez",
+      "tema": "Cuándo una vista aporta valor",
+      "enunciado": "Se necesita un SELECT muy simple sobre clientes que se va a usar una sola vez. ¿Qué recomienda el criterio de la unidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una consulta directa, que probablemente sea más clara.",
+          "explicacion": "Correcto: si la consulta no se va a reutilizar, crear un objeto permanente en el esquema no aporta."
+        },
+        {
+          "id": "b",
+          "texto": "Crear siempre una vista, para que la consulta quede documentada en el esquema.",
+          "explicacion": "No hay que crear vistas por crear: una vista se justifica cuando su lógica se reutiliza."
+        },
+        {
+          "id": "c",
+          "texto": "Crear una vista con WITH CHECK OPTION, para proteger los datos.",
+          "explicacion": "CHECK OPTION controla las modificaciones hechas a través de una vista; no tiene relación con una consulta de uso único."
+        },
+        {
+          "id": "d",
+          "texto": "Crear una vista, porque así la consulta se ejecuta más rápido.",
+          "explicacion": "Una vista no es una aceleración automática: el rendimiento depende de la consulta y de las tablas que utiliza."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El valor principal de una vista es la reutilización, organización y presentación de consultas; para algo puntual y simple, una consulta directa suele alcanzar.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Cuándo una vista aporta valor",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u07-vista-distinct-no-actualizable",
+      "tema": "Vistas actualizables",
+      "enunciado": "Según la regla conceptual del curso, ¿es actualizable la vista CREATE VIEW v_ciudades AS SELECT DISTINCT ciudad FROM clientes?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí, porque se basa en una sola tabla.",
+          "explicacion": "Basarse en una sola tabla no alcanza: con DISTINCT, una fila de la vista puede representar a varios clientes."
+        },
+        {
+          "id": "b",
+          "texto": "No, porque DISTINCT rompe la relación 1 a 1.",
+          "explicacion": "Correcto: la fila de una ciudad con varios clientes los resume a todos; no corresponde a una única fila de clientes."
+        },
+        {
+          "id": "c",
+          "texto": "Sí, siempre que se le agregue WITH CHECK OPTION.",
+          "explicacion": "CHECK OPTION no convierte en actualizable una vista que no lo es; solo controla que las filas modificadas sigan cumpliendo el filtro."
+        },
+        {
+          "id": "d",
+          "texto": "No, porque ninguna vista definida con un SELECT es actualizable.",
+          "explicacion": "Todas las vistas se definen con un SELECT, y algunas, como v_productos_libreria, sí son actualizables."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Las vistas con DISTINCT, agregaciones, GROUP BY, HAVING o UNION se tratan como de solo lectura, porque sus filas no corresponden 1 a 1 con filas de la tabla base.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vistas actualizables",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "actualizable"
+        }
+      ]
+    },
+    {
+      "id": "u07-update-sin-check-option",
+      "tema": "WITH CHECK OPTION",
+      "enunciado": "La vista v_productos_libreria se definió como SELECT id_producto, nombre, categoria, precio FROM productos WHERE categoria = 'Libreria', sin WITH CHECK OPTION. El producto con id_producto = 10 pertenece a 'Libreria'. ¿Qué pasa al ejecutar UPDATE v_productos_libreria SET categoria = 'Tecnologia' WHERE id_producto = 10?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "MySQL rechaza el cambio, porque la fila dejaría de cumplir el filtro de la vista.",
+          "explicacion": "Ese control lo agrega WITH CHECK OPTION; sin esa cláusula, el cambio se permite."
+        },
+        {
+          "id": "b",
+          "texto": "Se actualiza solo dentro de la vista; en productos ese producto sigue en Librería.",
+          "explicacion": "La vista no tiene datos propios: el UPDATE se aplica sobre la tabla productos."
+        },
+        {
+          "id": "c",
+          "texto": "Se permite: ese producto pasa a Tecnología en productos y deja de verse a través de la vista.",
+          "explicacion": "Correcto: sin CHECK OPTION el cambio se permite y, como la fila ya no cumple categoria = 'Libreria', deja de verse a través de esa vista."
+        },
+        {
+          "id": "d",
+          "texto": "Produce un error, porque nunca se puede modificar la columna usada en el WHERE de una vista.",
+          "explicacion": "Sin CHECK OPTION esa columna se puede modificar; justamente por eso existe CHECK OPTION, para impedir que la fila salga del filtro."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "WITH CHECK OPTION sirve para que las modificaciones hechas a través de la vista no dejen la fila fuera de su filtro; sin ella, ese control no existe.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · WITH CHECK OPTION",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "check"
+        },
+        {
+          "titulo": "Unidad 7 · Vistas actualizables",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "actualizable"
+        }
+      ]
+    },
+    {
+      "id": "u07-check-option-en-insert",
+      "tema": "WITH CHECK OPTION",
+      "enunciado": "La vista v_productos_libreria se definió con WHERE categoria = 'Libreria' WITH CHECK OPTION. ¿Qué pasa con INSERT INTO v_productos_libreria (id_producto, nombre, categoria, precio) VALUES (9, 'Regla', 'Tecnologia', 1500)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "MySQL lo rechaza, porque la nueva fila no cumpliría categoria = 'Libreria'.",
+          "explicacion": "Correcto: CHECK OPTION también controla las inserciones hechas a través de la vista."
+        },
+        {
+          "id": "b",
+          "texto": "Se inserta en productos, aunque no se vea a través de la vista.",
+          "explicacion": "Eso pasaría sin CHECK OPTION; con ella, una fila que no cumple el filtro se rechaza."
+        },
+        {
+          "id": "c",
+          "texto": "Se inserta la Regla con categoría Librería, porque MySQL corrige el valor automáticamente.",
+          "explicacion": "MySQL no corrige valores: rechaza la fila que no cumple el filtro de la vista."
+        },
+        {
+          "id": "d",
+          "texto": "Se inserta solo en la vista, sin tocar la tabla productos.",
+          "explicacion": "La vista no tiene datos propios: una inserción permitida se haría en la tabla productos."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Con WITH CHECK OPTION, toda fila que se inserte o modifique a través de la vista tiene que cumplir su filtro.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · WITH CHECK OPTION",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "check"
+        }
+      ]
+    },
+    {
+      "id": "u07-delete-a-traves-de-vista",
+      "tema": "Vistas actualizables",
+      "enunciado": "La vista v_productos_libreria se definió como SELECT id_producto, nombre, categoria, precio FROM productos WHERE categoria = 'Libreria'. El producto con id_producto = 11 pertenece a esa categoría. Se ejecuta DELETE FROM v_productos_libreria WHERE id_producto = 11. ¿Qué ocurre?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ese producto desaparece solo de la vista; la tabla productos queda igual.",
+          "explicacion": "Una vista no tiene filas propias: al borrar a través de ella, se borra la fila en la tabla base."
+        },
+        {
+          "id": "b",
+          "texto": "Se elimina la vista v_productos_libreria completa.",
+          "explicacion": "DELETE borra filas; para eliminar la vista se usa DROP VIEW."
+        },
+        {
+          "id": "c",
+          "texto": "Produce un error, porque las vistas solo admiten SELECT.",
+          "explicacion": "Una vista simple sobre una tabla, con relación 1 a 1 con sus filas, es actualizable y admite este tipo de operaciones."
+        },
+        {
+          "id": "d",
+          "texto": "Se borra ese producto de la tabla productos.",
+          "explicacion": "Correcto: la vista es actualizable, así que el DELETE se aplica realmente sobre la tabla base, y el producto deja de verse también en la vista."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Cuando una vista es actualizable, las operaciones hechas a través de ella se realizan sobre la tabla base.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vistas actualizables",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "actualizable"
+        }
+      ]
+    },
+    {
+      "id": "u07-metodo-antes-de-crear",
+      "tema": "Método para diseñar una vista",
+      "enunciado": "Según el método para diseñar una vista, ¿qué conviene hacer antes de ejecutar CREATE VIEW?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Crear la vista directamente y corregirla después con ALTER VIEW.",
+          "explicacion": "Se puede redefinir, pero el método propone probar primero el SELECT para no guardar una consulta incorrecta."
+        },
+        {
+          "id": "b",
+          "texto": "Escribir y probar el SELECT sin vista.",
+          "explicacion": "Correcto: primero se resuelve y se prueba la consulta, y recién después se decide si vale la pena reutilizarla como vista."
+        },
+        {
+          "id": "c",
+          "texto": "Copiar los datos de las tablas base en una tabla auxiliar.",
+          "explicacion": "La vista no necesita copias: se apoya directamente en las tablas base."
+        },
+        {
+          "id": "d",
+          "texto": "Comprobar que la vista será actualizable, porque solo se pueden crear vistas actualizables.",
+          "explicacion": "Se pueden crear vistas no actualizables, como las de resumen; evaluar si es actualizable solo hace falta si habrá modificaciones."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El método: escribir el SELECT sin vista, probar su resultado, preguntarse si vale la pena reutilizarlo, crear la vista con un nombre claro, consultarla y, si habrá modificaciones, evaluar si es actualizable.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Método para diseñar una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "metodo"
+        }
+      ]
+    },
+    {
+      "id": "u07-sintesis-afirmacion-correcta",
+      "tema": "Síntesis",
+      "enunciado": "¿Cuál de estas afirmaciones coincide con la síntesis de la unidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una vista puede contener JOIN y agregaciones.",
+          "explicacion": "Correcto: la definición de una vista puede incluir JOIN y GROUP BY, y sobre ella se pueden aplicar nuevos filtros y ordenamientos."
+        },
+        {
+          "id": "b",
+          "texto": "DROP VIEW elimina la vista junto con las tablas en las que se apoya.",
+          "explicacion": "DROP VIEW elimina solo la vista, no las tablas base."
+        },
+        {
+          "id": "c",
+          "texto": "Una vista común guarda una copia actualizada de los datos.",
+          "explicacion": "Una vista común no guarda una copia independiente de los datos: guarda la definición de la consulta."
+        },
+        {
+          "id": "d",
+          "texto": "Tanto las vistas simples como las de resumen son actualizables.",
+          "explicacion": "Las vistas de resumen con agregaciones no son actualizables; solo algunas vistas simples lo son."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Una vista convierte una consulta útil en un objeto reutilizable: guarda la definición, no los datos, y se puede consultar, modificar y eliminar.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Síntesis",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "cierre"
+        }
+      ]
+    },
+    {
+      "id": "u07-delete-en-tabla-base",
+      "tema": "Una vista no es una foto ni una copia de los datos",
+      "enunciado": "La vista v_productos_tecnologia se definió como SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia'. El producto con id_producto = 3 aparece en la vista. Luego se ejecuta DELETE FROM productos WHERE id_producto = 3. ¿Qué ocurre al volver a consultar la vista?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ese producto ya no aparece.",
+          "explicacion": "Correcto: la vista vuelve a ejecutar su consulta sobre productos, donde esa fila ya no existe."
+        },
+        {
+          "id": "b",
+          "texto": "Ese producto sigue apareciendo, porque la vista guardó sus filas al crearse.",
+          "explicacion": "La vista no guarda una copia de las filas; presenta lo que hay en la tabla base en ese momento."
+        },
+        {
+          "id": "c",
+          "texto": "La consulta da error hasta que se ejecute CREATE OR REPLACE VIEW.",
+          "explicacion": "Borrar filas de la tabla base no invalida la vista ni obliga a redefinirla."
+        },
+        {
+          "id": "d",
+          "texto": "Ese producto aparece con todas sus columnas en NULL.",
+          "explicacion": "La vista no conserva filas vacías: si la fila no existe en la tabla base, simplemente no se presenta."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Como la vista no tiene datos propios, cualquier INSERT, UPDATE o DELETE sobre la tabla base se refleja la próxima vez que se la consulta.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Una vista no es una copia",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "reflejo"
+        }
+      ]
+    },
+    {
+      "id": "u07-elegir-definicion-requisito",
+      "tema": "Crear una vista",
+      "enunciado": "Se necesita una vista que muestre el nombre y el precio de los productos de la categoría 'Muebles' que cuesten más de 50000. ¿Cuál de estas definiciones cumple el requisito?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "CREATE VIEW v_muebles_caros AS SELECT nombre, precio FROM productos WHERE categoria = 'Muebles' OR precio > 50000;",
+          "explicacion": "Con OR entrarían también productos caros de otras categorías y muebles baratos."
+        },
+        {
+          "id": "b",
+          "texto": "CREATE VIEW v_muebles_caros AS SELECT nombre, categoria FROM productos WHERE categoria = 'Muebles' AND precio > 50000;",
+          "explicacion": "Filtra bien, pero no muestra la columna precio, que el requisito pide."
+        },
+        {
+          "id": "c",
+          "texto": "CREATE VIEW v_muebles_caros AS SELECT nombre, precio FROM productos WHERE categoria = 'Muebles' AND precio > 50000;",
+          "explicacion": "Correcto: selecciona las columnas pedidas y combina ambas condiciones con AND."
+        },
+        {
+          "id": "d",
+          "texto": "CREATE TABLE v_muebles_caros AS SELECT nombre, precio FROM productos WHERE categoria = 'Muebles' AND precio > 50000;",
+          "explicacion": "CREATE TABLE crea una tabla con una copia de los datos, que no refleja los cambios posteriores de productos."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Para crear una vista conviene escribir y probar primero el SELECT que cumple el requisito y después anteponerle CREATE VIEW nombre AS.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Crear una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "crear"
+        }
+      ]
+    },
+    {
+      "id": "u07-join-dentro-de-la-definicion",
+      "tema": "Vista con JOIN",
+      "enunciado": "La vista v_ventas_clientes se definió con un SELECT que une ventas y clientes mediante JOIN. Luego se ejecuta SELECT * FROM v_ventas_clientes. ¿Qué pasa con ese JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ya no se usa: se ejecutó una sola vez al crear la vista y el resultado combinado quedó guardado en ella.",
+          "explicacion": "La vista no guarda el resultado del JOIN; guarda la consulta que lo contiene."
+        },
+        {
+          "id": "b",
+          "texto": "Forma parte de la definición y se aplica sobre los datos actuales al consultar la vista.",
+          "explicacion": "Correcto: el JOIN sigue existiendo dentro de la definición; quien consulta la vista no necesita volver a escribirlo."
+        },
+        {
+          "id": "c",
+          "texto": "Hay que repetirlo en la consulta externa para que la vista devuelva datos de ambas tablas.",
+          "explicacion": "La consulta externa no repite el JOIN: justamente la vista lo guarda para no reescribirlo."
+        },
+        {
+          "id": "d",
+          "texto": "Se reemplaza por una copia de ventas y clientes guardada dentro de la vista.",
+          "explicacion": "Una vista común no copia las tablas que combina."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una vista con JOIN guarda la combinación de tablas como parte de su definición; cada consulta sobre la vista trabaja con el contenido que las tablas tienen en ese momento.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vista con JOIN",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "join"
+        },
+        {
+          "titulo": "Unidad 7 · Una vista no es una copia",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "reflejo"
+        }
+      ]
+    },
+    {
+      "id": "u07-alias-en-vista-resumen",
+      "tema": "Vista con GROUP BY y funciones de agregación",
+      "enunciado": "Se crea CREATE VIEW v_resumen_categorias AS SELECT categoria, COUNT(*) AS cantidad_productos, AVG(precio) AS precio_promedio FROM productos GROUP BY categoria; ¿Qué consulta devuelve las categorías cuyo precio promedio supera 50000?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "SELECT categoria FROM v_resumen_categorias WHERE AVG(precio) > 50000;",
+          "explicacion": "La vista no presenta una columna precio y, además, una función de agregación no puede usarse en WHERE."
+        },
+        {
+          "id": "b",
+          "texto": "SELECT categoria FROM v_resumen_categorias GROUP BY categoria HAVING AVG(precio) > 50000;",
+          "explicacion": "La vista no tiene una columna precio: el promedio ya está calculado y se llama precio_promedio."
+        },
+        {
+          "id": "c",
+          "texto": "Ninguna: una vista con GROUP BY no se puede filtrar.",
+          "explicacion": "Una vista de resumen no es actualizable, pero sí se puede consultar y filtrar."
+        },
+        {
+          "id": "d",
+          "texto": "SELECT categoria FROM v_resumen_categorias WHERE precio_promedio > 50000;",
+          "explicacion": "Correcto: el alias precio_promedio es una columna más de la vista y se filtra con un WHERE simple."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una vista de resumen presenta sus resultados con nombres de columnas claros; otras consultas trabajan sobre esos alias sin repetir la agrupación.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vista con agregación",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "agregacion"
+        },
+        {
+          "titulo": "Unidad 7 · Consultar una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "consultar"
+        }
+      ]
+    },
+    {
+      "id": "u07-cambio-que-rompe-actualizable",
+      "tema": "Vistas actualizables",
+      "enunciado": "Se tiene una vista simple sobre una sola tabla, que es actualizable. Según la regla conceptual del curso, ¿cuál de estos cambios en su definición la volvería no actualizable?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Agregar un WHERE que filtre por una columna.",
+          "explicacion": "Un filtro WHERE no rompe la correspondencia 1 a 1: cada fila de la vista sigue siendo una fila de la tabla."
+        },
+        {
+          "id": "b",
+          "texto": "Mostrar solo algunas de las columnas de la tabla.",
+          "explicacion": "Elegir columnas no cambia que cada fila de la vista corresponda a una fila de la tabla base."
+        },
+        {
+          "id": "c",
+          "texto": "Agregar GROUP BY con HAVING.",
+          "explicacion": "Correcto: al agrupar, cada fila de la vista resume varias filas de la tabla base y deja de haber relación 1 a 1."
+        },
+        {
+          "id": "d",
+          "texto": "Ponerle a una columna un alias con AS.",
+          "explicacion": "Renombrar una columna no cambia qué fila de la tabla base corresponde a cada fila de la vista."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una vista es claramente actualizable cuando cada fila corresponde a una única fila de la tabla base; AVG, COUNT, GROUP BY, HAVING, DISTINCT o UNION rompen esa correspondencia.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vistas actualizables",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "actualizable"
+        }
+      ]
+    },
+    {
+      "id": "u07-update-respeta-filtro-de-vista",
+      "tema": "Vistas actualizables",
+      "enunciado": "La vista v_productos_libreria se definió como SELECT id_producto, nombre, categoria, precio FROM productos WHERE categoria = 'Libreria'. Se ejecuta UPDATE v_productos_libreria SET precio = precio * 1.10 WHERE precio < 5000. ¿Qué filas de la tabla productos se modifican?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo las de categoría 'Libreria' con precio menor que 5000.",
+          "explicacion": "Correcto: el UPDATE solo alcanza filas que la vista presenta, así que se combinan el filtro de la vista y el WHERE de la sentencia."
+        },
+        {
+          "id": "b",
+          "texto": "Todas las filas de productos con precio menor que 5000, sin importar la categoría.",
+          "explicacion": "Un UPDATE a través de la vista solo puede afectar filas que la vista presenta, es decir, de 'Libreria'."
+        },
+        {
+          "id": "c",
+          "texto": "Todas las filas de categoría 'Libreria', sin importar el precio.",
+          "explicacion": "El WHERE del UPDATE se sigue aplicando: solo cambian las que además cuestan menos de 5000."
+        },
+        {
+          "id": "d",
+          "texto": "Ninguna: el aumento queda guardado solo en la vista, sin tocar la tabla.",
+          "explicacion": "La vista no tiene datos propios: los cambios permitidos se aplican sobre la tabla base."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Modificar a través de una vista actualizable cambia la tabla base, pero solo en las filas que la vista presenta y que cumplen la condición de la sentencia.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Vistas actualizables",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "actualizable"
+        }
+      ]
+    },
+    {
+      "id": "u07-que-garantiza-check-option",
+      "tema": "WITH CHECK OPTION",
+      "enunciado": "En una vista actualizable que tiene un filtro WHERE, ¿qué garantiza agregar WITH CHECK OPTION al final de su definición?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que la vista pase a ser de solo lectura.",
+          "explicacion": "La vista sigue admitiendo modificaciones; solo se rechazan las que dejarían la fila fuera del filtro."
+        },
+        {
+          "id": "b",
+          "texto": "Que nadie pueda sacar esas filas del filtro, ni siquiera con sentencias directas sobre la tabla base.",
+          "explicacion": "CHECK OPTION controla solo las operaciones hechas a través de la vista, no las sentencias sobre la tabla base."
+        },
+        {
+          "id": "c",
+          "texto": "Que una vista con GROUP BY pase a ser actualizable.",
+          "explicacion": "CHECK OPTION no vuelve actualizable una vista de resumen; solo controla los cambios en vistas que ya lo son."
+        },
+        {
+          "id": "d",
+          "texto": "Que lo insertado o modificado a través de la vista siga cumpliendo su filtro.",
+          "explicacion": "Correcto: se rechaza cualquier INSERT o UPDATE hecho a través de la vista que deje la fila fuera de su condición."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "WITH CHECK OPTION impide que una modificación o inserción hecha a través de la vista deje una fila fuera de la condición que define la vista.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · WITH CHECK OPTION",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "check"
+        }
+      ]
+    },
+    {
+      "id": "u07-check-option-y-tabla-base",
+      "tema": "WITH CHECK OPTION",
+      "enunciado": "La vista v_productos_libreria se definió como SELECT id_producto, nombre, categoria, precio FROM productos WHERE categoria = 'Libreria' WITH CHECK OPTION. El producto con id_producto = 10 pertenece a 'Libreria'. Se ejecuta directamente sobre la tabla UPDATE productos SET categoria = 'Tecnologia' WHERE id_producto = 10. ¿Qué ocurre?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "MySQL lo rechaza, porque la vista que muestra ese producto tiene CHECK OPTION.",
+          "explicacion": "CHECK OPTION solo controla lo que se hace a través de la vista; este UPDATE se ejecuta sobre la tabla."
+        },
+        {
+          "id": "b",
+          "texto": "Se permite, y ese producto deja de verse en la vista.",
+          "explicacion": "Correcto: el cambio no pasa por la vista, así que CHECK OPTION no interviene; como la fila ya no cumple el filtro, la vista deja de mostrarla."
+        },
+        {
+          "id": "c",
+          "texto": "Se permite, pero la vista sigue mostrando el producto en 'Libreria'.",
+          "explicacion": "La vista no conserva una copia: refleja la categoría actual de la tabla base."
+        },
+        {
+          "id": "d",
+          "texto": "Se elimina la vista, porque una de sus filas dejó de cumplir el filtro.",
+          "explicacion": "Modificar datos nunca elimina la vista; solo cambia qué filas presenta."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "WITH CHECK OPTION protege el filtro de la vista frente a cambios hechos a través de ella; las sentencias que trabajan directamente sobre la tabla base no pasan por ese control.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · WITH CHECK OPTION",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "check"
+        },
+        {
+          "titulo": "Unidad 7 · Una vista no es una copia",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "reflejo"
+        }
+      ]
+    },
+    {
+      "id": "u07-ubicacion-check-option",
+      "tema": "WITH CHECK OPTION",
+      "enunciado": "¿Cuál de estas definiciones usa WITH CHECK OPTION con la sintaxis correcta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "CREATE VIEW v_alumnos_activos AS SELECT id_alumno, nombre, estado FROM alumnos WHERE estado = 'Activo' WITH CHECK OPTION;",
+          "explicacion": "Correcto: la cláusula va al final de la definición, después del SELECT completo con su WHERE."
+        },
+        {
+          "id": "b",
+          "texto": "CREATE VIEW v_alumnos_activos WITH CHECK OPTION AS SELECT id_alumno, nombre, estado FROM alumnos WHERE estado = 'Activo';",
+          "explicacion": "La cláusula no va entre el nombre y AS: se escribe al final, después del SELECT."
+        },
+        {
+          "id": "c",
+          "texto": "CREATE VIEW v_alumnos_activos AS SELECT id_alumno, nombre, estado FROM alumnos WITH CHECK OPTION WHERE estado = 'Activo';",
+          "explicacion": "La cláusula no puede interrumpir el SELECT: va después del WHERE, al final de la definición."
+        },
+        {
+          "id": "d",
+          "texto": "CREATE VIEW v_alumnos_activos AS SELECT id_alumno, nombre, estado FROM alumnos WHERE estado = 'Activo' AND CHECK OPTION;",
+          "explicacion": "CHECK OPTION no es una condición del WHERE: se agrega como WITH CHECK OPTION al final."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "WITH CHECK OPTION se escribe al final de la definición de la vista, después del SELECT con el filtro que se quiere proteger.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · WITH CHECK OPTION",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "check"
+        },
+        {
+          "titulo": "Unidad 7 · Crear una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "crear"
+        }
+      ]
+    },
+    {
+      "id": "u07-tabla-copia-vs-vista",
+      "tema": "Qué es una vista",
+      "enunciado": "Se ejecutan CREATE TABLE t_productos_tecnologia AS SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia'; y CREATE VIEW v_productos_tecnologia AS SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia'; Después se modifica en productos el precio de un producto de esa categoría. ¿Qué se puede afirmar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ambas muestran el precio nuevo, porque las dos se apoyan en la tabla productos.",
+          "explicacion": "La tabla creada con CREATE TABLE ... AS SELECT tiene sus propias filas copiadas: no sigue los cambios de productos."
+        },
+        {
+          "id": "b",
+          "texto": "Ambas siguen mostrando el precio anterior hasta que se las vuelva a crear.",
+          "explicacion": "La vista no necesita recrearse: presenta los datos actuales de productos."
+        },
+        {
+          "id": "c",
+          "texto": "La tabla muestra el precio nuevo y la vista conserva el anterior.",
+          "explicacion": "Es al revés: la tabla tiene una copia independiente y la vista refleja los datos actuales."
+        },
+        {
+          "id": "d",
+          "texto": "La vista muestra el precio nuevo; la tabla conserva el anterior.",
+          "explicacion": "Correcto: la tabla guardó una copia de las filas al crearse, mientras que la vista solo guarda la consulta."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una tabla tiene filas propias; una vista común solo guarda la definición del SELECT y presenta los datos actuales de las tablas en que se apoya.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Qué es una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "idea"
+        },
+        {
+          "titulo": "Unidad 7 · Una vista no es una copia",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "reflejo"
+        }
+      ]
+    },
+    {
+      "id": "u07-create-or-replace-si-no-existe",
+      "tema": "Ver la definición, modificarla y eliminarla",
+      "enunciado": "Un script debe dejar definida la vista v_empleados_activos con una consulta nueva, y tiene que funcionar tanto si la vista ya existe como si todavía no fue creada. ¿Qué instrucción conviene usar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "ALTER VIEW v_empleados_activos AS SELECT ...",
+          "explicacion": "ALTER VIEW modifica una vista existente; si la vista todavía no existe, produce un error."
+        },
+        {
+          "id": "b",
+          "texto": "CREATE VIEW v_empleados_activos AS SELECT ...",
+          "explicacion": "Funciona la primera vez, pero da error si la vista ya existe."
+        },
+        {
+          "id": "c",
+          "texto": "CREATE OR REPLACE VIEW v_empleados_activos AS SELECT ...",
+          "explicacion": "Correcto: crea la vista si no existe y reemplaza su definición si ya existe."
+        },
+        {
+          "id": "d",
+          "texto": "UPDATE VIEW v_empleados_activos SET definicion = 'SELECT ...'",
+          "explicacion": "UPDATE VIEW no existe: UPDATE modifica filas, no la definición de una vista."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "CREATE OR REPLACE VIEW es una forma cómoda de redefinir una vista; ALTER VIEW tiene una estructura muy similar, pero requiere que la vista ya exista.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Ver, modificar y eliminar",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "modificar"
+        }
+      ]
+    },
+    {
+      "id": "u07-vista-no-acelera",
+      "tema": "Cuándo una vista aporta valor",
+      "enunciado": "Una consulta con varios JOIN tarda mucho. Alguien propone guardarla en una vista «para que ande más rápido». Según el criterio de la unidad, ¿qué se puede afirmar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Es correcto: la vista guarda el resultado ya calculado, así que las consultas posteriores no vuelven a recorrer las tablas.",
+          "explicacion": "Una vista común no guarda el resultado; vuelve a trabajar sobre las tablas base cada vez que se la consulta."
+        },
+        {
+          "id": "b",
+          "texto": "Una vista no es una aceleración automática: el rendimiento depende de la consulta y las tablas.",
+          "explicacion": "Correcto: el valor principal de la vista es la reutilización, organización y presentación de la consulta."
+        },
+        {
+          "id": "c",
+          "texto": "Es correcto, siempre que la vista se cree con WITH CHECK OPTION.",
+          "explicacion": "CHECK OPTION controla modificaciones hechas a través de la vista; no tiene relación con la velocidad."
+        },
+        {
+          "id": "d",
+          "texto": "Conviene crear una vista por cada JOIN, para que cada parte se ejecute por separado.",
+          "explicacion": "Dividir en vistas no garantiza mejor rendimiento y agrega objetos al esquema sin necesidad."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una vista se justifica por reutilizar, organizar y presentar consultas; no garantiza por sí misma un mejor rendimiento.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Cuándo una vista aporta valor",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u07-nombre-igual-a-tabla",
+      "tema": "Crear una vista",
+      "enunciado": "En el esquema ya existe una tabla llamada empleados. ¿Qué ocurre al ejecutar CREATE VIEW empleados AS SELECT id_empleado, nombre FROM empleados;?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se crea la vista y, desde entonces, el nombre empleados se refiere a ella en lugar de a la tabla.",
+          "explicacion": "Una vista no puede tapar a una tabla con el mismo nombre: el CREATE VIEW falla."
+        },
+        {
+          "id": "b",
+          "texto": "Se reemplaza la tabla por la vista, y los datos quedan guardados dentro de la vista.",
+          "explicacion": "CREATE VIEW nunca reemplaza tablas, y la vista no guarda datos propios."
+        },
+        {
+          "id": "c",
+          "texto": "Se crean ambos objetos, y MySQL decide cuál usar según la consulta.",
+          "explicacion": "Tablas y vistas no pueden compartir nombre dentro del mismo esquema."
+        },
+        {
+          "id": "d",
+          "texto": "Da un error, porque tablas y vistas comparten los nombres del esquema.",
+          "explicacion": "Correcto: la vista es un objeto con nombre dentro del esquema y no puede llamarse igual que una tabla existente; por eso conviene un nombre como v_empleados."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una vista es un objeto con nombre dentro del esquema; elegir nombres claros y distintos, por ejemplo con el prefijo v_, evita confusiones con las tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Crear una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "crear"
+        },
+        {
+          "titulo": "Unidad 7 · Vista vs. CTE",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "cte"
+        }
+      ]
+    },
+    {
+      "id": "u07-orden-del-metodo",
+      "tema": "Método para diseñar una vista",
+      "enunciado": "¿Cuál es el orden que propone el método de la unidad para diseñar una vista?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Escribir el SELECT, probarlo, evaluar si conviene reutilizarlo, crear la vista y consultarla.",
+          "explicacion": "Correcto: primero se resuelve y se prueba la consulta; recién después se decide si vale la pena guardarla como vista."
+        },
+        {
+          "id": "b",
+          "texto": "Crear la vista, consultarla, probar el SELECT y decidir si vale la pena reutilizarlo.",
+          "explicacion": "Crear la vista primero obliga a corregirla después; el método empieza por escribir y probar el SELECT."
+        },
+        {
+          "id": "c",
+          "texto": "Evaluar si será actualizable, crear la vista y recién después escribir el SELECT.",
+          "explicacion": "Evaluar si es actualizable es el último paso, y solo si habrá modificaciones; el SELECT se escribe primero."
+        },
+        {
+          "id": "d",
+          "texto": "Escribir el SELECT, crear siempre la vista con WITH CHECK OPTION y después borrar la consulta original del script.",
+          "explicacion": "El método no exige CHECK OPTION ni borrar nada; incluye probar el SELECT y evaluar si conviene reutilizarlo."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El método: escribir el SELECT sin vista, probarlo, preguntarse si vale la pena reutilizarlo, crear la vista con un nombre claro, consultarla y, si habrá modificaciones, evaluar si es actualizable.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Método para diseñar una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "metodo"
+        }
+      ]
+    },
+    {
+      "id": "u07-vista-en-join-con-tabla",
+      "tema": "Consultar una vista y seguir trabajando sobre ella",
+      "enunciado": "La vista v_ventas_clientes presenta id_venta, fecha, cliente y ciudad. ¿Se la puede combinar con una tabla, como en SELECT vc.cliente, d.cantidad FROM v_ventas_clientes AS vc JOIN detalle_ventas AS d ON vc.id_venta = d.id_venta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "No: una vista solo puede consultarse sola, sin JOIN.",
+          "explicacion": "Una vista se usa en el FROM como cualquier fuente de datos y puede relacionarse con tablas u otras vistas."
+        },
+        {
+          "id": "b",
+          "texto": "Sí: la vista funciona como una fuente de datos más y puede participar en un JOIN.",
+          "explicacion": "Correcto: sobre una vista se puede filtrar, ordenar y también relacionarla con otras tablas."
+        },
+        {
+          "id": "c",
+          "texto": "Solo si antes se vuelca el resultado de la vista en una tabla auxiliar con CREATE TABLE ... AS SELECT.",
+          "explicacion": "No hace falta ninguna copia: la vista se usa directamente en el FROM."
+        },
+        {
+          "id": "d",
+          "texto": "Sí, pero ese JOIN modifica la definición guardada de la vista.",
+          "explicacion": "La consulta externa no cambia la definición; para eso están CREATE OR REPLACE VIEW o ALTER VIEW."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una vista puede usarse en un FROM como cualquier fuente de datos: se le pueden aplicar filtros, ordenamientos y relaciones con otras tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Consultar una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "consultar"
+        },
+        {
+          "titulo": "Unidad 7 · Vista con JOIN",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "join"
+        }
+      ]
+    },
+    {
+      "id": "u07-columna-no-expuesta",
+      "tema": "Consultar una vista y seguir trabajando sobre ella",
+      "enunciado": "La vista v_productos_tecnologia se definió como SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia'. ¿Qué ocurre al ejecutar SELECT nombre FROM v_productos_tecnologia WHERE categoria = 'Tecnologia'?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Devuelve los productos de Tecnología, porque la vista usa categoria en su WHERE.",
+          "explicacion": "Usar una columna en el filtro de la definición no la agrega a las columnas que la vista presenta."
+        },
+        {
+          "id": "b",
+          "texto": "Devuelve todos los productos de la tabla, porque la consulta externa accede directamente a productos.",
+          "explicacion": "La consulta externa trabaja con lo que presenta la vista, no con la tabla completa."
+        },
+        {
+          "id": "c",
+          "texto": "Da un error, porque categoria no es una de las columnas de la vista.",
+          "explicacion": "Correcto: la consulta externa solo puede usar las columnas que la vista presenta: id_producto, nombre y precio."
+        },
+        {
+          "id": "d",
+          "texto": "Devuelve un resultado vacío, porque la columna categoria queda en NULL.",
+          "explicacion": "La vista no tiene una columna categoria con valores NULL: directamente no tiene esa columna."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una vista presenta solo las columnas de su SELECT; para filtrar por otra columna habría que incluirla en la definición, por ejemplo con CREATE OR REPLACE VIEW.",
+      "material": [
+        {
+          "titulo": "Unidad 7 · Consultar una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "consultar"
+        },
+        {
+          "titulo": "Unidad 7 · Crear una vista",
+          "ruta": "unidad-07-vistas/vistas.html",
+          "seccion": "crear"
+        }
+      ]
+    }
+  ]
+}

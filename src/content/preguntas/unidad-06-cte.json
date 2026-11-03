@@ -1,0 +1,1876 @@
+{
+  "unidad": 6,
+  "titulo": "CTE",
+  "preguntas": [
+    {
+      "id": "u06-que-es-cte",
+      "tema": "Qué es una CTE",
+      "enunciado": "¿Cómo conviene pensar una CTE (Common Table Expression)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Como una tabla permanente que WITH crea en la base y que queda disponible para otras consultas.",
+          "explicacion": "Una CTE no crea una tabla permanente ni queda guardada en la base."
+        },
+        {
+          "id": "b",
+          "texto": "Como un resultado intermedio con nombre que existe solo mientras se ejecuta esa sentencia.",
+          "explicacion": "Correcto: se define con WITH, se usa en la consulta principal y deja de existir al terminar la sentencia."
+        },
+        {
+          "id": "c",
+          "texto": "Como una vista que queda registrada en el esquema.",
+          "explicacion": "La vista sí es un objeto persistente del esquema; la CTE no aparece como tabla ni como vista."
+        },
+        {
+          "id": "d",
+          "texto": "Como un procedimiento que se ejecuta automáticamente al consultar una tabla.",
+          "explicacion": "Una CTE es parte de una sentencia SELECT; no es un procedimiento ni se dispara sola."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "En MySQL 8 una CTE se define con WITH nombre_cte AS (SELECT ...) seguido de la consulta principal, que usa ese nombre como fuente de datos.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Qué es una CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "idea"
+        }
+      ]
+    },
+    {
+      "id": "u06-tabla-temporal-fisica",
+      "tema": "Qué es una CTE",
+      "enunciado": "Decimos que una CTE “se usa como una tabla”. ¿Significa eso que MySQL crea físicamente una tabla temporal?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí: cada vez que se usa WITH, MySQL crea siempre una tabla temporal física en disco con el resultado.",
+          "explicacion": "La sintaxis describe el resultado deseado; cómo se ejecuta no está fijado por el hecho de usar WITH."
+        },
+        {
+          "id": "b",
+          "texto": "Sí, pero solo cuando la CTE tiene GROUP BY.",
+          "explicacion": "El material no establece ninguna regla de ese tipo: la estrategia de ejecución la decide el optimizador."
+        },
+        {
+          "id": "c",
+          "texto": "No: MySQL siempre la transforma en una subconsulta anidada.",
+          "explicacion": "Tampoco hay una transformación garantizada; el optimizador puede elegir distintas estrategias."
+        },
+        {
+          "id": "d",
+          "texto": "No necesariamente: nosotros describimos el resultado y el optimizador decide cómo ejecutarlo.",
+          "explicacion": "Correcto: “se usa como una tabla” es una ayuda para entenderla, no una descripción del plan físico."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "SQL es declarativo: describimos qué resultado queremos. Pensar la CTE como una tabla ayuda a leerla, pero no implica que exista una tabla física.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Qué es una CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "idea"
+        }
+      ]
+    },
+    {
+      "id": "u06-ventaja-reutilizar",
+      "tema": "El mismo problema resuelto con subconsultas y con CTE",
+      "enunciado": "Para mostrar los clientes que compraron más que el promedio se comparó una solución con subconsultas y otra con la CTE compras_por_cliente. ¿Qué aporta la CTE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Calcula el total por cliente una vez, con nombre, y lo reutiliza para listar y para el promedio.",
+          "explicacion": "Correcto: se resuelve, se nombra y se reutiliza. Con subconsultas el cálculo del total por cliente aparecía repetido en varios niveles."
+        },
+        {
+          "id": "b",
+          "texto": "Devuelve un resultado distinto y más preciso.",
+          "explicacion": "El resultado es el mismo en ambos casos; lo que cambia es la organización."
+        },
+        {
+          "id": "c",
+          "texto": "Garantiza que la consulta se ejecute más rápido.",
+          "explicacion": "Usar una CTE no significa automáticamente mayor ni menor rendimiento."
+        },
+        {
+          "id": "d",
+          "texto": "Guarda los totales calculados en la base, para que las próximas consultas puedan usarlos sin recalcular.",
+          "explicacion": "La CTE desaparece al terminar la sentencia; para reutilizar una consulta en otras sentencias existen las vistas."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "La CTE no cambia la lógica del problema: permite calcular primero un resultado intermedio, ponerle un nombre y trabajar después sobre él.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · El mismo problema con subconsultas y con CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "utilidad"
+        }
+      ]
+    },
+    {
+      "id": "u06-left-join-coalesce",
+      "tema": "El mismo problema resuelto con subconsultas y con CTE",
+      "enunciado": "La CTE compras_por_cliente usa LEFT JOIN entre clientes, ventas y detalle_ventas y calcula COALESCE(SUM(dv.cantidad * dv.precio_unitario), 0). ¿Para qué?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Para excluir a los clientes que no compraron.",
+          "explicacion": "Es al revés: con INNER JOIN quedarían afuera; LEFT JOIN los conserva."
+        },
+        {
+          "id": "b",
+          "texto": "Para evitar que un mismo cliente aparezca repetido en el resultado, una vez por cada renglón de venta.",
+          "explicacion": "De eso se encarga el GROUP BY por cliente, no el LEFT JOIN ni COALESCE."
+        },
+        {
+          "id": "c",
+          "texto": "Para incluir a los clientes sin compras con total 0, de modo que también cuenten en el promedio.",
+          "explicacion": "Correcto: LEFT JOIN conserva a todos los clientes y COALESCE reemplaza el NULL de SUM por 0."
+        },
+        {
+          "id": "d",
+          "texto": "Para ordenar a los clientes por total comprado.",
+          "explicacion": "El ordenamiento se indica con ORDER BY."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "El enunciado pide considerar a los clientes que no realizaron compras al calcular el promedio. Sin ellos, el promedio sería mayor que el real.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · El mismo problema con subconsultas y con CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "utilidad"
+        }
+      ]
+    },
+    {
+      "id": "u06-cte-necesaria",
+      "tema": "CTE simple: filtrar primero, consultar después",
+      "enunciado": "Para listar los productos con precio mayor o igual a 20000, ordenados por precio, ¿hace falta una CTE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí, WITH es obligatorio cuando hay que filtrar las filas antes de ordenarlas.",
+          "explicacion": "Un SELECT con WHERE y ORDER BY ya filtra y ordena sin necesidad de WITH."
+        },
+        {
+          "id": "b",
+          "texto": "No: alcanza con una consulta directa con WHERE y ORDER BY.",
+          "explicacion": "Correcto: el ejemplo de productos_costosos solo sirve para ver la mecánica de WITH; la CTE aporta más cuando el resultado intermedio es complejo o se reutiliza."
+        },
+        {
+          "id": "c",
+          "texto": "Sí, porque ORDER BY solo funciona sobre una CTE.",
+          "explicacion": "ORDER BY funciona sobre cualquier consulta, con o sin CTE."
+        },
+        {
+          "id": "d",
+          "texto": "No, porque una CTE no admite WHERE.",
+          "explicacion": "Dentro de una CTE se puede usar WHERE, JOIN, GROUP BY y agregaciones como en cualquier SELECT."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "No conviene crear una CTE solo por usar WITH. Para un filtro muy simple sobre una sola tabla, la opción natural es una consulta directa.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE simple",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "simple"
+        },
+        {
+          "titulo": "Unidad 6 · CTE, subconsulta o consulta directa",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "comparar"
+        }
+      ]
+    },
+    {
+      "id": "u06-varias-cte-sintaxis",
+      "tema": "Definir varias CTE en la misma sentencia",
+      "enunciado": "¿Cómo se declaran varias CTE en una misma sentencia?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Con un único WITH y las definiciones separadas por comas.",
+          "explicacion": "Correcto: WITH ventas_por_cliente AS (...), clientes_activos AS (...) SELECT ..."
+        },
+        {
+          "id": "b",
+          "texto": "Escribiendo WITH antes de cada una.",
+          "explicacion": "WITH se escribe una sola vez; repetirlo es un error de sintaxis frecuente."
+        },
+        {
+          "id": "c",
+          "texto": "Separándolas con punto y coma.",
+          "explicacion": "El punto y coma termina la sentencia: las CTE dejarían de existir antes de la consulta principal."
+        },
+        {
+          "id": "d",
+          "texto": "Uniéndolas con UNION.",
+          "explicacion": "UNION combina filas de dos consultas; no sirve para declarar varias CTE."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Después de un único WITH pueden declararse varias CTE separadas por comas, y la consulta principal puede combinarlas, por ejemplo con LEFT JOIN.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Definir varias CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "multiples"
+        }
+      ]
+    },
+    {
+      "id": "u06-orden-encadenadas",
+      "tema": "CTE encadenadas",
+      "enunciado": "En un mismo WITH se define primero totales_venta y después totales_cliente. ¿Qué se cumple?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ninguna de las dos puede utilizar a la otra.",
+          "explicacion": "Las CTE pueden encadenarse: una posterior puede usar el resultado de una anterior."
+        },
+        {
+          "id": "b",
+          "texto": "totales_venta puede usar totales_cliente aunque esté definida después.",
+          "explicacion": "El orden importa: una CTE solo puede usar las definidas antes que ella."
+        },
+        {
+          "id": "c",
+          "texto": "totales_cliente puede usar totales_venta, porque está definida antes.",
+          "explicacion": "Correcto: así se construye la solución por etapas, primero el total de cada venta y después el total por cliente."
+        },
+        {
+          "id": "d",
+          "texto": "Solo pueden relacionarse si se escriben en sentencias separadas.",
+          "explicacion": "En sentencias separadas no podrían relacionarse, porque cada CTE existe únicamente dentro de su propia sentencia."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Las CTE encadenadas permiten dividir un problema en pasos: cada CTE puede usar las anteriores y la consulta principal trabaja sobre el resultado final.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE encadenadas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "encadenadas"
+        },
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        }
+      ]
+    },
+    {
+      "id": "u06-punto-y-coma",
+      "tema": "Alcance, duración y sintaxis",
+      "enunciado": "¿Por qué falla este código? WITH productos_costosos AS (SELECT * FROM productos WHERE precio > 20000); SELECT * FROM productos_costosos;",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque a la CTE le falta un alias con AS después del paréntesis de cierre, justo antes del punto y coma.",
+          "explicacion": "El nombre de la CTE ya está dado por productos_costosos AS (...)."
+        },
+        {
+          "id": "b",
+          "texto": "Porque una CTE no admite WHERE.",
+          "explicacion": "Dentro de una CTE se puede usar WHERE sin problemas."
+        },
+        {
+          "id": "c",
+          "texto": "Porque una CTE debe empezar con CREATE.",
+          "explicacion": "CREATE se usa para objetos persistentes como tablas o vistas; la CTE empieza con WITH."
+        },
+        {
+          "id": "d",
+          "texto": "Porque el punto y coma termina la sentencia y la CTE deja de existir antes del SELECT principal.",
+          "explicacion": "Correcto: el SELECT principal debe formar parte de la misma sentencia que el WITH."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "No hay que pensar “creo una tabla y después hago otro SELECT”, sino “esta única sentencia define un resultado con nombre y lo utiliza inmediatamente”.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        }
+      ]
+    },
+    {
+      "id": "u06-legibilidad-rendimiento",
+      "tema": "CTE, subconsulta o consulta directa",
+      "enunciado": "¿Qué relación hay entre escribir una consulta con CTE y su rendimiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "No la hace automáticamente más rápida ni más lenta: sirve para organizar la lógica.",
+          "explicacion": "Correcto: no hay que confundir legibilidad con rendimiento."
+        },
+        {
+          "id": "b",
+          "texto": "Una CTE siempre es más rápida que una subconsulta.",
+          "explicacion": "No hay una garantía de ese tipo; depende de la consulta y del plan que elija el optimizador."
+        },
+        {
+          "id": "c",
+          "texto": "Una CTE siempre es más lenta que una subconsulta, porque obliga a crear una tabla temporal en disco.",
+          "explicacion": "No necesariamente se crea una tabla temporal, y tampoco hay una penalización garantizada."
+        },
+        {
+          "id": "d",
+          "texto": "Solo es más rápida si se combina con JOIN.",
+          "explicacion": "El material no establece ninguna regla de rendimiento ligada al uso de JOIN."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "En esta unidad la CTE se utiliza principalmente para organizar y expresar mejor la lógica de una consulta con varios pasos.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE, subconsulta o consulta directa",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "comparar"
+        }
+      ]
+    },
+    {
+      "id": "u06-valor-unico-where",
+      "tema": "CTE, subconsulta o consulta directa",
+      "enunciado": "Si solo se necesita un único valor dentro de WHERE, por ejemplo el precio promedio de todos los productos, ¿cuál es la opción natural?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una CTE.",
+          "explicacion": "La CTE es más natural para resultados intermedios complejos o reutilizados en la sentencia."
+        },
+        {
+          "id": "b",
+          "texto": "Una vista.",
+          "explicacion": "Una vista tiene sentido para reutilizar una consulta en muchas sentencias, no para un valor puntual."
+        },
+        {
+          "id": "c",
+          "texto": "Una subconsulta escalar.",
+          "explicacion": "Correcto: suele ser breve y muy clara, por ejemplo WHERE precio > (SELECT AVG(precio) FROM productos)."
+        },
+        {
+          "id": "d",
+          "texto": "Una CTE recursiva.",
+          "explicacion": "Las CTE recursivas sirven para recorrer jerarquías o generar secuencias, no para calcular un valor simple."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Cada herramienta tiene su lugar: consulta directa para filtros simples, subconsulta escalar para un valor en WHERE, CTE para resultados intermedios complejos o reutilizados, JOIN para combinar tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE, subconsulta o consulta directa",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "comparar"
+        }
+      ]
+    },
+    {
+      "id": "u06-recursiva-numeros",
+      "tema": "CTE recursivas",
+      "enunciado": "¿Qué valores devuelve WITH RECURSIVE numeros AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM numeros WHERE n < 4) SELECT n FROM numeros?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "1, 2 y 3.",
+          "explicacion": "Cuando n vale 3, la condición 3 < 4 es verdadera y se genera el 4."
+        },
+        {
+          "id": "b",
+          "texto": "1, 2, 3 y 4.",
+          "explicacion": "Correcto: la parte ancla genera 1 y la recursiva suma 1 mientras n < 4. Al llegar a 4, la condición es falsa y se detiene."
+        },
+        {
+          "id": "c",
+          "texto": "1, 2, 3, 4 y 5.",
+          "explicacion": "Para generar el 5 haría falta que 4 < 4 fuera verdadero, y no lo es."
+        },
+        {
+          "id": "d",
+          "texto": "Solo 1.",
+          "explicacion": "La parte recursiva se vuelve a evaluar sobre el último valor generado mientras se cumpla la condición."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una CTE recursiva se referencia a sí misma: tiene una parte ancla (valor inicial) y una parte recursiva que genera nuevas filas hasta que la condición deja de cumplirse. En la materia solo se reconoce su estructura.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE recursivas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "recursivas"
+        }
+      ]
+    },
+    {
+      "id": "u06-que-va-entre-parentesis",
+      "tema": "Qué es una CTE",
+      "enunciado": "En la sintaxis WITH nombre_cte AS ( … ) SELECT …, ¿qué se escribe entre los paréntesis?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La consulta principal que muestra el resultado final.",
+          "explicacion": "La consulta principal va después del paréntesis de cierre, como parte de la misma sentencia."
+        },
+        {
+          "id": "b",
+          "texto": "La definición de columnas y tipos de una tabla nueva.",
+          "explicacion": "Eso corresponde a CREATE TABLE; una CTE no define tipos ni crea tablas."
+        },
+        {
+          "id": "c",
+          "texto": "La consulta que produce las filas y columnas de la CTE.",
+          "explicacion": "Correcto: ese SELECT define el resultado intermedio que después se usa con el nombre nombre_cte."
+        },
+        {
+          "id": "d",
+          "texto": "Solo la condición del WHERE que se aplicará después.",
+          "explicacion": "Entre paréntesis va un SELECT completo, no una condición suelta."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "WITH indica que se van a definir CTE; nombre_cte es su identificador dentro de la sentencia; AS ( … ) contiene la consulta que la produce.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Qué es una CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "idea"
+        }
+      ]
+    },
+    {
+      "id": "u06-cte-join-vs-correlacionada",
+      "tema": "CTE + JOIN",
+      "enunciado": "Para mostrar los productos más caros que el promedio de su categoría, se usa la CTE promedios_categoria unida con productos mediante JOIN. ¿Qué cambia respecto de la versión con subconsulta correlacionada?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Los promedios por categoría se calculan una vez en un bloque con nombre y luego se unen con cada producto.",
+          "explicacion": "Correcto: en lugar de una subconsulta que depende de cada fila externa, se arma primero un resumen y después se combina."
+        },
+        {
+          "id": "b",
+          "texto": "Devuelve productos distintos.",
+          "explicacion": "Ambas formulaciones responden la misma pregunta y devuelven los mismos productos."
+        },
+        {
+          "id": "c",
+          "texto": "Ya no hace falta agrupar por categoría.",
+          "explicacion": "La CTE sigue usando GROUP BY categoria para calcular cada promedio."
+        },
+        {
+          "id": "d",
+          "texto": "Los promedios quedan guardados en la base para la próxima consulta.",
+          "explicacion": "La CTE solo existe durante la sentencia; no guarda nada en la base."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Una CTE puede participar en un JOIN como cualquier otra fuente de datos de la consulta.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE + JOIN",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "join"
+        }
+      ]
+    },
+    {
+      "id": "u06-cte-en-otra-sentencia",
+      "tema": "Alcance, duración y sintaxis",
+      "enunciado": "Se ejecuta una sentencia que define WITH totales_cliente AS ( … ) y la usa. Después, en otra sentencia, se ejecuta SELECT * FROM totales_cliente. ¿Qué ocurre?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Muestra el mismo resultado que en la sentencia anterior.",
+          "explicacion": "La CTE dejó de existir al terminar la sentencia en la que se definió."
+        },
+        {
+          "id": "b",
+          "texto": "Muestra los datos actualizados, como una vista.",
+          "explicacion": "Ese comportamiento corresponde a una vista; la CTE no queda registrada en el esquema."
+        },
+        {
+          "id": "c",
+          "texto": "Da error, porque totales_cliente ya no existe.",
+          "explicacion": "Correcto: una CTE existe únicamente durante la sentencia que la define."
+        },
+        {
+          "id": "d",
+          "texto": "Devuelve una tabla vacía.",
+          "explicacion": "No existe ningún objeto con ese nombre, así que no hay tabla vacía que consultar."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Después de terminar la instrucción, la CTE deja de estar disponible: no aparece como tabla ni como vista.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        }
+      ]
+    },
+    {
+      "id": "u06-parte-ancla",
+      "tema": "CTE recursivas",
+      "enunciado": "En una CTE recursiva, ¿qué es la parte ancla?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La parte que se referencia a sí misma para generar nuevas filas.",
+          "explicacion": "Esa es la parte recursiva, que va después de UNION ALL."
+        },
+        {
+          "id": "b",
+          "texto": "La condición que detiene la recursión.",
+          "explicacion": "La condición de corte (por ejemplo, WHERE n < 4) está dentro de la parte recursiva."
+        },
+        {
+          "id": "c",
+          "texto": "La consulta principal que lee la CTE.",
+          "explicacion": "La consulta principal va después de la CTE y no forma parte de su definición."
+        },
+        {
+          "id": "d",
+          "texto": "El SELECT inicial que genera las primeras filas sin referenciar a la CTE.",
+          "explicacion": "Correcto: en el ejemplo, SELECT 1 AS n genera el primer valor."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una CTE recursiva (WITH RECURSIVE) combina una parte ancla, que genera el punto de partida, y una parte recursiva, que se autorreferencia hasta que deja de producir filas.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE recursivas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "recursivas"
+        }
+      ]
+    },
+    {
+      "id": "u06-uso-recursivas",
+      "tema": "CTE recursivas",
+      "enunciado": "¿Para qué se usan principalmente las CTE recursivas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Para recorrer jerarquías (categorías y subcategorías, organigramas) o construir secuencias.",
+          "explicacion": "Correcto: la autorreferencia permite ir nivel por nivel o generar valores sucesivos."
+        },
+        {
+          "id": "b",
+          "texto": "Para guardar consultas en la base de datos y poder reutilizarlas después desde otras sentencias.",
+          "explicacion": "Eso es lo que hace una vista; una CTE, recursiva o no, dura una sola sentencia."
+        },
+        {
+          "id": "c",
+          "texto": "Para que cualquier consulta se ejecute más rápido.",
+          "explicacion": "La recursión no es una técnica de optimización: resuelve otro tipo de problemas."
+        },
+        {
+          "id": "d",
+          "texto": "Para reemplazar todos los JOIN de una consulta.",
+          "explicacion": "Los JOIN siguen siendo la herramienta para combinar filas de tablas relacionadas."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "En la materia solo se reconoce el concepto: existe WITH RECURSIVE, tiene una parte inicial y una parte que se autorreferencia.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE recursivas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "recursivas"
+        }
+      ]
+    },
+    {
+      "id": "u06-primer-paso-metodo",
+      "tema": "Método recomendado para escribir una CTE",
+      "enunciado": "Según el método recomendado, ¿cuál es el primer paso para escribir una consulta con CTE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Escribir WITH y elegir el nombre antes de pensar la consulta.",
+          "explicacion": "El nombre se elige después de saber qué devuelve el bloque, para que lo describa bien."
+        },
+        {
+          "id": "b",
+          "texto": "Escribir la consulta principal completa y luego la CTE.",
+          "explicacion": "La consulta principal se escribe al final, cuando ya existe el resultado intermedio con nombre."
+        },
+        {
+          "id": "c",
+          "texto": "Resolver primero el bloque intermedio: escribir y probar el SELECT que después formará la CTE.",
+          "explicacion": "Correcto: así se comprueba qué columnas y filas produce antes de envolverlo en WITH."
+        },
+        {
+          "id": "d",
+          "texto": "Crear una vista con ese SELECT.",
+          "explicacion": "No hace falta un objeto permanente para construir una CTE."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "El método: resolver el bloque intermedio, revisar qué devuelve, darle un nombre claro, convertirlo en CTE, escribir la consulta principal y, si hace falta, separar más etapas.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Método recomendado",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "metodo"
+        }
+      ]
+    },
+    {
+      "id": "u06-inicio-resolver-nombrar-usar",
+      "tema": "Presentación",
+      "enunciado": "La presentación de la unidad resume el trabajo con CTE en cuatro acciones. ¿Cuál es la secuencia correcta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Crear, guardar, consultar y borrar.",
+          "explicacion": "Eso describe el ciclo de vida de un objeto persistente, como una tabla; la CTE no se guarda ni se borra."
+        },
+        {
+          "id": "b",
+          "texto": "Resolver, nombrar, usar y organizar.",
+          "explicacion": "Correcto: se obtiene primero el resultado intermedio, se le da un nombre con WITH, se lo consulta como fuente de datos y así una consulta compleja queda separada en bloques legibles."
+        },
+        {
+          "id": "c",
+          "texto": "Anidar, repetir, correlacionar y filtrar.",
+          "explicacion": "Esos rasgos describen las consultas con subconsultas que la CTE busca ordenar, no el trabajo con CTE."
+        },
+        {
+          "id": "d",
+          "texto": "Nombrar, persistir, optimizar y reutilizar en otras sentencias.",
+          "explicacion": "La CTE no persiste, no garantiza optimización y no puede usarse fuera de la sentencia que la define."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una CTE permite resolver una parte de la consulta, darle un nombre y usar ese resultado en la sentencia principal como si fuera una fuente de datos.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Presentación",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "inicio"
+        }
+      ]
+    },
+    {
+      "id": "u06-inicio-cte-vs-vista",
+      "tema": "Presentación",
+      "enunciado": "Al terminar la unidad se anticipa que después se estudiarán las vistas. ¿Qué diferencia central se plantea entre una CTE y una vista?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La CTE es un objeto persistente de la base y la vista es temporal.",
+          "explicacion": "Es al revés: la vista queda registrada en el esquema y la CTE dura una sola sentencia."
+        },
+        {
+          "id": "b",
+          "texto": "Ninguna: son dos nombres para la misma herramienta.",
+          "explicacion": "Una CTE no aparece como tabla ni como vista en el esquema; son herramientas distintas."
+        },
+        {
+          "id": "c",
+          "texto": "La vista solo admite filtros simples y la CTE admite JOIN y agregaciones.",
+          "explicacion": "El material no plantea esa diferencia: la comparación es entre un resultado temporal y un objeto persistente."
+        },
+        {
+          "id": "d",
+          "texto": "La CTE es un resultado temporal de una sola sentencia; la vista es un objeto persistente de la base.",
+          "explicacion": "Correcto: la CTE deja de existir al terminar la sentencia, mientras que la vista queda guardada en el esquema y puede usarse en otras consultas."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La CTE nombra un resultado intermedio solo dentro de una sentencia; para reutilizar una consulta en muchas sentencias existen las vistas, que se verán en la unidad siguiente.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Presentación",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "inicio"
+        },
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        }
+      ]
+    },
+    {
+      "id": "u06-puente-cuando-crece",
+      "tema": "Venimos de subconsultas",
+      "enunciado": "Al pasar de subconsultas a CTE, ¿qué situación motiva empezar a usar WITH?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Las subconsultas dejaron de ser válidas en MySQL 8 y hay que reemplazarlas por CTE en todas las consultas nuevas.",
+          "explicacion": "Las subconsultas siguen siendo una herramienta válida; la CTE se suma a ellas, no las reemplaza."
+        },
+        {
+          "id": "b",
+          "texto": "Las subconsultas no admiten funciones de agregación.",
+          "explicacion": "Las subconsultas sí admiten agregaciones, por ejemplo AVG dentro de una subconsulta escalar."
+        },
+        {
+          "id": "c",
+          "texto": "Un problema de varios pasos puede dejar lógica anidada, cálculos repetidos o bloques largos difíciles de seguir.",
+          "explicacion": "Correcto: la CTE permite calcular primero el resultado intermedio, nombrarlo y trabajar después sobre él."
+        },
+        {
+          "id": "d",
+          "texto": "Las CTE pueden leer tablas que una subconsulta no puede consultar.",
+          "explicacion": "Ambas leen las mismas tablas; la diferencia está en cómo se organiza la consulta."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "En lugar de esconder un resultado intermedio dentro de otra consulta, la CTE permite calcularlo primero, ponerle un nombre y usarlo después.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Venimos de subconsultas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "puente"
+        }
+      ]
+    },
+    {
+      "id": "u06-puente-misma-logica",
+      "tema": "Venimos de subconsultas",
+      "enunciado": "Un problema ya resuelto con subconsultas se reescribe usando una CTE. ¿Qué cambia?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La organización de la solución: el resultado intermedio se calcula primero, se nombra y después se usa.",
+          "explicacion": "Correcto: todavía no se cambia la lógica del problema; se busca una forma más clara de organizarla."
+        },
+        {
+          "id": "b",
+          "texto": "La lógica del problema: la CTE responde una pregunta distinta.",
+          "explicacion": "La pregunta sigue siendo la misma; la CTE solo reorganiza la forma de expresarla."
+        },
+        {
+          "id": "c",
+          "texto": "Los datos: la CTE trabaja sobre una copia de las tablas originales.",
+          "explicacion": "La CTE lee las mismas tablas de la base; no copia datos."
+        },
+        {
+          "id": "d",
+          "texto": "El resultado: con CTE siempre se obtienen menos filas.",
+          "explicacion": "Con la misma lógica, el resultado es el mismo; solo cambia cómo está escrita la consulta."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El resultado es el mismo; cambia la organización. Con subconsultas la lógica queda anidada y puede repetirse; con CTE se construye un resultado intermedio con nombre.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Venimos de subconsultas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "puente"
+        },
+        {
+          "titulo": "Unidad 6 · El mismo problema con subconsultas y con CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "utilidad"
+        }
+      ]
+    },
+    {
+      "id": "u06-with-repetido",
+      "tema": "Definir varias CTE en la misma sentencia",
+      "enunciado": "¿Qué problema tiene esta sentencia? WITH clientes_rosario AS (SELECT id_cliente, nombre FROM clientes WHERE ciudad = 'Rosario'), WITH ventas_por_cliente AS (SELECT id_cliente, COUNT(*) AS cantidad_ventas FROM ventas GROUP BY id_cliente) SELECT c.nombre, v.cantidad_ventas FROM clientes_rosario AS c JOIN ventas_por_cliente AS v ON c.id_cliente = v.id_cliente;",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "WITH aparece dos veces: se escribe una sola vez y las definiciones se separan con coma.",
+          "explicacion": "Correcto: la forma válida es WITH clientes_rosario AS (...), ventas_por_cliente AS (...) SELECT ..."
+        },
+        {
+          "id": "b",
+          "texto": "Falta un punto y coma después del paréntesis que cierra la primera CTE, antes de la segunda.",
+          "explicacion": "El punto y coma terminaría la sentencia; las CTE se separan con coma."
+        },
+        {
+          "id": "c",
+          "texto": "Una sentencia no puede tener más de una CTE.",
+          "explicacion": "Después de un único WITH pueden declararse varias CTE."
+        },
+        {
+          "id": "d",
+          "texto": "Una CTE no puede participar en un JOIN.",
+          "explicacion": "Una CTE puede usarse en un JOIN como cualquier otra fuente de datos."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Repetir WITH es un error de sintaxis frecuente: la palabra clave se escribe una sola vez, antes de todas las definiciones.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Definir varias CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "multiples"
+        }
+      ]
+    },
+    {
+      "id": "u06-cte-usa-posterior",
+      "tema": "Alcance, duración y sintaxis",
+      "enunciado": "¿Qué ocurre al ejecutar WITH totales_cliente AS (SELECT v.id_cliente, SUM(tv.total_venta) AS total_cliente FROM ventas AS v JOIN totales_venta AS tv ON v.id_venta = tv.id_venta GROUP BY v.id_cliente), totales_venta AS (SELECT id_venta, SUM(cantidad * precio_unitario) AS total_venta FROM detalle_ventas GROUP BY id_venta) SELECT * FROM totales_cliente;?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Funciona igual que con el orden inverso, porque MySQL reordena las CTE automáticamente.",
+          "explicacion": "MySQL no reordena las definiciones: el orden en que se escriben importa."
+        },
+        {
+          "id": "b",
+          "texto": "Se ejecuta, pero totales_cliente queda vacía.",
+          "explicacion": "No llega a ejecutarse: la referencia a una CTE que todavía no fue definida produce un error."
+        },
+        {
+          "id": "c",
+          "texto": "Da error, porque totales_cliente usa totales_venta, que está definida después.",
+          "explicacion": "Correcto: una CTE solo puede usar las CTE definidas antes que ella en el mismo WITH."
+        },
+        {
+          "id": "d",
+          "texto": "Da error, porque la consulta principal solo puede leer la última CTE definida.",
+          "explicacion": "La consulta principal puede usar cualquiera de las CTE del WITH."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "El orden importa: para encadenar CTE, primero se define la etapa base (totales_venta) y después la que la utiliza (totales_cliente).",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        },
+        {
+          "titulo": "Unidad 6 · CTE encadenadas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "encadenadas"
+        }
+      ]
+    },
+    {
+      "id": "u06-orden-partes-sentencia",
+      "tema": "Alcance, duración y sintaxis",
+      "enunciado": "¿Cuál es el orden correcto de las partes de una sentencia con dos CTE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "SELECT principal → WITH → primera CTE → segunda CTE → punto y coma.",
+          "explicacion": "El WITH debe ir antes de la consulta principal."
+        },
+        {
+          "id": "b",
+          "texto": "WITH → primera CTE → punto y coma → segunda CTE → punto y coma → SELECT principal.",
+          "explicacion": "Cada punto y coma terminaría la sentencia y las CTE dejarían de existir antes del SELECT principal."
+        },
+        {
+          "id": "c",
+          "texto": "WITH → primera CTE → WITH → segunda CTE → SELECT principal → punto y coma.",
+          "explicacion": "WITH se escribe una sola vez, antes de todas las definiciones."
+        },
+        {
+          "id": "d",
+          "texto": "WITH → primera CTE → coma → segunda CTE → SELECT principal → punto y coma.",
+          "explicacion": "Correcto: un único WITH, definiciones separadas por coma y el SELECT principal dentro de la misma sentencia."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Primero se escribe WITH con todas las CTE; luego viene el SELECT principal, y recién ahí termina la sentencia.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        },
+        {
+          "titulo": "Unidad 6 · Definir varias CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "multiples"
+        }
+      ]
+    },
+    {
+      "id": "u06-referenciar-dos-veces",
+      "tema": "La misma CTE puede referenciarse más de una vez",
+      "enunciado": "Dentro de una misma sentencia, ¿dónde puede usarse el nombre de una CTE ya definida?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo una vez, en el FROM de la consulta principal.",
+          "explicacion": "Una vez definida, puede usarse en distintos lugares de la misma sentencia."
+        },
+        {
+          "id": "b",
+          "texto": "En el FROM, en un JOIN o dentro de una subconsulta de esa sentencia, tantas veces como haga falta.",
+          "explicacion": "Correcto: en el ejemplo, totales_cliente se usa en el JOIN y otra vez en la subconsulta que calcula AVG(total_gastado)."
+        },
+        {
+          "id": "c",
+          "texto": "En cualquier sentencia posterior de la misma sesión.",
+          "explicacion": "La CTE deja de existir al terminar la sentencia que la define."
+        },
+        {
+          "id": "d",
+          "texto": "Solo dentro de otra CTE definida después de ella.",
+          "explicacion": "También la puede usar la consulta principal; de hecho, es su uso más habitual."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El beneficio de reutilizar es que el cálculo se escribe una sola vez, queda identificado con un nombre y se usa donde se necesite dentro de la sentencia.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Reutilizar una CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "reutilizar"
+        },
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        }
+      ]
+    },
+    {
+      "id": "u06-elegir-join",
+      "tema": "CTE, subconsulta o consulta directa",
+      "enunciado": "Se necesita listar cada venta con su fecha y el nombre del cliente que la hizo. Según la tabla comparativa, ¿cuál es la opción natural?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una CTE, porque hay dos tablas involucradas.",
+          "explicacion": "Que haya dos tablas no justifica una CTE: no hay un resultado intermedio complejo ni reutilizado."
+        },
+        {
+          "id": "b",
+          "texto": "Una subconsulta escalar en el WHERE.",
+          "explicacion": "La subconsulta escalar sirve para obtener un único valor, no para mostrar columnas de otra tabla."
+        },
+        {
+          "id": "c",
+          "texto": "Un JOIN entre ventas y clientes.",
+          "explicacion": "Correcto: la finalidad es combinar filas para mostrar columnas relacionadas de varias tablas."
+        },
+        {
+          "id": "d",
+          "texto": "Una CTE recursiva sobre ventas.",
+          "explicacion": "No hay ninguna jerarquía ni secuencia que recorrer."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Cuando hay que mostrar columnas relacionadas de varias tablas, la herramienta natural es JOIN; la CTE no reemplaza todo lo anterior.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE, subconsulta o consulta directa",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "comparar"
+        }
+      ]
+    },
+    {
+      "id": "u06-elegir-cte-reutilizar",
+      "tema": "CTE, subconsulta o consulta directa",
+      "enunciado": "Se necesita el total gastado por cada cliente para listarlo y, en la misma sentencia, para compararlo con el promedio de esos totales. ¿Qué opción conviene?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una CTE con el total por cliente, referenciada en la consulta principal y en el cálculo del promedio.",
+          "explicacion": "Correcto: así se evita repetir el bloque SQL que calcula el total por cliente."
+        },
+        {
+          "id": "b",
+          "texto": "Una consulta directa sobre clientes, sin agrupar.",
+          "explicacion": "Sin agrupar no se obtiene el total por cliente, y el promedio necesita ese resultado intermedio."
+        },
+        {
+          "id": "c",
+          "texto": "Repetir la misma subconsulta, completa, en cada uno de los lugares de la sentencia donde se la necesite.",
+          "explicacion": "Funciona, pero repite lógica; es justamente lo que la CTE permite evitar."
+        },
+        {
+          "id": "d",
+          "texto": "Dos sentencias: una que define la CTE y otra que la consulta.",
+          "explicacion": "La CTE no sobrevive a la sentencia que la define; todo debe resolverse en una sola sentencia."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Cuando se necesita reutilizar el mismo resultado lógico dentro de la sentencia, la CTE es la opción natural.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE, subconsulta o consulta directa",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "comparar"
+        },
+        {
+          "titulo": "Unidad 6 · Reutilizar una CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "reutilizar"
+        }
+      ]
+    },
+    {
+      "id": "u06-metodo-orden-pasos",
+      "tema": "Método recomendado para escribir una CTE",
+      "enunciado": "¿Cuál es el orden de pasos del método recomendado para escribir una CTE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Elegir el nombre, escribir WITH, escribir la consulta principal y por último probar el SELECT interno.",
+          "explicacion": "El nombre y el WITH vienen después de resolver y revisar el bloque intermedio."
+        },
+        {
+          "id": "b",
+          "texto": "Escribir primero la consulta principal, agregar todas las CTE juntas y recién al final revisar qué devuelve cada una.",
+          "explicacion": "El método propone construir por partes y comprobar cada paso antes de seguir."
+        },
+        {
+          "id": "c",
+          "texto": "Resolver el bloque, revisarlo, nombrarlo, convertirlo en CTE, escribir la consulta principal y separar etapas.",
+          "explicacion": "Correcto: cada paso se comprueba antes de pasar al siguiente."
+        },
+        {
+          "id": "d",
+          "texto": "Crear una vista con el SELECT, convertirla en CTE y después borrar la vista.",
+          "explicacion": "No hace falta ningún objeto persistente: la CTE se arma a partir de un SELECT ya probado."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Conviene construir la consulta por partes: primero el bloque intermedio probado, después el nombre y el WITH, y por último la consulta principal.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Método recomendado",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "metodo"
+        }
+      ]
+    },
+    {
+      "id": "u06-metodo-nombre-claro",
+      "tema": "Método recomendado para escribir una CTE",
+      "enunciado": "Se va a convertir en CTE un SELECT que calcula el precio promedio de cada categoría. ¿Qué nombre sigue mejor el método recomendado?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "cte1",
+          "explicacion": "Es un nombre genérico: no describe qué contiene el resultado."
+        },
+        {
+          "id": "b",
+          "texto": "promedios_categoria",
+          "explicacion": "Correcto: describe el resultado, igual que totales_cliente o promedios_categoria en el material."
+        },
+        {
+          "id": "c",
+          "texto": "productos",
+          "explicacion": "Coincide con el nombre de una tabla real y no dice qué se calculó, lo que confunde la lectura."
+        },
+        {
+          "id": "d",
+          "texto": "tabla_temporal_productos",
+          "explicacion": "No describe el contenido y sugiere una tabla temporal, que no es lo que representa una CTE."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El paso 3 del método indica darle al resultado un nombre claro que describa lo que contiene.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Método recomendado",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "metodo"
+        }
+      ]
+    },
+    {
+      "id": "u06-cierre-que-aporta",
+      "tema": "Síntesis",
+      "enunciado": "La síntesis de la unidad dice que “la CTE no agrega magia: agrega estructura”. ¿Qué es lo realmente nuevo que aporta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Funciones de agregación que solo existen dentro de WITH.",
+          "explicacion": "Dentro de una CTE se usan las mismas agregaciones de siempre, como SUM, AVG o COUNT."
+        },
+        {
+          "id": "b",
+          "texto": "Un tipo de JOIN especial para combinar resultados intermedios.",
+          "explicacion": "La CTE se combina con los mismos JOIN que ya se conocían."
+        },
+        {
+          "id": "c",
+          "texto": "La posibilidad de guardar resultados intermedios en la base para reutilizarlos después en otras sentencias.",
+          "explicacion": "La CTE existe únicamente durante la sentencia que la define."
+        },
+        {
+          "id": "d",
+          "texto": "La posibilidad de nombrar un resultado intermedio y usarlo dentro de una sentencia más grande.",
+          "explicacion": "Correcto: lo que va adentro (SELECT, filtros, JOIN, agregaciones, agrupamientos) ya se conocía."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Si una consulta se vuelve difícil de leer porque tiene varios pasos lógicos, una CTE ayuda a convertir esos pasos en bloques con nombre.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Síntesis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "cierre"
+        }
+      ]
+    },
+    {
+      "id": "u06-recursiva-autorreferencia",
+      "tema": "CTE recursivas",
+      "enunciado": "En WITH RECURSIVE numeros AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM numeros WHERE n < 4) SELECT n FROM numeros, ¿qué hace que la CTE sea recursiva?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que se declara con WITH RECURSIVE y la parte que sigue a UNION ALL lee de la propia CTE (FROM numeros).",
+          "explicacion": "Correcto: la parte recursiva se referencia a sí misma para generar nuevas filas a partir de las anteriores."
+        },
+        {
+          "id": "b",
+          "texto": "Que la parte que sigue a UNION ALL tiene una condición WHERE n < 4 que controla cuántas filas se generan.",
+          "explicacion": "Esa condición solo marca el corte; una condición WHERE puede aparecer en cualquier CTE. Lo que la hace recursiva es la autorreferencia."
+        },
+        {
+          "id": "c",
+          "texto": "Que la consulta principal lee numeros.",
+          "explicacion": "Toda consulta principal lee sus CTE; eso no la vuelve recursiva."
+        },
+        {
+          "id": "d",
+          "texto": "Que devuelve más de una fila.",
+          "explicacion": "Cualquier CTE puede devolver muchas filas; lo distintivo es que se referencia a sí misma."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "En la materia solo se reconoce la estructura: existe WITH RECURSIVE, con una parte inicial (ancla) y una parte que se autorreferencia.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE recursivas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "recursivas"
+        }
+      ]
+    },
+    {
+      "id": "u06-recursiva-hasta-6",
+      "tema": "CTE recursivas",
+      "enunciado": "¿Qué valores devuelve WITH RECURSIVE numeros AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM numeros WHERE n < 6) SELECT n FROM numeros?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Del 1 al 5.",
+          "explicacion": "Cuando n vale 5, la condición 5 < 6 es verdadera y se genera el 6."
+        },
+        {
+          "id": "b",
+          "texto": "Del 1 al 7.",
+          "explicacion": "Para generar el 7 haría falta que 6 < 6 fuera verdadero, y no lo es."
+        },
+        {
+          "id": "c",
+          "texto": "Del 2 al 6.",
+          "explicacion": "La parte ancla aporta el 1, que también forma parte del resultado."
+        },
+        {
+          "id": "d",
+          "texto": "Del 1 al 6.",
+          "explicacion": "Correcto: el ancla genera 1 y la parte recursiva suma 1 mientras n < 6; al llegar a 6 la condición es falsa y se detiene."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Es el mismo mecanismo del ejemplo del material (del 1 al 4), solo que con otra condición de corte.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE recursivas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "recursivas"
+        }
+      ]
+    },
+    {
+      "id": "u06-join-on-categoria",
+      "tema": "CTE + JOIN",
+      "enunciado": "En WITH promedios_categoria AS (SELECT categoria, AVG(precio) AS promedio_categoria FROM productos GROUP BY categoria) SELECT p.nombre, p.precio, pc.promedio_categoria FROM productos AS p JOIN promedios_categoria AS pc ON p.categoria = pc.categoria WHERE p.precio > pc.promedio_categoria, ¿qué función cumple la condición ON p.categoria = pc.categoria?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ordena los productos por categoría.",
+          "explicacion": "El orden se indica con ORDER BY."
+        },
+        {
+          "id": "b",
+          "texto": "Agrupa los productos por categoría.",
+          "explicacion": "El agrupamiento ya se hizo dentro de la CTE con GROUP BY."
+        },
+        {
+          "id": "c",
+          "texto": "Descarta los productos cuyo precio no supera el promedio de su categoría, antes de que se evalúe el WHERE.",
+          "explicacion": "Esa comparación la hace el WHERE p.precio > pc.promedio_categoria; el ON solo indica cómo se emparejan las filas de ambas fuentes."
+        },
+        {
+          "id": "d",
+          "texto": "Empareja cada producto con la fila del promedio de su propia categoría.",
+          "explicacion": "Correcto: así cada precio queda al lado del promedio que le corresponde y el WHERE puede compararlos."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La CTE se une con productos igual que una tabla: el ON define qué filas de cada fuente se combinan.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE + JOIN",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "join"
+        }
+      ]
+    },
+    {
+      "id": "u06-sintaxis-valida",
+      "tema": "Qué es una CTE",
+      "enunciado": "¿Cuál de estas sentencias define y usa correctamente una CTE en MySQL 8?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "WITH caros AS SELECT nombre, precio FROM productos WHERE precio > 1000 SELECT * FROM caros;",
+          "explicacion": "Falta el paréntesis: la consulta de la CTE se escribe dentro de AS ( … )."
+        },
+        {
+          "id": "b",
+          "texto": "CREATE CTE caros AS (SELECT nombre, precio FROM productos WHERE precio > 1000) SELECT * FROM caros;",
+          "explicacion": "No existe CREATE CTE: CREATE se usa para objetos persistentes, y la CTE se define con WITH."
+        },
+        {
+          "id": "c",
+          "texto": "WITH caros AS (SELECT nombre, precio FROM productos WHERE precio > 1000) SELECT * FROM caros;",
+          "explicacion": "Correcto: WITH, el nombre, AS, la consulta entre paréntesis y, en la misma sentencia, el SELECT principal que la usa."
+        },
+        {
+          "id": "d",
+          "texto": "SELECT * FROM caros WITH caros AS (SELECT nombre, precio FROM productos WHERE precio > 1000);",
+          "explicacion": "WITH debe ir antes de la consulta principal, no después."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "La estructura es WITH nombre_cte AS (consulta) seguida del SELECT principal, todo dentro de una única sentencia.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Qué es una CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "idea"
+        },
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        }
+      ]
+    },
+    {
+      "id": "u06-where-sobre-agregado",
+      "tema": "CTE con GROUP BY y funciones de agregación",
+      "enunciado": "En WITH resumen AS (SELECT categoria, AVG(precio) AS precio_promedio FROM productos GROUP BY categoria) SELECT categoria FROM resumen WHERE precio_promedio > 1000, ¿por qué la consulta principal puede filtrar el promedio con WHERE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque para la consulta principal precio_promedio es una columna más del resultado de la CTE.",
+          "explicacion": "Correcto: el agrupamiento ya ocurrió dentro de la CTE; afuera se filtran sus filas como las de cualquier fuente de datos."
+        },
+        {
+          "id": "b",
+          "texto": "Porque dentro de una sentencia con WITH la cláusula HAVING deja de existir y se reemplaza por WHERE.",
+          "explicacion": "HAVING sigue existiendo y podría usarse dentro de la CTE; acá no hace falta porque se filtran filas que ya están agrupadas."
+        },
+        {
+          "id": "c",
+          "texto": "Porque WHERE se evalúa antes del GROUP BY de la CTE y descarta los productos baratos.",
+          "explicacion": "Si fuera así filtraría productos individuales; en realidad filtra las filas del resumen, que ya tienen una fila por categoría."
+        },
+        {
+          "id": "d",
+          "texto": "No puede: es un error y hay que reemplazar WHERE por HAVING en la consulta principal.",
+          "explicacion": "No es un error: la consulta principal no agrupa nada, y precio_promedio es una columna ya calculada."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Primero se forma el resumen dentro de la CTE; después la consulta principal trabaja sobre ese resumen como si fuera una tabla.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE con GROUP BY y agregación",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "agregacion"
+        }
+      ]
+    },
+    {
+      "id": "u06-agregado-sin-alias",
+      "tema": "CTE con GROUP BY y funciones de agregación",
+      "enunciado": "¿Qué problema tiene WITH resumen AS (SELECT categoria, AVG(precio) FROM productos GROUP BY categoria) SELECT categoria FROM resumen WHERE precio_promedio > 1000?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una CTE no puede contener GROUP BY ni funciones de agregación como AVG.",
+          "explicacion": "Dentro de una CTE se puede agrupar y usar funciones de agregación como en cualquier SELECT."
+        },
+        {
+          "id": "b",
+          "texto": "Falta un punto y coma entre el paréntesis de cierre de la CTE y el SELECT principal.",
+          "explicacion": "El punto y coma terminaría la sentencia; el SELECT principal tiene que continuarla sin cortarla."
+        },
+        {
+          "id": "c",
+          "texto": "La consulta principal debería usar HAVING en lugar de WHERE para filtrar el promedio.",
+          "explicacion": "Aunque se usara HAVING, el problema seguiría: la CTE no tiene ninguna columna llamada precio_promedio."
+        },
+        {
+          "id": "d",
+          "texto": "Falta el alias: AVG(precio) no se llama precio_promedio dentro de la CTE.",
+          "explicacion": "Correcto: hay que escribir AVG(precio) AS precio_promedio para poder referenciar la columna por ese nombre."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La consulta principal solo ve las columnas que la CTE expone, con los nombres que la CTE les da; por eso las columnas calculadas necesitan alias.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE con GROUP BY y agregación",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "agregacion"
+        }
+      ]
+    },
+    {
+      "id": "u06-join-elegir-consulta",
+      "tema": "CTE + JOIN",
+      "enunciado": "Se quiere listar los empleados que cobran más que el promedio de su propio departamento. Con WITH prom AS (SELECT id_depto, AVG(salario) AS promedio FROM empleados GROUP BY id_depto), ¿qué consulta principal lo resuelve?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "SELECT e.nombre FROM empleados AS e JOIN prom AS p ON e.id_depto = p.id_depto WHERE e.salario > (SELECT AVG(salario) FROM empleados);",
+          "explicacion": "Une cada empleado con su departamento, pero compara contra el promedio general de la empresa, no contra el de su departamento."
+        },
+        {
+          "id": "b",
+          "texto": "SELECT e.nombre FROM empleados AS e JOIN prom AS p ON e.id_depto = p.id_depto WHERE e.salario > p.promedio;",
+          "explicacion": "Correcto: el ON empareja a cada empleado con el promedio de su departamento y el WHERE los compara."
+        },
+        {
+          "id": "c",
+          "texto": "SELECT e.nombre FROM empleados AS e, prom AS p WHERE e.salario > p.promedio;",
+          "explicacion": "Sin condición de unión, cada empleado se combina con el promedio de todos los departamentos y aparece si supera a cualquiera, no al suyo."
+        },
+        {
+          "id": "d",
+          "texto": "SELECT e.nombre FROM empleados AS e WHERE e.salario > prom.promedio;",
+          "explicacion": "prom no figura en el FROM: para usar sus columnas hay que incluirla como fuente de datos, por ejemplo con JOIN."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una CTE participa en un JOIN como cualquier otra fuente de datos: se calcula un resumen y se lo une con cada fila mediante la condición ON.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE + JOIN",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "join"
+        }
+      ]
+    },
+    {
+      "id": "u06-multiples-independientes",
+      "tema": "Definir varias CTE en la misma sentencia",
+      "enunciado": "En WITH ventas_por_cliente AS (…), clientes_activos AS (…) SELECT …, ninguna de las dos CTE usa a la otra. ¿Qué se cumple?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Es un error: en un mismo WITH cada CTE tiene que usar el resultado de la anterior.",
+          "explicacion": "Encadenar CTE es posible, pero no obligatorio: pueden ser independientes entre sí."
+        },
+        {
+          "id": "b",
+          "texto": "La consulta principal solo puede leer la última CTE declarada, en este caso clientes_activos.",
+          "explicacion": "La consulta principal puede usar cualquiera de las CTE declaradas en el WITH."
+        },
+        {
+          "id": "c",
+          "texto": "Es válido, y la consulta principal puede combinar ambas, por ejemplo con un LEFT JOIN.",
+          "explicacion": "Correcto: se declaran con un único WITH separadas por coma, y después se usan como dos fuentes de datos."
+        },
+        {
+          "id": "d",
+          "texto": "Para usar las dos hay que escribir dos sentencias separadas, cada una con su WITH.",
+          "explicacion": "Cada CTE dejaría de existir al terminar su sentencia; ambas se declaran en un único WITH."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Después de un único WITH pueden declararse varias CTE, relacionadas o no, y la consulta principal puede combinarlas.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Definir varias CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "multiples"
+        }
+      ]
+    },
+    {
+      "id": "u06-coma-antes-select",
+      "tema": "Definir varias CTE en la misma sentencia",
+      "enunciado": "¿Qué error tiene WITH ids_clientes AS (SELECT id_cliente FROM clientes), ids_ventas AS (SELECT id_cliente FROM ventas), SELECT * FROM ids_clientes AS c JOIN ids_ventas AS v ON c.id_cliente = v.id_cliente;?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sobra la coma que está antes del SELECT principal.",
+          "explicacion": "Correcto: la coma separa una definición de CTE de la siguiente; después de la última CTE viene directamente el SELECT principal."
+        },
+        {
+          "id": "b",
+          "texto": "Falta escribir WITH otra vez antes de la segunda CTE.",
+          "explicacion": "WITH se escribe una sola vez, antes de todas las definiciones."
+        },
+        {
+          "id": "c",
+          "texto": "Dos CTE del mismo WITH no pueden combinarse entre sí con JOIN en la consulta principal.",
+          "explicacion": "Una CTE puede participar en un JOIN como cualquier otra fuente de datos, incluso con otra CTE."
+        },
+        {
+          "id": "d",
+          "texto": "Falta un punto y coma después de la última CTE, antes del SELECT principal.",
+          "explicacion": "El punto y coma terminaría la sentencia y las CTE dejarían de existir antes del SELECT principal."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Sintaxis de varias CTE: WITH cte1 AS (…), cte2 AS (…) SELECT …; con comas solo entre definiciones.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Definir varias CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "multiples"
+        },
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        }
+      ]
+    },
+    {
+      "id": "u06-encadenadas-organizar",
+      "tema": "CTE encadenadas",
+      "enunciado": "Se quiere obtener el total vendido por ciudad en tres etapas: total de cada venta, total por cliente y total por ciudad. ¿Cómo conviene organizarlo con CTE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Tres sentencias, cada una con su propio WITH, ejecutadas una después de la otra.",
+          "explicacion": "Cada CTE desaparece al terminar su sentencia, así que la etapa siguiente no podría usarla."
+        },
+        {
+          "id": "b",
+          "texto": "Un único WITH con las tres CTE, empezando por la de ciudad, porque es la que se muestra al final.",
+          "explicacion": "El orden importa: una CTE solo puede usar las definidas antes que ella, y la de ciudad necesita las otras dos."
+        },
+        {
+          "id": "c",
+          "texto": "Una sola CTE que resuelva todo con tres subconsultas anidadas dentro de ella.",
+          "explicacion": "Volvería a esconder las etapas en lógica anidada, que es justamente lo que las CTE encadenadas permiten evitar."
+        },
+        {
+          "id": "d",
+          "texto": "Un único WITH con las tres CTE en ese orden, cada una usando la anterior.",
+          "explicacion": "Correcto: cada etapa trabaja sobre la anterior y la consulta principal solo lee el resultado final."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Las CTE encadenadas permiten construir la solución por etapas: cada CTE puede usar las definidas antes en el mismo WITH.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE encadenadas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "encadenadas"
+        }
+      ]
+    },
+    {
+      "id": "u06-encadenadas-tres-ctes",
+      "tema": "CTE encadenadas",
+      "enunciado": "En WITH etapa1 AS (…), etapa2 AS (… FROM etapa1 …), etapa3 AS (…) SELECT …, ¿qué CTE puede usar etapa3 en su definición?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo etapa2, porque es la inmediatamente anterior a ella.",
+          "explicacion": "No hay esa restricción: puede usar cualquiera de las CTE definidas antes en el mismo WITH."
+        },
+        {
+          "id": "b",
+          "texto": "etapa1 y etapa2.",
+          "explicacion": "Correcto: una CTE puede usar cualquiera de las CTE definidas antes que ella en el mismo WITH."
+        },
+        {
+          "id": "c",
+          "texto": "Ninguna: solo la consulta principal puede leer otras CTE.",
+          "explicacion": "Una CTE sí puede usar otra definida anteriormente; así se encadenan las etapas."
+        },
+        {
+          "id": "d",
+          "texto": "etapa1, etapa2 y también las CTE de sentencias ejecutadas antes.",
+          "explicacion": "Las CTE de otras sentencias ya no existen: cada una dura solo su propia sentencia."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El orden importa: dentro de un mismo WITH, cada CTE ve a las que fueron definidas antes que ella.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE encadenadas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "encadenadas"
+        },
+        {
+          "titulo": "Unidad 6 · Alcance, duración y sintaxis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "alcance"
+        }
+      ]
+    },
+    {
+      "id": "u06-reutilizar-autojoin",
+      "tema": "La misma CTE puede referenciarse más de una vez",
+      "enunciado": "¿Es válido usar la misma CTE dos veces en el FROM con alias distintos, por ejemplo FROM totales AS t1 JOIN totales AS t2 ON t1.id_cliente < t2.id_cliente?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "No: dentro de una sentencia, cada CTE puede referenciarse una única vez, en un solo lugar.",
+          "explicacion": "Una vez definida, la CTE puede usarse en distintos lugares de la misma sentencia, tantas veces como haga falta."
+        },
+        {
+          "id": "b",
+          "texto": "Sí, pero solo si la CTE se declara con WITH RECURSIVE.",
+          "explicacion": "RECURSIVE se usa cuando la CTE se referencia a sí misma en su definición, no para usarla varias veces."
+        },
+        {
+          "id": "c",
+          "texto": "Sí: una vez definida, puede usarse varias veces, cada una con su alias.",
+          "explicacion": "Correcto: cada referencia funciona como una fuente de datos distinta dentro del mismo FROM."
+        },
+        {
+          "id": "d",
+          "texto": "No: para eso hay que copiarla dentro del mismo WITH con otro nombre.",
+          "explicacion": "No hace falta duplicar la definición; justamente la ventaja es escribir el cálculo una sola vez."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una CTE se define una vez y su nombre puede usarse en varios lugares de la misma sentencia: en el FROM, en un JOIN o en una subconsulta.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Reutilizar una CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "reutilizar"
+        }
+      ]
+    },
+    {
+      "id": "u06-promedio-solo-compradores",
+      "tema": "La misma CTE puede referenciarse más de una vez",
+      "enunciado": "La CTE totales_cliente se arma con ventas JOIN detalle_ventas agrupando por id_cliente, y luego se calcula SELECT AVG(total_gastado) FROM totales_cliente. ¿Quiénes participan de ese promedio?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo los clientes con al menos una venta.",
+          "explicacion": "Correcto: la CTE parte de ventas con JOIN, así que quien no compró no tiene fila. Para incluirlo con 0 habría que partir de clientes con LEFT JOIN y COALESCE."
+        },
+        {
+          "id": "b",
+          "texto": "Todos los clientes de la tabla clientes, con total 0 los que no compraron.",
+          "explicacion": "Eso ocurriría partiendo de clientes con LEFT JOIN y COALESCE; acá la tabla clientes ni siquiera interviene en la CTE."
+        },
+        {
+          "id": "c",
+          "texto": "Todos los clientes, pero los que no compraron figuran con NULL y hacen que AVG devuelva NULL.",
+          "explicacion": "Los clientes sin compras no figuran en la CTE; además, AVG ignora los NULL en lugar de devolver NULL."
+        },
+        {
+          "id": "d",
+          "texto": "Solo los clientes cuyo total gastado supera el promedio de todos los clientes.",
+          "explicacion": "Ese filtro, si existe, se aplica después en la consulta principal; el promedio se calcula sobre todas las filas de la CTE."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El promedio calculado sobre una CTE depende de qué filas tiene esa CTE: con JOIN quedan solo los clientes con compras; con LEFT JOIN y COALESCE entran todos.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Reutilizar una CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "reutilizar"
+        },
+        {
+          "titulo": "Unidad 6 · El mismo problema con subconsultas y con CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "utilidad"
+        }
+      ]
+    },
+    {
+      "id": "u06-comparar-resumen-complejo",
+      "tema": "CTE, subconsulta o consulta directa",
+      "enunciado": "Se necesita armar un resumen por categoría (cantidad de productos, precio promedio y precio máximo) y después filtrarlo y ordenarlo. Según la tabla comparativa, ¿qué opción es la natural?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una subconsulta escalar dentro del WHERE.",
+          "explicacion": "Una subconsulta escalar devuelve un único valor, no un resumen con varias filas y columnas."
+        },
+        {
+          "id": "b",
+          "texto": "Una consulta directa sin agrupar, que filtre producto por producto en el WHERE.",
+          "explicacion": "Sin agrupar no se obtiene el resumen por categoría que se quiere consultar."
+        },
+        {
+          "id": "c",
+          "texto": "Una CTE recursiva que recorra las categorías una por una.",
+          "explicacion": "No hay ninguna jerarquía ni secuencia que recorrer; alcanza con agrupar."
+        },
+        {
+          "id": "d",
+          "texto": "Una CTE con el resumen, consultada después.",
+          "explicacion": "Correcto: es un resultado intermedio complejo que luego se quiere consultar; la CTE permite nombrarlo y separar etapas."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La CTE es la opción natural cuando hay un resultado intermedio complejo que después se consulta, o cuando ese resultado se reutiliza en la sentencia.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE, subconsulta o consulta directa",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "comparar"
+        },
+        {
+          "titulo": "Unidad 6 · CTE con GROUP BY y agregación",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "agregacion"
+        }
+      ]
+    },
+    {
+      "id": "u06-contenido-de-la-cte",
+      "tema": "Síntesis",
+      "enunciado": "¿Qué puede contener el SELECT que va dentro de AS ( … ) en una CTE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo columnas de una única tabla, sin JOIN ni funciones de agregación.",
+          "explicacion": "No existe esa limitación: los ejemplos de la unidad usan JOIN, GROUP BY y agregaciones dentro de la CTE."
+        },
+        {
+          "id": "b",
+          "texto": "Cualquier SELECT: filtros, JOIN, agregaciones y agrupamientos.",
+          "explicacion": "Correcto: dentro de la CTE se usan los mismos elementos que ya se conocían; lo nuevo es poder nombrar el resultado."
+        },
+        {
+          "id": "c",
+          "texto": "Solo una condición WHERE; las columnas se eligen después, en la consulta principal.",
+          "explicacion": "Entre paréntesis va un SELECT completo, con sus columnas; la consulta principal solo ve las que la CTE expone."
+        },
+        {
+          "id": "d",
+          "texto": "Solo funciones de agregación, porque una CTE siempre tiene que resumir datos.",
+          "explicacion": "Una CTE también puede limitarse a filtrar filas, sin agregar nada."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "La CTE no agrega magia sino estructura: adentro hay un SELECT común y lo nuevo es darle un nombre para usarlo en una sentencia más grande.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Síntesis",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "cierre"
+        }
+      ]
+    },
+    {
+      "id": "u06-recursiva-sin-corte",
+      "tema": "CTE recursivas",
+      "enunciado": "Si a WITH RECURSIVE numeros AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM numeros WHERE n < 4) SELECT n FROM numeros se le quita la condición WHERE n < 4, ¿qué ocurre?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Devuelve solo el 1, porque sin WHERE la parte recursiva no se ejecuta.",
+          "explicacion": "Sin condición, la parte recursiva se sigue ejecutando y produce filas nuevas en cada iteración."
+        },
+        {
+          "id": "b",
+          "texto": "Devuelve del 1 al 10, que es el límite por defecto de una CTE recursiva.",
+          "explicacion": "No existe un límite de 10 filas: la recursión continúa mientras la parte recursiva siga produciendo filas."
+        },
+        {
+          "id": "c",
+          "texto": "Falta la condición de corte: la recursión no termina y MySQL la aborta con un error.",
+          "explicacion": "Correcto: cada iteración genera un valor nuevo; MySQL la interrumpe al superar su límite de recursión (cte_max_recursion_depth)."
+        },
+        {
+          "id": "d",
+          "texto": "Da un error de sintaxis antes de ejecutarse, porque toda parte recursiva debe llevar una cláusula WHERE.",
+          "explicacion": "La sintaxis es válida; el problema aparece al ejecutarla, porque la parte recursiva nunca deja de producir filas."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una CTE recursiva necesita una condición de corte en la parte recursiva: la recursión termina cuando esa parte deja de generar filas nuevas.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE recursivas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "recursivas"
+        }
+      ]
+    },
+    {
+      "id": "u06-recursiva-sin-recursive",
+      "tema": "CTE recursivas",
+      "enunciado": "¿Qué ocurre en MySQL 8 al ejecutar WITH numeros AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM numeros WHERE n < 4) SELECT n FROM numeros?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Da error: la autorreferencia exige escribir WITH RECURSIVE.",
+          "explicacion": "Correcto: sin RECURSIVE, la referencia a numeros dentro de su propia definición no se resuelve y MySQL informa que esa tabla no existe."
+        },
+        {
+          "id": "b",
+          "texto": "Devuelve 1, 2, 3 y 4, igual que con RECURSIVE, porque esa palabra es opcional.",
+          "explicacion": "RECURSIVE no es opcional cuando la CTE se referencia a sí misma."
+        },
+        {
+          "id": "c",
+          "texto": "Devuelve solo el 1, porque sin RECURSIVE se ejecuta únicamente la parte ancla.",
+          "explicacion": "No se ejecuta una parte sí y otra no: la sentencia completa falla."
+        },
+        {
+          "id": "d",
+          "texto": "Devuelve un resultado vacío, porque numeros todavía no tiene filas cuando se la lee.",
+          "explicacion": "La sentencia no llega a ejecutarse: falla por la autorreferencia sin RECURSIVE."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Para que una CTE pueda referenciarse a sí misma se declara con WITH RECURSIVE; tiene una parte ancla y una parte recursiva unidas con UNION ALL.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE recursivas",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "recursivas"
+        }
+      ]
+    },
+    {
+      "id": "u06-simple-lectura",
+      "tema": "CTE simple: filtrar primero, consultar después",
+      "enunciado": "¿Cuál es la forma correcta de leer WITH caros AS (SELECT nombre, precio FROM productos WHERE precio > 1000) SELECT * FROM caros ORDER BY precio DESC?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Primero se ejecuta el SELECT principal y después se define caros con su resultado.",
+          "explicacion": "Es al revés: primero se define el resultado con nombre y después la consulta principal lo usa."
+        },
+        {
+          "id": "b",
+          "texto": "Se crea la tabla caros en la base y luego, en otra sentencia, se la consulta.",
+          "explicacion": "No se crea ninguna tabla persistente: es una única sentencia que define caros y la usa inmediatamente."
+        },
+        {
+          "id": "c",
+          "texto": "El ORDER BY se aplica dentro de la CTE, antes del filtro de precio.",
+          "explicacion": "El ORDER BY pertenece a la consulta principal y ordena las filas de caros, que ya están filtradas."
+        },
+        {
+          "id": "d",
+          "texto": "Primero se arma el conjunto caros; después se consulta ese conjunto.",
+          "explicacion": "Correcto: es la lectura mental propuesta para una CTE simple."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una CTE simple se lee en dos pasos: construir el conjunto con nombre y luego consultarlo, todo dentro de la misma sentencia.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE simple",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "simple"
+        }
+      ]
+    },
+    {
+      "id": "u06-simple-columna-ausente",
+      "tema": "CTE simple: filtrar primero, consultar después",
+      "enunciado": "¿Qué ocurre con WITH caros AS (SELECT id_producto, nombre, precio FROM productos WHERE precio > 1000) SELECT nombre, categoria FROM caros?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Funciona: categoria se toma automáticamente de la tabla productos.",
+          "explicacion": "La consulta principal lee caros, no productos; solo ve las columnas que la CTE expone."
+        },
+        {
+          "id": "b",
+          "texto": "Da error: categoria no es una columna de caros.",
+          "explicacion": "Correcto: para usarla habría que incluirla en el SELECT de la CTE."
+        },
+        {
+          "id": "c",
+          "texto": "Funciona, pero categoria aparece con NULL en todas las filas.",
+          "explicacion": "No se completa con NULL: es una columna desconocida y la sentencia falla."
+        },
+        {
+          "id": "d",
+          "texto": "Da error, porque la consulta de una CTE no puede tener WHERE.",
+          "explicacion": "WHERE es válido dentro de una CTE; el problema es la columna que no existe en caros."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El resultado de una CTE tiene exactamente las columnas que define su SELECT; la consulta principal solo puede usar esas.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · CTE simple",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "simple"
+        },
+        {
+          "titulo": "Unidad 6 · Qué es una CTE",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "idea"
+        }
+      ]
+    },
+    {
+      "id": "u06-metodo-convertir",
+      "tema": "Método recomendado para escribir una CTE",
+      "enunciado": "En el paso “convertirlo en una CTE” del método recomendado, ¿qué se hace con el SELECT ya probado?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se lo encierra en WITH nombre_cte AS (...) sin cambiar todavía su lógica.",
+          "explicacion": "Correcto: como el SELECT ya se probó y se revisó, solo se lo envuelve y se le da el nombre elegido."
+        },
+        {
+          "id": "b",
+          "texto": "Se lo reescribe como subconsulta correlacionada para que la consulta sea más eficiente.",
+          "explicacion": "El método no transforma el SELECT en otra cosa, y usar una CTE no se relaciona con la eficiencia."
+        },
+        {
+          "id": "c",
+          "texto": "Se lo guarda como vista para poder usarlo después desde la consulta principal.",
+          "explicacion": "No hace falta ningún objeto persistente: la CTE vive dentro de la misma sentencia."
+        },
+        {
+          "id": "d",
+          "texto": "Se le agregan los filtros finales y el ORDER BY, para resolver todo en un solo bloque.",
+          "explicacion": "Eso corresponde a la consulta principal, que se escribe en el paso siguiente; en este paso no se cambia la lógica."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El método construye la consulta por partes: probar el bloque intermedio, revisarlo, nombrarlo, envolverlo en WITH y recién después escribir la consulta principal.",
+      "material": [
+        {
+          "titulo": "Unidad 6 · Método recomendado",
+          "ruta": "unidad-06-cte/cte.html",
+          "seccion": "metodo"
+        }
+      ]
+    }
+  ]
+}

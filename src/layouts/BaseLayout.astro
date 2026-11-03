@@ -1,0 +1,88 @@
+---
+import '@fontsource-variable/jetbrains-mono';
+import '@fontsource/vt323';
+import '@/styles/global.css';
+import PixelSprite from '@/components/PixelSprite.astro';
+import ToggleTema from '@/components/ToggleTema.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Cuestionarios para aprender y repasar Bases de Datos.' } = Astro.props;
+const rutaActual = Astro.url.pathname;
+const enlaces = [
+  { href: '/', texto: 'Inicio' },
+  { href: '/juego/', texto: 'Juego' },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <!--
+      Define el tema antes de pintar (evita un parpadeo de colores): el guardado por el usuario
+      o, si no eligió ninguno, el del sistema.
+    -->
+    <script is:inline>
+      (() => {
+        let tema = null;
+        try {
+          tema = localStorage.getItem('quiz-bdd:tema');
+        } catch {}
+        if (tema !== 'claro' && tema !== 'oscuro') {
+          tema = matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+        }
+        document.documentElement.dataset.tema = tema;
+      })();
+    </script>
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <header class="border-b-[3px] border-borde bg-panel">
+      <div class="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        <a href="/" class="flex items-center gap-2 font-pixel text-lg font-bold text-tinta sm:text-xl">
+          <PixelSprite nombre="db" escala={2} />
+          <span>QUIZ<span class="text-primario">_</span>BDD</span>
+        </a>
+        <nav class="flex items-center gap-2 sm:gap-4" aria-label="Principal">
+          {
+            enlaces.map((enlace) => {
+              const activo = enlace.href === '/' ? rutaActual === '/' : rutaActual.startsWith(enlace.href);
+              return (
+                <a
+                  href={enlace.href}
+                  aria-current={activo ? 'page' : undefined}
+                  class:list={[
+                    'hidden font-pixel text-sm uppercase tracking-wide sm:inline',
+                    activo ? 'text-primario underline decoration-[3px] underline-offset-4' : 'text-tenue hover:text-tinta',
+                  ]}
+                >
+                  {enlace.texto}
+                </a>
+              );
+            })
+          }
+          <ToggleTema />
+        </nav>
+      </div>
+    </header>
+
+    <div class="flex-1">
+      <slot />
+    </div>
+
+    <footer class="mt-12 border-t-[3px] border-borde bg-panel">
+      <div class="mx-auto flex max-w-5xl flex-col gap-1 px-4 py-4 text-xs text-tenue sm:flex-row sm:justify-between sm:px-6">
+        <p><span class="text-sql-clave">--</span> Base de Datos I · Material de cátedra</p>
+        <p>Query OK <span class="cursor-terminal ml-1 text-primario"></span></p>
+      </div>
+    </footer>
+  </body>
+</html>

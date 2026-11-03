@@ -1,0 +1,187 @@
+---
+import type { PreguntaCuestionario } from '@/types/quiz';
+import PixelSprite from '@/components/PixelSprite.astro';
+import { MAX_JUGADORES, MIN_JUGADORES } from '@/lib/juego/partida';
+import { formatearUnidad, pluralizar } from '@/utils/formato';
+import { serializarParaScript } from '@/utils/serializar';
+
+interface Props {
+  preguntas: PreguntaCuestionario[];
+  unidades: { unidad: number; titulo: string; cantidad: number }[];
+}
+
+const { preguntas, unidades } = Astro.props;
+
+const OPCIONES_CANTIDAD = [5, 10, 20] as const;
+
+// min-w-0: los <fieldset> tienen por defecto un ancho mínimo igual a su contenido y desbordan en celulares.
+const claseTarjeta = 'caja-pixel min-w-0 bg-panel p-4 sm:p-6';
+const claseLeyenda = 'font-pixel text-lg font-semibold text-tinta';
+const claseOpcionRadio =
+  'flex cursor-pointer items-center gap-3 border-[3px] border-borde/50 bg-panel px-3 py-3 transition hover:border-borde has-checked:border-primario has-checked:bg-panel-2 has-checked:shadow-[3px_3px_0_0_var(--primario)] has-focus-visible:outline-[3px] has-focus-visible:outline-dashed has-focus-visible:outline-acento';
+---
+
+<div data-juego data-min-jugadores={MIN_JUGADORES} data-max-jugadores={MAX_JUGADORES} class="mt-6">
+  <script is:inline type="application/json" data-preguntas set:html={serializarParaScript(preguntas)}></script>
+
+  <noscript>
+    <p class="caja-pixel bg-aviso-suave p-4">El modo juego necesita JavaScript habilitado.</p>
+  </noscript>
+
+  <!-- 1. Configuración -->
+  <form data-vista-config class="hidden space-y-6" novalidate>
+    <fieldset class={claseTarjeta}>
+      <legend class="sr-only">Jugadores</legend>
+      <div class="flex items-baseline justify-between gap-3">
+        <p class={claseLeyenda} aria-hidden="true">
+          <span class="font-sans text-sm font-normal text-tenue">--</span> Jugadores
+        </p>
+        <p data-contador-jugadores class="text-sm text-tenue"></p>
+      </div>
+      <ol data-lista-jugadores class="mt-4 space-y-3"></ol>
+      <button type="button" data-agregar-jugador class="boton-pixel mt-5 w-full bg-acento text-sobre-acento sm:w-auto">
+        + Agregar jugador
+      </button>
+    </fieldset>
+
+    <fieldset class={claseTarjeta}>
+      <legend class="sr-only">Tema</legend>
+      <p class={claseLeyenda} aria-hidden="true"><span class="font-sans text-sm font-normal text-tenue">--</span> Tema</p>
+      <div class="mt-4 grid gap-3 sm:grid-cols-2">
+        <label class={claseOpcionRadio}>
+          <input type="radio" name="tema" value="todas" checked class="size-4 accent-primario" />
+          <span>
+            <span class="block font-semibold text-tinta">Todas las unidades</span>
+            <span class="block text-xs text-tenue">{pluralizar(preguntas.length, 'pregunta', 'preguntas')} mezcladas</span>
+          </span>
+        </label>
+        {
+          unidades.map((u) => (
+            <label class={claseOpcionRadio}>
+              <input type="radio" name="tema" value={String(u.unidad)} class="size-4 accent-primario" />
+              <span>
+                <span class="block font-semibold text-tinta">{u.titulo}</span>
+                <span class="block text-xs text-tenue">
+                  {formatearUnidad(u.unidad)} · {pluralizar(u.cantidad, 'pregunta', 'preguntas')}
+                </span>
+              </span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class={claseTarjeta}>
+      <legend class="sr-only">Cantidad de preguntas</legend>
+      <p class={claseLeyenda} aria-hidden="true">
+        <span class="font-sans text-sm font-normal text-tenue">--</span> <span class="font-sans text-base text-sql-clave">LIMIT</span> preguntas
+      </p>
+      <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {
+          OPCIONES_CANTIDAD.map((cantidad) => (
+            <label class={claseOpcionRadio}>
+              <input type="radio" name="cantidad" value={String(cantidad)} checked={cantidad === 10} class="size-4 accent-primario" />
+              <span class="font-pixel text-lg font-semibold text-tinta">{cantidad}</span>
+            </label>
+          ))
+        }
+        <label class={claseOpcionRadio}>
+          <input type="radio" name="cantidad" value="todas" class="size-4 accent-primario" />
+          <span class="font-pixel text-lg font-semibold text-tinta">Todas</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <p data-error-config role="alert" class="caja-pixel hidden border-error bg-error-suave px-4 py-3 text-sm font-semibold text-error"></p>
+
+    <div class="flex justify-end">
+      <button type="submit" class="boton-pixel w-full bg-primario px-8 py-3 text-lg text-sobre-primario sm:w-auto">
+        ▶ Empezar partida
+      </button>
+    </div>
+  </form>
+
+  <!-- 2. Ronda -->
+  <section data-vista-ronda class="hidden">
+    <p data-ronda-progreso class="font-pixel text-lg text-tinta"></p>
+    <ul data-marcador class="mt-2 flex flex-wrap gap-2" aria-label="Marcador"></ul>
+
+    <article class="caja-pixel mt-5 bg-panel">
+      <p data-etiqueta class="border-b-[3px] border-borde bg-panel-2 px-4 py-2 text-xs uppercase tracking-wide text-primario sm:px-6"></p>
+      <div class="p-4 sm:p-6">
+        <h2
+          data-enunciado
+          tabindex="-1"
+          class="font-sans text-base font-semibold leading-relaxed text-tinta wrap-anywhere focus:outline-none sm:text-lg"
+        >
+        </h2>
+        <p class="mt-4 text-xs text-tenue">
+          Cada jugador toca su nombre en la opción que elige. Tocar otra opción mueve el voto; tocar el mismo nombre lo quita.
+        </p>
+        <ol data-opciones class="mt-4 space-y-3"></ol>
+      </div>
+    </article>
+
+    <!-- Estado de la votación -->
+    <div data-panel-votacion class="caja-pixel mt-5 bg-panel p-4 sm:p-5">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-center gap-3" aria-live="polite">
+          <PixelSprite nombre="mando" escala={3} class="hidden shrink-0 sm:block" />
+          <div>
+            <p data-votacion-conteo class="font-pixel text-xl font-semibold text-tinta"></p>
+            <p data-votacion-faltan class="text-xs text-tenue"></p>
+          </div>
+        </div>
+        <button type="button" data-revelar class="boton-pixel w-full bg-acento text-sobre-acento sm:w-auto" disabled>
+          ▶ Revelar respuesta
+        </button>
+      </div>
+    </div>
+
+    <div data-revelacion class="caja-pixel mt-5 hidden bg-panel">
+      <p class="border-b-[3px] border-borde bg-panel-2 px-4 py-2 text-xs text-tenue sm:px-6">
+        <span class="font-bold text-sql-clave">SELECT</span>{' jugador, respuesta '}<span class="font-bold text-sql-clave">FROM</span>{' ronda;'}
+      </p>
+      <div class="p-4 sm:p-6">
+        <h3 data-revelacion-titulo tabindex="-1" class="text-2xl font-bold text-tinta focus:outline-none"></h3>
+        <ul data-resultados-ronda class="mt-4 space-y-2"></ul>
+        <div data-explicacion class="mt-6 space-y-4 border-t-[3px] border-dashed border-borde/50 pt-4 text-tinta"></div>
+        <div class="mt-5 border-t-[3px] border-dashed border-borde/50 pt-4">
+          <p class="font-pixel text-base font-semibold text-tinta">Material de estudio</p>
+          <ul data-enlaces class="mt-2 space-y-1"></ul>
+        </div>
+        <div class="mt-6 flex justify-end">
+          <button type="button" data-siguiente class="boton-pixel w-full bg-primario text-sobre-primario sm:w-auto"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Resultado final -->
+  <section data-vista-final class="hidden">
+    <div class="caja-pixel bg-panel p-6 text-center shadow-pixel-lg sm:p-8">
+      <PixelSprite nombre="trofeo" escala={7} class="mx-auto" />
+      <h2 data-ganador tabindex="-1" class="mt-4 text-3xl font-bold text-tinta focus:outline-none sm:text-4xl"></h2>
+      <p data-final-detalle class="mt-2 text-sm text-tenue"></p>
+    </div>
+
+    <div class="caja-pixel mt-6 bg-panel">
+      <p class="border-b-[3px] border-borde bg-panel-2 px-4 py-2 text-xs text-tenue wrap-anywhere">
+        <span class="font-bold text-sql-clave">SELECT</span>{' jugador, puntos '}<span class="font-bold text-sql-clave">FROM</span>{' partida '}<span class="font-bold text-sql-clave">ORDER BY</span>{' puntos '}<span class="font-bold text-sql-clave">DESC</span>;
+      </p>
+      <ol data-ranking class="divide-y-[3px] divide-borde/30" aria-label="Ranking final"></ol>
+    </div>
+
+    <div class="mt-6 flex flex-col justify-center gap-4 sm:flex-row">
+      <button type="button" data-revancha class="boton-pixel bg-primario text-sobre-primario">↻ Revancha</button>
+      <button type="button" data-volver-config class="boton-pixel bg-acento text-sobre-acento">Cambiar jugadores</button>
+      <a href="/" class="boton-pixel bg-panel text-tinta">Inicio</a>
+    </div>
+  </section>
+</div>
+
+<script>
+  import { iniciarJuego } from '@/scripts/juego';
+
+  document.querySelectorAll<HTMLElement>('[data-juego]').forEach(iniciarJuego);
+</script>

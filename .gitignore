@@ -1,0 +1,34 @@
+# Dependencias
+node_modules/
+
+# Salida del build
+dist/
+
+# Tipos y caché generados por Astro
+.astro/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Variables de entorno
+.env
+.env.*
+!.env.example
+
+# Cobertura y reportes de tests
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.idea/
+.vscode/*
+!.vscode/extensions.json

@@ -1,0 +1,199 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Paleta: cada token define su valor claro y oscuro con light-dark().
+   El tema sigue al sistema; data-tema="claro" | "oscuro" lo fuerza.
+   ------------------------------------------------------------------ */
+:root {
+  color-scheme: light dark;
+
+  /* Claro: "arcade de día" — gris azulado frío, turquesa y naranja.
+     Oscuro: "arcade de noche" — violeta profundo, turquesa neón y ámbar.
+     Todas las combinaciones de texto superan 4.5:1 de contraste (WCAG AA). */
+  --fondo: light-dark(#eef3f6, #120d1f);
+  --fondo-grilla: light-dark(#dfe8ee, #1b142e);
+  --panel: light-dark(#ffffff, #1e1733);
+  --panel-2: light-dark(#e9eff4, #2a2145);
+  --tinta: light-dark(#10162f, #f3edff);
+  --tenue: light-dark(#4a5372, #b3a7d6);
+  --borde: light-dark(#10162f, #5b4b99);
+  --sombra: light-dark(#10162f, #07040f);
+  --contorno: light-dark(#10162f, #07040f);
+  --brillo: light-dark(#ffffff, #f3edff);
+
+  --primario: light-dark(#0b7a69, #2de2c4);
+  --primario-fuerte: light-dark(#075e51, #8ff7e6);
+  --sobre-primario: light-dark(#ffffff, #120d1f);
+  --acento: light-dark(#ff8a3d, #ffd166);
+  --sobre-acento: light-dark(#10162f, #120d1f);
+
+  --ok: light-dark(#18703c, #5ce68b);
+  --ok-suave: light-dark(#dcf5e6, #14331f);
+  --error: light-dark(#b0204f, #ff5c8a);
+  --error-suave: light-dark(#fde4ee, #3d1426);
+  --aviso-suave: light-dark(#fff3d6, #3a2e12);
+
+  --sql-clave: light-dark(#7c3aed, #ff7edb);
+  --sql-funcion: light-dark(#0369a1, #6fd3ff);
+  --sql-cadena: light-dark(#15803d, #b6f36b);
+  --sql-numero: light-dark(#c2410c, #ffb86b);
+}
+
+:root[data-tema='claro'] {
+  color-scheme: light;
+}
+
+:root[data-tema='oscuro'] {
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-fondo: var(--fondo);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-tinta: var(--tinta);
+  --color-tenue: var(--tenue);
+  --color-borde: var(--borde);
+  --color-sombra: var(--sombra);
+  --color-primario: var(--primario);
+  --color-primario-fuerte: var(--primario-fuerte);
+  --color-sobre-primario: var(--sobre-primario);
+  --color-acento: var(--acento);
+  --color-sobre-acento: var(--sobre-acento);
+  --color-ok: var(--ok);
+  --color-ok-suave: var(--ok-suave);
+  --color-error: var(--error);
+  --color-error-suave: var(--error-suave);
+  --color-aviso-suave: var(--aviso-suave);
+  --color-sql-clave: var(--sql-clave);
+  --color-sql-funcion: var(--sql-funcion);
+  --color-sql-cadena: var(--sql-cadena);
+  --color-sql-numero: var(--sql-numero);
+
+  /* Sombras duras, sin desenfoque: el sello del estilo pixel art. */
+  --shadow-pixel: 4px 4px 0 0 var(--sombra);
+  --shadow-pixel-lg: 6px 6px 0 0 var(--sombra);
+  --shadow-pixel-ok: 4px 4px 0 0 var(--ok);
+  --shadow-pixel-error: 4px 4px 0 0 var(--error);
+}
+
+@theme {
+  --font-sans: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  /* VT323: tipografía de terminal pixelada, con 5/S, 8/B y 0/O bien diferenciados. */
+  --font-pixel: 'VT323', 'JetBrains Mono Variable', ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-fondo text-tinta antialiased;
+    /* Cuadrícula sutil, como papel milimetrado o una grilla de píxeles. */
+    background-image:
+      linear-gradient(var(--fondo-grilla) 2px, transparent 2px),
+      linear-gradient(90deg, var(--fondo-grilla) 2px, transparent 2px);
+    background-size: 32px 32px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-pixel);
+  }
+
+  /*
+   * VT323 tiene letras chicas para su tamaño nominal: font-size-adjust la agranda hasta una
+   * altura legible sin tocar cada clase de tamaño. Solo tiene peso normal, así que se evita la
+   * negrita sintética, que deformaría los píxeles.
+   */
+  h1,
+  h2,
+  h3,
+  .font-pixel {
+    font-size-adjust: 0.6;
+    font-synthesis: none;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+  }
+
+  ::selection {
+    background-color: var(--acento);
+    color: var(--sobre-acento);
+  }
+
+  :focus-visible {
+    outline: 3px dashed var(--acento);
+    outline-offset: 3px;
+  }
+}
+
+/* Caja con borde grueso y sombra dura. El fondo se indica aparte (bg-panel, bg-primario, …). */
+@utility caja-pixel {
+  border: 3px solid var(--borde);
+  box-shadow: var(--shadow-pixel);
+}
+
+/* Botón con efecto de tecla: sube al pasar el mouse y se "hunde" al presionar. */
+@utility boton-pixel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.25rem;
+  border: 3px solid var(--borde);
+  box-shadow: var(--shadow-pixel);
+  font-family: var(--font-pixel);
+  font-size: 1.15rem;
+  font-size-adjust: 0.6;
+  font-synthesis: none;
+  letter-spacing: 0.05em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 80ms steps(2),
+    box-shadow 80ms steps(2);
+
+  &:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 0 var(--sombra);
+  }
+
+  &:active:not(:disabled) {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 0 var(--sombra);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+/* Relleno segmentado, como una barra de vida de videojuego. */
+@utility relleno-segmentado {
+  background-image: repeating-linear-gradient(90deg, currentColor 0 10px, transparent 10px 13px);
+}
+
+/* Cursor de terminal parpadeante. */
+@utility cursor-terminal {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  vertical-align: -0.12em;
+  background-color: currentColor;
+  animation: parpadeo 1s steps(1) infinite;
+}
+
+@keyframes parpadeo {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

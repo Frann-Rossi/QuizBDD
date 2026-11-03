@@ -1,0 +1,29 @@
+---
+import { formatearUnidad } from '@/utils/formato';
+
+interface Props {
+  unidad: number;
+  titulo: string;
+  cantidadPreguntas: number;
+  href: string;
+}
+
+const { unidad, titulo, cantidadPreguntas, href } = Astro.props;
+const nombreTabla = `unidad_${String(unidad).padStart(2, '0')}`;
+---
+
+<a href={href} class="group caja-pixel block bg-panel transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5">
+  <div class="flex items-center justify-between border-b-[3px] border-borde bg-panel-2 px-4 py-2 text-xs">
+    <span><span class="font-bold text-sql-clave">TABLE</span> <span class="text-tinta">{nombreTabla}</span></span>
+    <span class="text-tenue">{formatearUnidad(unidad)}</span>
+  </div>
+  <div class="p-4">
+    <h3 class="text-xl font-bold text-tinta">{titulo}</h3>
+    <div class="mt-4 flex items-center justify-between gap-2 text-sm">
+      <span class="text-tenue">
+        <span class="text-sql-funcion">COUNT</span>(*) = <span class="text-sql-numero">{cantidadPreguntas}</span>
+      </span>
+      <span class="font-pixel font-semibold uppercase text-primario group-hover:text-primario-fuerte">▶ Practicar</span>
+    </div>
+  </div>
+</a>

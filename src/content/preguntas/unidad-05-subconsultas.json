@@ -1,0 +1,1886 @@
+{
+  "unidad": 5,
+  "titulo": "Subconsultas",
+  "preguntas": [
+    {
+      "id": "u05-consulta-externa",
+      "tema": "Qué es una subconsulta",
+      "enunciado": "En una consulta que contiene una subconsulta, ¿qué rol cumple la consulta externa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Calcula el dato intermedio que necesita la otra consulta.",
+          "explicacion": "Ese es el rol de la consulta interna (la subconsulta): produce el valor, conjunto o tabla que la consulta externa necesita."
+        },
+        {
+          "id": "b",
+          "texto": "Guarda el resultado de la subconsulta como una vista.",
+          "explicacion": "Una subconsulta no crea ningún objeto en la base; su resultado solo se usa dentro de esa instrucción."
+        },
+        {
+          "id": "c",
+          "texto": "Es la consulta principal y produce el resultado que finalmente vemos.",
+          "explicacion": "Correcto: la consulta externa es la principal; la interna le aporta el dato que necesita para responder."
+        },
+        {
+          "id": "d",
+          "texto": "Solo puede contener una cláusula WHERE.",
+          "explicacion": "La consulta externa es un SELECT completo: puede tener SELECT, FROM, WHERE, GROUP BY, HAVING, ORDER BY, etc."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una subconsulta (consulta anidada o subquery) es un SELECT escrito dentro de otra instrucción SQL. Si para contestar una pregunta necesito responder primero otra más pequeña, probablemente convenga usar una subconsulta.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Qué es una subconsulta",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "idea"
+        }
+      ]
+    },
+    {
+      "id": "u05-subconsulta-escalar",
+      "tema": "Subconsultas escalares",
+      "enunciado": "¿Qué devuelve una subconsulta escalar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Exactamente una fila y una columna.",
+          "explicacion": "Correcto: al devolver un único valor puede usarse como si fuera un número, una fecha o un texto, por ejemplo con =, > o < o dentro del SELECT."
+        },
+        {
+          "id": "b",
+          "texto": "Varias filas de una sola columna.",
+          "explicacion": "Eso describe a una subconsulta de lista, que se usa con IN, NOT IN, ANY, SOME o ALL."
+        },
+        {
+          "id": "c",
+          "texto": "Varias filas y varias columnas.",
+          "explicacion": "Ese resultado tabular corresponde a una subconsulta matricial, que suele usarse como tabla derivada en FROM."
+        },
+        {
+          "id": "d",
+          "texto": "Verdadero o falso, según si aparece al menos una fila.",
+          "explicacion": "Eso describe el uso de existencia con EXISTS / NOT EXISTS, donde no interesan los valores devueltos."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Según la forma de su resultado, una subconsulta puede ser escalar (un valor), de lista (una columna, varias filas), matricial (resultado tabular) o de existencia. Si una subconsulta usada como valor devuelve más de una fila, MySQL produce un error.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas escalares",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "escalares"
+        }
+      ]
+    },
+    {
+      "id": "u05-forma-y-dependencia",
+      "tema": "Cómo clasificar una subconsulta",
+      "enunciado": "En una consulta sobre clientes AS c, la columna (SELECT COUNT(*) FROM ventas AS v WHERE v.id_cliente = c.id_cliente) AS cantidad_ventas, ¿cómo se clasifica?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo como escalar: una subconsulta no puede ser escalar y correlacionada a la vez.",
+          "explicacion": "Las dos clasificaciones no son excluyentes: una describe la forma del resultado y la otra la dependencia con la consulta externa."
+        },
+        {
+          "id": "b",
+          "texto": "Correlacionada y de lista.",
+          "explicacion": "Es correlacionada, pero COUNT(*) devuelve un único valor, así que no es de lista."
+        },
+        {
+          "id": "c",
+          "texto": "Independiente y escalar.",
+          "explicacion": "No es independiente: usa c.id_cliente, una columna de la consulta externa, por lo que no puede ejecutarse sola."
+        },
+        {
+          "id": "d",
+          "texto": "Correlacionada y escalar a la vez.",
+          "explicacion": "Correcto: es correlacionada porque depende de c.id_cliente y es escalar porque COUNT(*) devuelve un único valor."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Conviene separar dos preguntas: ¿qué forma tiene el resultado (escalar, lista, matricial, existencia)? y ¿depende de la consulta externa (independiente o correlacionada)? Una correlacionada puede ser, a la vez, escalar, de lista o matricial.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Cómo clasificar una subconsulta",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "clasificar"
+        },
+        {
+          "titulo": "Unidad 5 · Subconsultas correlacionadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "correlacionadas"
+        }
+      ]
+    },
+    {
+      "id": "u05-menor-que-all",
+      "tema": "ANY, SOME y ALL",
+      "enunciado": "¿Qué significa la condición precio < ALL (lista)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Menor que al menos uno de los valores de la lista.",
+          "explicacion": "Eso es < ANY (o < SOME): alcanza con estar por debajo del mayor valor."
+        },
+        {
+          "id": "b",
+          "texto": "Igual a alguno de los valores de la lista.",
+          "explicacion": "Esa idea de pertenencia se expresa con IN (o = ANY)."
+        },
+        {
+          "id": "c",
+          "texto": "Menor que el promedio de los valores de la lista.",
+          "explicacion": "ALL no calcula promedios; compara contra cada valor individual."
+        },
+        {
+          "id": "d",
+          "texto": "Menor que todos los valores: debe quedar por debajo del menor.",
+          "explicacion": "Correcto: para ser menor que todos, el valor tiene que ser menor que el mínimo de la lista."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "ANY / SOME expresan “alguno” (SOME es sinónimo de ANY) y ALL expresa “todos”. Conviene traducir primero la pregunta al castellano y recién después elegir el operador.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ANY, SOME y ALL",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "anyall"
+        }
+      ]
+    },
+    {
+      "id": "u05-alias-tabla-derivada",
+      "tema": "Subconsultas matriciales y tablas derivadas",
+      "enunciado": "¿Qué requisito debe cumplir una subconsulta ubicada en la cláusula FROM?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Devolver una sola columna.",
+          "explicacion": "En FROM suele usarse justamente un resultado con varias filas y varias columnas."
+        },
+        {
+          "id": "b",
+          "texto": "Tener un alias para que la consulta externa pueda referirse a ella.",
+          "explicacion": "Correcto: la tabla derivada necesita un nombre, por ejemplo ) AS resumen."
+        },
+        {
+          "id": "c",
+          "texto": "Ser una subconsulta correlacionada.",
+          "explicacion": "Una tabla derivada habitualmente es independiente; no necesita columnas de la consulta externa."
+        },
+        {
+          "id": "d",
+          "texto": "Empezar con SELECT 1.",
+          "explicacion": "SELECT 1 es una convención de EXISTS, donde no importan las columnas; en FROM las columnas sí importan."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Un resultado tabular dentro de FROM se usa como tabla derivada. Existe únicamente durante la ejecución de esa instrucción: no queda guardada como tabla real ni como vista.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas matriciales y tablas derivadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "matriciales"
+        }
+      ]
+    },
+    {
+      "id": "u05-select-1-en-exists",
+      "tema": "EXISTS y NOT EXISTS",
+      "enunciado": "¿Por qué es habitual escribir SELECT 1 dentro de una subconsulta con EXISTS?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque EXISTS solo evalúa si hay al menos una fila; el contenido de las columnas no importa.",
+          "explicacion": "Correcto: SELECT 1 deja explícita la intención de preguntar por existencia y no por valores."
+        },
+        {
+          "id": "b",
+          "texto": "Porque EXISTS exige que la subconsulta devuelva el número 1.",
+          "explicacion": "EXISTS no compara valores: sería verdadero con cualquier columna seleccionada, siempre que exista una fila."
+        },
+        {
+          "id": "c",
+          "texto": "Porque limita la subconsulta a una sola fila.",
+          "explicacion": "SELECT 1 no limita la cantidad de filas; solo indica qué columna se proyecta."
+        },
+        {
+          "id": "d",
+          "texto": "Porque de lo contrario la consulta devuelve un error.",
+          "explicacion": "Es una convención, no una obligación: SELECT * o cualquier columna también serían válidos."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "EXISTS es verdadero si la subconsulta devuelve al menos una fila; NOT EXISTS, si no devuelve ninguna. Cuando el enunciado dice “clientes que tengan…” o “productos que no hayan…”, conviene pensar en EXISTS / NOT EXISTS.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · EXISTS y NOT EXISTS",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "exists"
+        }
+      ]
+    },
+    {
+      "id": "u05-reconocer-correlacionada",
+      "tema": "Subconsultas correlacionadas",
+      "enunciado": "¿Cómo se reconoce una subconsulta correlacionada?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Devuelve más de una fila.",
+          "explicacion": "La cantidad de filas describe la forma del resultado, no la dependencia con la consulta externa."
+        },
+        {
+          "id": "b",
+          "texto": "Está ubicada en la cláusula FROM.",
+          "explicacion": "La ubicación no define la correlación; las tablas derivadas en FROM suelen ser independientes."
+        },
+        {
+          "id": "c",
+          "texto": "Utiliza una columna o alias de la consulta externa, por lo que no puede ejecutarse sola tal como está.",
+          "explicacion": "Correcto: por ejemplo, WHERE p2.categoria = p1.categoria usa p1, que pertenece a la consulta externa."
+        },
+        {
+          "id": "d",
+          "texto": "Usa una función de agregación como AVG o COUNT.",
+          "explicacion": "Una subconsulta independiente como SELECT AVG(precio) FROM productos también usa agregación."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una correlacionada necesita saber qué fila externa se está evaluando. Puede expresar el problema con mucha claridad, aunque en conjuntos grandes puede ser más costosa que otra formulación.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas correlacionadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "correlacionadas"
+        }
+      ]
+    },
+    {
+      "id": "u05-subconsulta-en-having",
+      "tema": "Subconsultas en SELECT, WHERE, FROM y HAVING",
+      "enunciado": "¿Para qué puede servir una subconsulta ubicada en HAVING?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Para agregar un cálculo como una columna del resultado.",
+          "explicacion": "Eso corresponde a una subconsulta en SELECT, como la cantidad de ventas de cada cliente."
+        },
+        {
+          "id": "b",
+          "texto": "Para usar un resultado intermedio como si fuera una tabla.",
+          "explicacion": "Eso corresponde a una subconsulta en FROM (tabla derivada)."
+        },
+        {
+          "id": "c",
+          "texto": "Para filtrar filas individuales antes de agrupar.",
+          "explicacion": "El filtrado de filas antes del agrupamiento se hace en WHERE."
+        },
+        {
+          "id": "d",
+          "texto": "Para filtrar grupos comparándolos contra un cálculo obtenido por otra consulta.",
+          "explicacion": "Correcto: por ejemplo, conservar los clientes cuya cantidad de ventas supera el promedio de ventas por cliente."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una subconsulta puede aparecer en SELECT (columna calculada), WHERE (filtrar filas), FROM (tabla derivada) y HAVING (filtrar grupos).",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas en SELECT, WHERE, FROM y HAVING",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "ubicacion"
+        }
+      ]
+    },
+    {
+      "id": "u05-join-con-distinct",
+      "tema": "¿Subconsulta, JOIN o GROUP BY?",
+      "enunciado": "Para obtener los clientes que compraron se puede escribir SELECT DISTINCT c.nombre FROM clientes AS c INNER JOIN ventas AS v ON v.id_cliente = c.id_cliente. ¿Por qué se usa DISTINCT?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque INNER JOIN incluiría a los clientes sin ventas.",
+          "explicacion": "INNER JOIN conserva solo las filas que coinciden; los clientes sin ventas no aparecen."
+        },
+        {
+          "id": "b",
+          "texto": "Porque un cliente con varias ventas aparecería una vez por cada venta.",
+          "explicacion": "Correcto: si un cliente tiene dos ventas, sin DISTINCT su nombre saldría dos veces. Con IN cada cliente aparece una sola vez."
+        },
+        {
+          "id": "c",
+          "texto": "Porque sin DISTINCT el JOIN produce un error.",
+          "explicacion": "La consulta es válida sin DISTINCT; solo devolvería nombres repetidos."
+        },
+        {
+          "id": "d",
+          "texto": "Para ordenar alfabéticamente los nombres.",
+          "explicacion": "DISTINCT elimina duplicados; para ordenar se usa ORDER BY."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una misma pregunta puede resolverse con una subconsulta (IN) o con un JOIN. No hay una herramienta “ganadora”: se elige la formulación correcta, clara y mantenible.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ¿Subconsulta, JOIN o GROUP BY?",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "eleccion"
+        }
+      ]
+    },
+    {
+      "id": "u05-ausencia-con-not-exists",
+      "tema": "EXISTS y NOT EXISTS",
+      "enunciado": "Para obtener los clientes que nunca compraron, ¿qué formulación es la más segura y expresiva según el material?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "WHERE NOT EXISTS (SELECT 1 FROM ventas AS v WHERE v.id_cliente = c.id_cliente).",
+          "explicacion": "Correcto: NOT EXISTS pregunta directamente por la ausencia de filas relacionadas y no se ve afectado por valores NULL en la lista."
+        },
+        {
+          "id": "b",
+          "texto": "WHERE id_cliente NOT IN (SELECT id_cliente FROM ventas), porque NOT IN nunca se ve afectado por NULL.",
+          "explicacion": "NOT IN sí puede verse afectado: si la lista contiene NULL, la comparación da UNKNOWN y el resultado puede ser inesperado."
+        },
+        {
+          "id": "c",
+          "texto": "WHERE id_cliente = (SELECT id_cliente FROM ventas).",
+          "explicacion": "Además de no expresar ausencia, = con una subconsulta que devuelve varias filas produce un error."
+        },
+        {
+          "id": "d",
+          "texto": "WHERE id_cliente > ALL (SELECT id_cliente FROM ventas).",
+          "explicacion": "Eso devuelve los clientes con id mayor que todos los de ventas, no los que no tienen ventas."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Cuando la pregunta es “¿qué registros no tienen relación?”, NOT EXISTS suele ser más seguro que NOT IN, sobre todo si la subconsulta puede devolver NULL.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · EXISTS y NOT EXISTS",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "exists"
+        },
+        {
+          "titulo": "Unidad 5 · Subconsultas de lista · IN y NOT IN",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "listas"
+        }
+      ]
+    },
+    {
+      "id": "u05-empate-en-maximo",
+      "tema": "Subconsultas escalares",
+      "enunciado": "En SELECT nombre FROM productos WHERE precio = (SELECT MAX(precio) FROM productos), ¿qué pasa si dos productos empatan en el precio máximo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se produce un error, porque la subconsulta devuelve dos filas.",
+          "explicacion": "MAX(precio) devuelve un único valor aunque varios productos lo compartan: la subconsulta sigue siendo escalar."
+        },
+        {
+          "id": "b",
+          "texto": "Se muestra solo el primero de los dos productos.",
+          "explicacion": "La consulta externa no se limita a una fila: conserva todas las que cumplen la condición."
+        },
+        {
+          "id": "c",
+          "texto": "Se muestran los dos productos.",
+          "explicacion": "Correcto: la subconsulta devuelve un solo valor (el máximo) y la consulta externa puede devolver varias filas que coincidan con él."
+        },
+        {
+          "id": "d",
+          "texto": "No se muestra ningún producto.",
+          "explicacion": "Ambos productos cumplen precio = máximo, así que los dos aparecen."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Hay que distinguir lo que devuelve la subconsulta (un valor) de lo que devuelve la consulta externa (todas las filas que cumplan la condición).",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas escalares",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "escalares"
+        }
+      ]
+    },
+    {
+      "id": "u05-some-y-any",
+      "tema": "ANY, SOME y ALL",
+      "enunciado": "¿Qué relación hay entre SOME y ANY en SQL?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "SOME exige que la condición se cumpla para todos los valores.",
+          "explicacion": "Eso es ALL. SOME expresa “alguno”, igual que ANY."
+        },
+        {
+          "id": "b",
+          "texto": "Son sinónimos: ambos piden que la condición se cumpla para al menos un valor.",
+          "explicacion": "Correcto: precio > SOME (...) y precio > ANY (...) significan lo mismo."
+        },
+        {
+          "id": "c",
+          "texto": "SOME solo puede usarse con subconsultas escalares.",
+          "explicacion": "SOME, como ANY y ALL, se usa con subconsultas que devuelven una lista."
+        },
+        {
+          "id": "d",
+          "texto": "SOME es equivalente a EXISTS.",
+          "explicacion": "EXISTS pregunta si hay filas; SOME compara un valor contra los valores de una lista."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "ANY / SOME combinan un operador de comparación con una lista y expresan “alguno”; ALL expresa “todos”.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ANY, SOME y ALL",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "anyall"
+        }
+      ]
+    },
+    {
+      "id": "u05-pensar-en-conjuntos",
+      "tema": "Pensar en conjuntos, no en bucles",
+      "enunciado": "¿Una subconsulta correlacionada obliga a MySQL a ejecutar físicamente un bucle fila por fila?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí, siempre recorre la tabla externa fila por fila.",
+          "explicacion": "Imaginar un recorrido fila por fila ayuda a entender la lógica, pero no describe obligatoriamente cómo se ejecuta."
+        },
+        {
+          "id": "b",
+          "texto": "Sí, salvo que se use EXISTS.",
+          "explicacion": "No hay una regla así: con o sin EXISTS, el optimizador decide la estrategia."
+        },
+        {
+          "id": "c",
+          "texto": "No, porque las correlacionadas se ejecutan una sola vez.",
+          "explicacion": "Conceptualmente dependen de cada fila externa; lo que no está garantizado es la estrategia física de ejecución."
+        },
+        {
+          "id": "d",
+          "texto": "No necesariamente: es una forma mental de entenderla, y el optimizador puede transformar la consulta.",
+          "explicacion": "Correcto: SQL es declarativo; describimos qué conjunto queremos y el motor decide cómo obtenerlo."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "En SQL pensamos en conjuntos (“clientes para los que exista una venta”), no en ciclos que recorren filas manualmente.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Pensar en conjuntos, no en bucles",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "conjuntos"
+        }
+      ]
+    },
+    {
+      "id": "u05-habito-antes-de-anidar",
+      "tema": "Método de resolución recomendado",
+      "enunciado": "Según el método de resolución, ¿qué conviene preguntarse antes de insertar una subconsulta dentro de otra?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Si la consulta podría escribirse en una sola línea.",
+          "explicacion": "La cantidad de líneas no determina la sintaxis; lo que importa es la forma del resultado."
+        },
+        {
+          "id": "b",
+          "texto": "¿Qué filas y columnas devuelve?",
+          "explicacion": "Correcto: saber si devuelve un valor, una lista, una tabla o solo existencia define el operador y la ubicación."
+        },
+        {
+          "id": "c",
+          "texto": "Si se puede convertir en una vista.",
+          "explicacion": "Convertirla en vista es una decisión posterior y opcional; primero hay que entender qué devuelve."
+        },
+        {
+          "id": "d",
+          "texto": "Cuál es el operador más rápido.",
+          "explicacion": "El operador se elige según la forma del resultado y la pregunta, no por velocidad."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El método recomendado: leer qué debe mostrar la consulta externa, detectar el dato intermedio, escribir y probar la interna, clasificar lo que devuelve, elegir el operador e integrar.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Método de resolución recomendado",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "metodo"
+        }
+      ]
+    },
+    {
+      "id": "u05-objetivo-de-la-unidad",
+      "tema": "Presentación",
+      "enunciado": "Según la presentación de la unidad, ¿cuál es el objetivo principal al estudiar subconsultas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Memorizar dónde van los paréntesis en cada tipo de subconsulta.",
+          "explicacion": "La presentación aclara que el objetivo no es memorizar paréntesis, sino entender qué devuelve la consulta interna."
+        },
+        {
+          "id": "b",
+          "texto": "Reconocer qué devuelve la consulta interna y cómo usar ese resultado.",
+          "explicacion": "Correcto: la forma del resultado (valor, lista, tabla o existencia) es lo que determina cómo se integra la subconsulta."
+        },
+        {
+          "id": "c",
+          "texto": "Reemplazar todos los JOIN por subconsultas, porque son una técnica más avanzada y eficiente.",
+          "explicacion": "Subconsultas, JOINs y GROUP BY no compiten: una consulta anidada no es automáticamente mejor ni más avanzada."
+        },
+        {
+          "id": "d",
+          "texto": "Aprender a guardar resultados intermedios como tablas permanentes.",
+          "explicacion": "Una subconsulta no guarda nada en la base: su resultado solo existe durante la ejecución de la instrucción."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una subconsulta aparece cuando para responder una pregunta hay que resolver primero otra más pequeña. Lo central es reconocer qué devuelve la consulta interna y usar ese resultado de forma correcta.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Presentación",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "inicio"
+        }
+      ]
+    },
+    {
+      "id": "u05-unidad-sin-with",
+      "tema": "Presentación",
+      "enunciado": "¿Qué recurso queda explícitamente fuera de la Unidad 5 y se incorporará recién en la Unidad 6?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Las subconsultas correlacionadas, que dependen de la consulta externa.",
+          "explicacion": "Las correlacionadas forman parte de esta unidad: se estudian, por ejemplo, con el promedio de precio por categoría."
+        },
+        {
+          "id": "b",
+          "texto": "Las tablas derivadas en FROM.",
+          "explicacion": "Las tablas derivadas se trabajan en esta unidad, como el resumen de gasto por cliente con alias resumen."
+        },
+        {
+          "id": "c",
+          "texto": "Los operadores ANY, SOME y ALL.",
+          "explicacion": "ANY, SOME y ALL se estudian en esta unidad para comparar un valor contra una lista."
+        },
+        {
+          "id": "d",
+          "texto": "Las CTEs, escritas con WITH.",
+          "explicacion": "Correcto: la presentación indica que la Unidad 6 incorporará CTEs y que aquí se resuelven consultas anidadas sin utilizar todavía WITH."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "En la Unidad 5 los resultados intermedios se expresan con subconsultas anidadas (en SELECT, WHERE, FROM o HAVING); la sintaxis WITH llega en la unidad siguiente.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Presentación",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "inicio"
+        }
+      ]
+    },
+    {
+      "id": "u05-clasificar-resumen-por-cliente",
+      "tema": "Cómo clasificar una subconsulta",
+      "enunciado": "La subconsulta (SELECT id_cliente, COUNT(*) AS cantidad FROM ventas GROUP BY id_cliente) se usa dentro de FROM con un alias. ¿Cómo se clasifica?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Escalar y correlacionada, porque COUNT(*) devuelve un único valor.",
+          "explicacion": "Devuelve varias filas (una por cliente) y dos columnas, así que no es escalar; además no usa columnas de la consulta externa."
+        },
+        {
+          "id": "b",
+          "texto": "Matricial (tabular) e independiente.",
+          "explicacion": "Correcto: devuelve varias filas y dos columnas, y puede ejecutarse sola porque no depende de ninguna columna exterior."
+        },
+        {
+          "id": "c",
+          "texto": "De lista e independiente.",
+          "explicacion": "Una subconsulta de lista devuelve una sola columna; esta devuelve dos (id_cliente y cantidad)."
+        },
+        {
+          "id": "d",
+          "texto": "De existencia, porque usa COUNT(*).",
+          "explicacion": "COUNT(*) cuenta filas, pero eso no la convierte en una subconsulta de existencia: aquí sí interesan los valores devueltos."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Conviene clasificar con dos criterios separados: la forma del resultado (escalar, lista, matricial o existencia) y la dependencia respecto de la consulta externa (independiente o correlacionada).",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Cómo clasificar una subconsulta",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "clasificar"
+        },
+        {
+          "titulo": "Unidad 5 · Subconsultas matriciales y tablas derivadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "matriciales"
+        }
+      ]
+    },
+    {
+      "id": "u05-subconsulta-de-fila",
+      "tema": "Cómo clasificar una subconsulta",
+      "enunciado": "Algunos textos hablan de “subconsulta de fila” (una sola fila con varias columnas). ¿Cómo la trata el material de la unidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La incluye dentro de la idea tabular o matricial.",
+          "explicacion": "Correcto: el material reconoce que algunos textos la separan, pero la agrupa con las matriciales."
+        },
+        {
+          "id": "b",
+          "texto": "La considera un tipo de subconsulta escalar.",
+          "explicacion": "Una escalar devuelve exactamente una fila y una columna; la de fila tiene varias columnas."
+        },
+        {
+          "id": "c",
+          "texto": "La considera una subconsulta de lista.",
+          "explicacion": "Una lista devuelve una columna con varias filas, que es justamente la forma opuesta."
+        },
+        {
+          "id": "d",
+          "texto": "La considera un error de cardinalidad que MySQL siempre rechaza al ejecutarla.",
+          "explicacion": "Devolver una fila con varias columnas no es un error en sí mismo; el material la clasifica, no la prohíbe."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El término “matricial” se conserva porque aparece en material clásico de la materia; en SQL actual, cuando ese resultado tabular se ubica en FROM, se habla de tabla derivada.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Cómo clasificar una subconsulta",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "clasificar"
+        }
+      ]
+    },
+    {
+      "id": "u05-not-in-con-null",
+      "tema": "Subconsultas de lista · IN y NOT IN",
+      "enunciado": "Supongamos que la subconsulta de WHERE id_cliente NOT IN (subconsulta) devuelve los valores 3, 5 y NULL. ¿Qué filas conserva la consulta externa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Todas las filas cuyo id_cliente no sea 3 ni 5.",
+          "explicacion": "Eso ocurriría si la lista no tuviera NULL. Al comparar contra NULL el resultado es desconocido, y la fila no se conserva."
+        },
+        {
+          "id": "b",
+          "texto": "Solo las filas con id_cliente 3 o 5.",
+          "explicacion": "Ese sería el comportamiento de IN, no de NOT IN."
+        },
+        {
+          "id": "c",
+          "texto": "Ninguna fila.",
+          "explicacion": "Correcto: para los ids 3 y 5 la condición es falsa, y para los demás la comparación contra NULL da UNKNOWN; WHERE solo conserva las filas donde la condición es verdadera."
+        },
+        {
+          "id": "d",
+          "texto": "MySQL produce un error porque la lista contiene NULL.",
+          "explicacion": "No hay error: la consulta se ejecuta, pero devuelve un resultado inesperado, que es justamente el peligro."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Si la subconsulta de un NOT IN puede devolver NULL, el resultado puede ser inesperado. Para preguntas de ausencia de relaciones suele ser más seguro NOT EXISTS.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas de lista · IN y NOT IN",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "listas"
+        },
+        {
+          "titulo": "Unidad 5 · Errores frecuentes",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "errores"
+        }
+      ]
+    },
+    {
+      "id": "u05-detectar-alias-faltante",
+      "tema": "Errores frecuentes",
+      "enunciado": "¿Qué problema tiene SELECT * FROM (SELECT id_cliente, COUNT(*) AS cantidad FROM ventas GROUP BY id_cliente);?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Falta el alias de la tabla derivada.",
+          "explicacion": "Correcto: toda subconsulta ubicada en FROM necesita un nombre para que la consulta exterior pueda referirse a ella; sin alias, MySQL produce un error."
+        },
+        {
+          "id": "b",
+          "texto": "COUNT(*) no puede usarse dentro de una subconsulta.",
+          "explicacion": "Las funciones de agregación pueden usarse sin problema dentro de una subconsulta."
+        },
+        {
+          "id": "c",
+          "texto": "La subconsulta debería empezar con SELECT 1, porque está dentro de FROM.",
+          "explicacion": "SELECT 1 es una convención de EXISTS; en una tabla derivada las columnas devueltas sí importan."
+        },
+        {
+          "id": "d",
+          "texto": "Debería usarse IN en lugar de FROM.",
+          "explicacion": "IN se usa para comprobar pertenencia en WHERE; aquí se quiere consultar el resultado como si fuera una tabla."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Olvidar el alias de una tabla derivada es uno de los errores frecuentes: la versión correcta termina con ) AS resumen;.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Errores frecuentes",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "errores"
+        },
+        {
+          "titulo": "Unidad 5 · Subconsultas matriciales y tablas derivadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "matriciales"
+        }
+      ]
+    },
+    {
+      "id": "u05-ubicacion-columna-calculada",
+      "tema": "Subconsultas en SELECT, WHERE, FROM y HAVING",
+      "enunciado": "Se quiere listar todos los productos y, al lado de cada uno, una columna con el precio promedio general. ¿Dónde conviene ubicar la subconsulta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "En HAVING.",
+          "explicacion": "HAVING filtra grupos; aquí no se agrupa ni se filtra, solo se agrega un dato a cada fila."
+        },
+        {
+          "id": "b",
+          "texto": "En WHERE.",
+          "explicacion": "En WHERE la subconsulta serviría para filtrar filas, no para mostrar un valor como columna."
+        },
+        {
+          "id": "c",
+          "texto": "En FROM, como tabla derivada con un alias que la consulta externa pueda usar.",
+          "explicacion": "Una tabla derivada sirve para consultar un resultado intermedio con forma de tabla; aquí alcanza con un único valor por fila."
+        },
+        {
+          "id": "d",
+          "texto": "En SELECT, como una columna más.",
+          "explicacion": "Correcto: una subconsulta escalar en SELECT agrega un cálculo como una columna del resultado."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "En SELECT la subconsulta agrega un cálculo como columna; en WHERE filtra filas; en FROM actúa como tabla derivada; en HAVING filtra grupos.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas en SELECT, WHERE, FROM y HAVING",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "ubicacion"
+        }
+      ]
+    },
+    {
+      "id": "u05-formulacion-en-conjuntos",
+      "tema": "Pensar en conjuntos, no en bucles",
+      "enunciado": "¿Cuál de estas descripciones corresponde a la forma de pensar en SQL que propone el material?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Recorrer cada cliente, buscar sus ventas, contarlas, guardar el resultado y seguir con el próximo.",
+          "explicacion": "Esa es la forma de pensar procedural, con un ciclo manual sobre las filas."
+        },
+        {
+          "id": "b",
+          "texto": "Tomar los clientes de a uno y, para cada uno, ejecutar una consulta aparte con sus ventas.",
+          "explicacion": "Eso también describe un recorrido manual fila por fila, propio de la forma procedural."
+        },
+        {
+          "id": "c",
+          "texto": "Obtener los clientes para los que exista una venta.",
+          "explicacion": "Correcto: describe el conjunto de datos que se quiere obtener, no los pasos para recorrerlo."
+        },
+        {
+          "id": "d",
+          "texto": "Copiar los ids de ventas en una lista auxiliar y compararlos a mano con cada cliente.",
+          "explicacion": "Copiar resultados a mano y compararlos uno por uno es justamente lo que una subconsulta evita."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "SQL es un lenguaje declarativo: describimos qué conjunto de datos queremos y el motor decide cómo obtenerlo. Es un primer acercamiento al enfoque set-based.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Pensar en conjuntos, no en bucles",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "conjuntos"
+        }
+      ]
+    },
+    {
+      "id": "u05-elegir-join-para-columnas",
+      "tema": "¿Subconsulta, JOIN o GROUP BY?",
+      "enunciado": "Se quiere mostrar el nombre de cada cliente junto con la fecha de cada una de sus ventas. Según el material, ¿qué herramienta suele expresar mejor esta necesidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Un JOIN entre clientes y ventas.",
+          "explicacion": "Correcto: cuando hay que mostrar columnas provenientes de varias tablas relacionadas, un JOIN expresa bien la idea."
+        },
+        {
+          "id": "b",
+          "texto": "Una subconsulta con IN en WHERE.",
+          "explicacion": "IN solo filtra clientes por pertenencia; no permite mostrar la fecha, que es una columna de ventas."
+        },
+        {
+          "id": "c",
+          "texto": "Una subconsulta con NOT EXISTS.",
+          "explicacion": "NOT EXISTS sirve para detectar ausencia de filas relacionadas, no para mostrar datos de ambas tablas."
+        },
+        {
+          "id": "d",
+          "texto": "Una subconsulta escalar comparada con =.",
+          "explicacion": "Una subconsulta escalar sirve para comparar contra un único valor, como un promedio o un máximo."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "No todo problema que admite una subconsulta debe resolverse con una: se elige la formulación que represente con claridad la pregunta, sea correcta y resulte mantenible.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ¿Subconsulta, JOIN o GROUP BY?",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "eleccion"
+        }
+      ]
+    },
+    {
+      "id": "u05-elegir-group-by",
+      "tema": "¿Subconsulta, JOIN o GROUP BY?",
+      "enunciado": "Se pide la cantidad de clientes de cada ciudad. Según la tabla de herramientas del material, ¿qué expresa mejor esta necesidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una subconsulta con EXISTS por cada ciudad.",
+          "explicacion": "EXISTS comprueba la existencia de filas relacionadas; no calcula cantidades por grupo."
+        },
+        {
+          "id": "b",
+          "texto": "GROUP BY ciudad con COUNT(*).",
+          "explicacion": "Correcto: calcular resultados por grupo es la necesidad que GROUP BY expresa con claridad."
+        },
+        {
+          "id": "c",
+          "texto": "Una subconsulta con ALL.",
+          "explicacion": "ALL compara un valor contra todos los de una lista; no agrupa ni cuenta."
+        },
+        {
+          "id": "d",
+          "texto": "Una tabla derivada sin agrupar, con alias.",
+          "explicacion": "Una tabla derivada podría aparecer en otra formulación, pero sin agrupar no resuelve el conteo por ciudad."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Subconsultas, JOINs y GROUP BY no compiten: resuelven necesidades diferentes. Crear una subconsulta porque sí no hace la consulta mejor ni más avanzada.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ¿Subconsulta, JOIN o GROUP BY?",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "eleccion"
+        }
+      ]
+    },
+    {
+      "id": "u05-probar-sola-una-correlacionada",
+      "tema": "Errores frecuentes",
+      "enunciado": "¿Qué ocurre si se ejecuta sola, tal como está, la subconsulta SELECT AVG(p2.precio) FROM productos AS p2 WHERE p2.categoria = p1.categoria?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Devuelve el promedio general de precios.",
+          "explicacion": "La condición no se ignora: p1.categoria no puede resolverse fuera de la consulta externa."
+        },
+        {
+          "id": "b",
+          "texto": "Devuelve un promedio por cada categoría, uno por fila.",
+          "explicacion": "Para obtener un promedio por categoría haría falta GROUP BY categoria; además, la referencia a p1 sigue sin estar definida."
+        },
+        {
+          "id": "c",
+          "texto": "Devuelve cero filas sin informar error.",
+          "explicacion": "No es un problema silencioso: el alias p1 no existe en esa consulta aislada."
+        },
+        {
+          "id": "d",
+          "texto": "Produce un error, porque p1 no está definido.",
+          "explicacion": "Correcto: es una subconsulta correlacionada; probarla sola sin reemplazar esa referencia no tiene sentido."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Si la subconsulta utiliza un alias definido en la consulta exterior, existe correlación. Confundir una correlacionada con una independiente es uno de los errores frecuentes.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Errores frecuentes",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "errores"
+        },
+        {
+          "titulo": "Unidad 5 · Subconsultas correlacionadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "correlacionadas"
+        }
+      ]
+    },
+    {
+      "id": "u05-paso-despues-de-la-interna",
+      "tema": "Método de resolución recomendado",
+      "enunciado": "Según el método de resolución recomendado, una vez escrita la consulta interna, ¿cuál es el paso siguiente?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Integrarla directamente y verificar el resultado final.",
+          "explicacion": "Integrar y verificar es el último paso; antes hay que clasificar el resultado y elegir el operador."
+        },
+        {
+          "id": "b",
+          "texto": "Elegir el operador más rápido.",
+          "explicacion": "El operador se elige después de clasificar el resultado, y según su forma, no por velocidad."
+        },
+        {
+          "id": "c",
+          "texto": "Clasificar lo que devuelve.",
+          "explicacion": "Correcto: de esa clasificación depende el operador (=, IN, ANY, ALL, EXISTS…) que se elige en el paso siguiente."
+        },
+        {
+          "id": "d",
+          "texto": "Convertirla en una tabla derivada con alias, para poder consultarla como tabla.",
+          "explicacion": "Solo corresponde usarla en FROM si devuelve un resultado tabular que se quiere consultar como tabla."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "El método: leer qué debe mostrar la consulta externa, detectar el dato intermedio, escribir primero la interna, clasificar lo que devuelve, elegir el operador e integrar y verificar.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Método de resolución recomendado",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "metodo"
+        }
+      ]
+    },
+    {
+      "id": "u05-pregunta-final",
+      "tema": "Síntesis",
+      "enunciado": "Según la síntesis de la unidad, ¿cuál es la pregunta final que conviene hacerse ante cualquier ejercicio?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "¿Qué necesito obtener primero para responder después la consulta principal?",
+          "explicacion": "Correcto: si esa pregunta tiene una respuesta clara, ya tenemos la puerta de entrada a la subconsulta."
+        },
+        {
+          "id": "b",
+          "texto": "¿Cómo puedo resolverlo sin usar ningún JOIN, para que la consulta sea más avanzada y eficiente?",
+          "explicacion": "El material no busca evitar los JOIN: subconsultas, JOINs y GROUP BY resuelven necesidades diferentes."
+        },
+        {
+          "id": "c",
+          "texto": "¿Cuántos niveles de subconsultas puedo anidar?",
+          "explicacion": "La cantidad de niveles no es el foco; lo importante es identificar el dato intermedio que se necesita."
+        },
+        {
+          "id": "d",
+          "texto": "¿Qué operador es más rápido en MySQL?",
+          "explicacion": "El operador se elige según la forma del resultado y la pregunta, no por una supuesta velocidad."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "La forma del resultado manda: que sea escalar, de lista, matricial o de existencia determina el operador y la ubicación de la subconsulta.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Síntesis",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "cierre"
+        }
+      ]
+    },
+    {
+      "id": "u05-cuando-ejecutar-sola-la-interna",
+      "tema": "Método de resolución recomendado",
+      "enunciado": "El método de resolución sugiere ejecutar sola la consulta interna para observar su resultado. ¿En qué caso es posible hacerlo tal como está escrita?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Siempre, sin importar cómo esté escrita.",
+          "explicacion": "Una correlacionada usa columnas de la consulta externa, así que sola no puede ejecutarse tal como está."
+        },
+        {
+          "id": "b",
+          "texto": "Solo cuando devuelve un único valor, es decir, cuando es escalar.",
+          "explicacion": "La forma del resultado no es lo que importa: una lista o una tabla independiente también pueden ejecutarse solas."
+        },
+        {
+          "id": "c",
+          "texto": "Solo cuando está ubicada en FROM.",
+          "explicacion": "La ubicación no define si puede ejecutarse sola; lo que importa es si depende de la consulta externa."
+        },
+        {
+          "id": "d",
+          "texto": "Cuando es independiente.",
+          "explicacion": "Correcto: una subconsulta independiente puede ejecutarse sola para verificar qué filas y columnas devuelve antes de integrarla."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Escribir primero la consulta interna y, si es independiente, ejecutarla sola ayuda a responder “¿qué filas y columnas devuelve?”, que determina gran parte de la sintaxis.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Método de resolución recomendado",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "metodo"
+        },
+        {
+          "titulo": "Unidad 5 · Subconsultas correlacionadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "correlacionadas"
+        }
+      ]
+    },
+    {
+      "id": "u05-elegir-subconsulta-escalar",
+      "tema": "Subconsultas escalares",
+      "enunciado": "¿Cuál de estas subconsultas es escalar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "(SELECT id_cliente FROM ventas)",
+          "explicacion": "Puede devolver una columna con muchas filas (una por venta): es una subconsulta de lista."
+        },
+        {
+          "id": "b",
+          "texto": "(SELECT MAX(precio) FROM productos)",
+          "explicacion": "Correcto: MAX devuelve un único valor, es decir, exactamente una fila y una columna."
+        },
+        {
+          "id": "c",
+          "texto": "(SELECT id_cliente, COUNT(*) FROM ventas GROUP BY id_cliente)",
+          "explicacion": "Devuelve varias filas (una por cliente) y dos columnas: es un resultado matricial o tabular."
+        },
+        {
+          "id": "d",
+          "texto": "(SELECT categoria FROM productos WHERE precio > 1000)",
+          "explicacion": "Devuelve una columna que puede tener varias filas: es una subconsulta de lista, aunque filtre con WHERE."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una subconsulta escalar devuelve exactamente una fila y una columna, por eso puede usarse como si fuera un número, una fecha o un texto. Las funciones de agregación sin GROUP BY, como MAX o AVG, son el caso típico.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas escalares",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "escalares"
+        },
+        {
+          "titulo": "Unidad 5 · Cómo clasificar una subconsulta",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "clasificar"
+        }
+      ]
+    },
+    {
+      "id": "u05-identificar-subconsulta-de-lista",
+      "tema": "Subconsultas de lista · IN y NOT IN",
+      "enunciado": "En WHERE id_producto IN (SELECT id_producto FROM detalle_ventas), ¿cómo se clasifica la subconsulta según la forma de su resultado?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Escalar, porque se compara un único id_producto.",
+          "explicacion": "El valor único es el id_producto de la fila externa; la subconsulta puede devolver muchas filas."
+        },
+        {
+          "id": "b",
+          "texto": "Matricial, porque detalle_ventas tiene varias columnas.",
+          "explicacion": "Importa lo que devuelve la subconsulta, no cuántas columnas tiene la tabla: aquí proyecta una sola columna."
+        },
+        {
+          "id": "c",
+          "texto": "De lista: una columna con cero, una o muchas filas.",
+          "explicacion": "Correcto: devuelve una columna de valores, y IN comprueba si el dato de la consulta externa pertenece a ese conjunto."
+        },
+        {
+          "id": "d",
+          "texto": "De existencia, porque IN solo pregunta si hay filas.",
+          "explicacion": "IN compara el valor contra cada elemento de la lista; preguntar solo por la existencia de filas es lo que hace EXISTS."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una subconsulta de lista devuelve una columna con cero, una o muchas filas. Se usa con IN, NOT IN, ANY, SOME o ALL, nunca como si fuera un único valor.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas de lista · IN y NOT IN",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "listas"
+        },
+        {
+          "titulo": "Unidad 5 · Cómo clasificar una subconsulta",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "clasificar"
+        }
+      ]
+    },
+    {
+      "id": "u05-igual-con-lista-error",
+      "tema": "Errores frecuentes",
+      "enunciado": "La subconsulta de WHERE id_cliente = (SELECT id_cliente FROM ventas) devuelve varias filas. ¿Qué ocurre y cómo se corrige?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se produce un error; si se busca pertenencia a la lista, hay que usar IN.",
+          "explicacion": "Correcto: = espera un único valor y MySQL no puede decidir cuál de las filas usar; para comprobar pertenencia corresponde IN."
+        },
+        {
+          "id": "b",
+          "texto": "MySQL toma la primera fila de la subconsulta y compara contra ese valor.",
+          "explicacion": "MySQL no elige una fila arbitraria: si el operador espera un valor y recibe varios, produce un error."
+        },
+        {
+          "id": "c",
+          "texto": "La consulta se ejecuta, pero devuelve cero filas sin avisar; se corrige con DISTINCT.",
+          "explicacion": "No es un problema silencioso, y DISTINCT solo quita repetidos: la subconsulta podría seguir devolviendo varias filas."
+        },
+        {
+          "id": "d",
+          "texto": "Se produce un error; se corrige agregando un alias a la subconsulta.",
+          "explicacion": "El alias es obligatorio para las tablas derivadas en FROM; aquí el problema es la cardinalidad, no el nombre."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Antes de integrar una subconsulta hay que preguntarse cuántas filas devuelve: si es un valor, sirven =, > o <; si puede ser una lista, no debe tratarse como un único valor.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Errores frecuentes",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "errores"
+        },
+        {
+          "titulo": "Unidad 5 · Subconsultas de lista · IN y NOT IN",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "listas"
+        }
+      ]
+    },
+    {
+      "id": "u05-operador-pertenencia",
+      "tema": "Subconsultas de lista · IN y NOT IN",
+      "enunciado": "La subconsulta (SELECT id_alumno FROM inscripciones) devuelve una columna con varios ids. ¿Qué operador corresponde para conservar los alumnos cuyo id_alumno pertenezca a esa lista?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "=",
+          "explicacion": "El operador = espera un único valor; si la subconsulta devuelve varias filas, MySQL produce un error."
+        },
+        {
+          "id": "b",
+          "texto": "> ALL",
+          "explicacion": "> ALL compara por orden contra todos los valores de la lista; no expresa pertenencia."
+        },
+        {
+          "id": "c",
+          "texto": "EXISTS, escrito como WHERE EXISTS (SELECT id_alumno FROM inscripciones)",
+          "explicacion": "Sin correlación, EXISTS solo verifica si inscripciones tiene alguna fila: daría el mismo resultado para todos los alumnos."
+        },
+        {
+          "id": "d",
+          "texto": "IN",
+          "explicacion": "Correcto: IN comprueba si el valor de la consulta externa aparece dentro de la lista devuelta por la subconsulta."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Para comprobar pertenencia a un conjunto se usa IN con una subconsulta de lista; si la pregunta es de ausencia, puede usarse NOT IN, aunque NOT EXISTS suele ser más seguro ante NULL.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas de lista · IN y NOT IN",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "listas"
+        }
+      ]
+    },
+    {
+      "id": "u05-condicion-mayor-que-all",
+      "tema": "ANY, SOME y ALL",
+      "enunciado": "Si la subconsulta devuelve una lista no vacía de precios sin NULL, ¿qué debe cumplir un valor para que precio > ALL (subconsulta) sea verdadero?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Ser mayor que el menor de los precios de la lista.",
+          "explicacion": "Eso alcanza para > ANY (o > SOME), que pide superar al menos a uno de los valores."
+        },
+        {
+          "id": "b",
+          "texto": "Ser mayor que el promedio de los precios de la lista.",
+          "explicacion": "ALL no calcula promedios: compara contra cada valor individual de la lista."
+        },
+        {
+          "id": "c",
+          "texto": "Ser mayor que el mayor de los precios de la lista.",
+          "explicacion": "Correcto: para superar a todos los valores, alcanza y hace falta superar al máximo."
+        },
+        {
+          "id": "d",
+          "texto": "Ser igual a alguno de los precios de la lista.",
+          "explicacion": "Esa idea de pertenencia se expresa con IN, no con > ALL."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "ALL exige que la comparación sea verdadera frente a todos los valores de la lista; por eso > ALL equivale a superar al mayor y < ALL a quedar por debajo del menor.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ANY, SOME y ALL",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "anyall"
+        }
+      ]
+    },
+    {
+      "id": "u05-consulta-mayor-que-alguno",
+      "tema": "ANY, SOME y ALL",
+      "enunciado": "¿Cuál de estas condiciones conserva los productos cuyo precio supera al de al menos uno de los productos de la categoría 'Hogar'?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "WHERE precio > ALL (SELECT precio FROM productos WHERE categoria = 'Hogar')",
+          "explicacion": "> ALL exige superar a todos los precios de esa categoría, no a al menos uno."
+        },
+        {
+          "id": "b",
+          "texto": "WHERE precio > ANY (SELECT precio FROM productos WHERE categoria = 'Hogar')",
+          "explicacion": "Correcto: ANY (o su sinónimo SOME) pide que la comparación sea verdadera frente a alguno de los valores."
+        },
+        {
+          "id": "c",
+          "texto": "WHERE precio IN (SELECT precio FROM productos WHERE categoria = 'Hogar')",
+          "explicacion": "IN comprueba igualdad con algún valor de la lista, no que el precio sea mayor."
+        },
+        {
+          "id": "d",
+          "texto": "WHERE precio > (SELECT MAX(precio) FROM productos WHERE categoria = 'Hogar')",
+          "explicacion": "Superar al máximo equivale a > ALL: pide ser mayor que todos, no que alguno."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Conviene traducir primero el enunciado al castellano: “alguno” lleva a ANY / SOME y “todos” lleva a ALL.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ANY, SOME y ALL",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "anyall"
+        }
+      ]
+    },
+    {
+      "id": "u05-equivalencia-menor-que-any",
+      "tema": "ANY, SOME y ALL",
+      "enunciado": "Si la subconsulta devuelve una lista no vacía de valores sin NULL, ¿a qué equivale intuitivamente la condición precio < ANY (subconsulta)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "A estar por debajo del mayor valor de la lista.",
+          "explicacion": "Correcto: alcanza con ser menor que alguno de los valores, y el más fácil de no superar es el máximo."
+        },
+        {
+          "id": "b",
+          "texto": "A estar por debajo del menor valor de la lista.",
+          "explicacion": "Eso corresponde a < ALL: ser menor que todos obliga a quedar por debajo del mínimo."
+        },
+        {
+          "id": "c",
+          "texto": "A ser distinto de todos los valores de la lista.",
+          "explicacion": "Esa idea de no pertenencia se expresa con NOT IN."
+        },
+        {
+          "id": "d",
+          "texto": "A estar por debajo del promedio de los valores.",
+          "explicacion": "ANY no calcula promedios: compara contra cada valor individual de la lista."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "ANY / SOME expresan “alguno”: > ANY alcanza con superar al menor y < ANY con estar por debajo del mayor.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ANY, SOME y ALL",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "anyall"
+        }
+      ]
+    },
+    {
+      "id": "u05-ventaja-no-copiar-a-mano",
+      "tema": "Qué es una subconsulta",
+      "enunciado": "En WHERE precio > (SELECT AVG(precio) FROM productos), ¿qué ventaja tiene la subconsulta frente a calcular antes el promedio y escribir ese número a mano en la consulta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que la consulta siempre se ejecuta más rápido que con un número fijo.",
+          "explicacion": "La subconsulta no se elige por velocidad: con un número fijo no hay que calcular nada, pero el valor puede quedar desactualizado."
+        },
+        {
+          "id": "b",
+          "texto": "Que el promedio queda guardado como una tabla para usarlo en otras consultas.",
+          "explicacion": "El resultado de una subconsulta no se guarda: solo existe durante la ejecución de esa instrucción."
+        },
+        {
+          "id": "c",
+          "texto": "Que permite comparar cada precio contra varios promedios a la vez.",
+          "explicacion": "AVG sin GROUP BY devuelve un único valor: la subconsulta es escalar."
+        },
+        {
+          "id": "d",
+          "texto": "Que el promedio se calcula al ejecutar: si los precios cambian, sigue siendo correcta.",
+          "explicacion": "Correcto: la consulta externa usa el resultado de la interna directamente, sin copiarlo a mano."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una subconsulta aparece cuando para responder una pregunta hay que resolver primero otra más pequeña; la consulta externa usa ese resultado directamente.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Qué es una subconsulta",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "idea"
+        }
+      ]
+    },
+    {
+      "id": "u05-tabla-derivada-no-persiste",
+      "tema": "Subconsultas matriciales y tablas derivadas",
+      "enunciado": "Una tabla derivada es una subconsulta ubicada en FROM. ¿Qué ocurre con ella cuando termina de ejecutarse la instrucción?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Deja de existir: no queda guardada como tabla ni como vista.",
+          "explicacion": "Correcto: la tabla derivada existe únicamente durante la ejecución de esa instrucción."
+        },
+        {
+          "id": "b",
+          "texto": "Queda guardada como una vista con el nombre de su alias.",
+          "explicacion": "Para guardar una consulta como vista hace falta crearla explícitamente; el alias solo sirve dentro de esa instrucción."
+        },
+        {
+          "id": "c",
+          "texto": "Queda disponible como tabla temporal hasta que se cierra la sesión.",
+          "explicacion": "Una tabla derivada no se conserva entre instrucciones: no es una tabla temporal de la sesión."
+        },
+        {
+          "id": "d",
+          "texto": "Se convierte en una tabla real que se puede consultar con su alias.",
+          "explicacion": "No se crea ninguna tabla real en la base: el alias solo existe dentro de la consulta que lo define."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Un resultado tabular dentro de FROM se usa como tabla derivada: necesita alias y vive solo mientras se ejecuta la instrucción.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas matriciales y tablas derivadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "matriciales"
+        }
+      ]
+    },
+    {
+      "id": "u05-cuando-usar-tabla-derivada",
+      "tema": "Subconsultas matriciales y tablas derivadas",
+      "enunciado": "Se necesita primero un resumen con dos columnas (id_cliente y total gastado), con una fila por cliente, para después filtrar ese resumen. ¿Qué recurso expresa mejor esa idea?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una subconsulta escalar en el SELECT.",
+          "explicacion": "Una escalar devuelve un único valor; aquí el resultado intermedio tiene varias filas y varias columnas."
+        },
+        {
+          "id": "b",
+          "texto": "Una subconsulta de lista con IN en WHERE.",
+          "explicacion": "Una subconsulta de lista devuelve una sola columna; el resumen necesita dos."
+        },
+        {
+          "id": "c",
+          "texto": "Una tabla derivada en FROM, con su alias.",
+          "explicacion": "Correcto: un resultado intermedio con varias columnas se consulta como si fuera una tabla, con un alias obligatorio."
+        },
+        {
+          "id": "d",
+          "texto": "Una subconsulta con EXISTS en WHERE.",
+          "explicacion": "EXISTS solo responde si hay filas relacionadas; no permite consultar los valores del resumen."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Para consultar un resultado intermedio con varias columnas, la herramienta habitual es una tabla derivada en FROM.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas matriciales y tablas derivadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "matriciales"
+        },
+        {
+          "titulo": "Unidad 5 · ¿Subconsulta, JOIN o GROUP BY?",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "eleccion"
+        }
+      ]
+    },
+    {
+      "id": "u05-cuando-es-verdadero-exists",
+      "tema": "EXISTS y NOT EXISTS",
+      "enunciado": "¿Cuándo es verdadera la condición EXISTS (subconsulta)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Cuando la subconsulta devuelve exactamente una fila.",
+          "explicacion": "Alcanza con al menos una fila: si devuelve varias, EXISTS también es verdadero."
+        },
+        {
+          "id": "b",
+          "texto": "Cuando la subconsulta devuelve al menos una fila.",
+          "explicacion": "Correcto: EXISTS no mira valores, solo pregunta si aparece alguna fila."
+        },
+        {
+          "id": "c",
+          "texto": "Cuando la subconsulta devuelve al menos un valor distinto de NULL.",
+          "explicacion": "EXISTS no evalúa el contenido de las columnas: una fila con NULL también cuenta como fila existente."
+        },
+        {
+          "id": "d",
+          "texto": "Cuando la primera columna de la subconsulta vale 1.",
+          "explicacion": "SELECT 1 es solo una convención para dejar clara la intención; el valor seleccionado no importa."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "EXISTS es verdadero si la subconsulta devuelve al menos una fila; NOT EXISTS, si no devuelve ninguna.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · EXISTS y NOT EXISTS",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "exists"
+        }
+      ]
+    },
+    {
+      "id": "u05-consulta-productos-vendidos",
+      "tema": "EXISTS y NOT EXISTS",
+      "enunciado": "¿Cuál de estas consultas devuelve los productos que fueron vendidos al menos una vez?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "SELECT p.nombre FROM productos AS p WHERE EXISTS (SELECT 1 FROM detalle_ventas)",
+          "explicacion": "Sin correlación, la subconsulta no depende del producto: EXISTS da el mismo resultado para todos (todos o ninguno)."
+        },
+        {
+          "id": "b",
+          "texto": "SELECT p.nombre FROM productos AS p WHERE NOT EXISTS (SELECT 1 FROM detalle_ventas AS dv WHERE dv.id_producto = p.id_producto)",
+          "explicacion": "NOT EXISTS conserva los productos sin filas relacionadas: devuelve los que nunca se vendieron."
+        },
+        {
+          "id": "c",
+          "texto": "SELECT p.nombre FROM productos AS p WHERE p.id_producto = (SELECT id_producto FROM detalle_ventas)",
+          "explicacion": "La subconsulta puede devolver varias filas, y = espera un único valor: produce un error."
+        },
+        {
+          "id": "d",
+          "texto": "SELECT p.nombre FROM productos AS p WHERE EXISTS (SELECT 1 FROM detalle_ventas AS dv WHERE dv.id_producto = p.id_producto)",
+          "explicacion": "Correcto: para cada producto se verifica si existe al menos un renglón de detalle asociado a él."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Cuando el enunciado dice “productos que hayan…” o “clientes que tengan…”, conviene pensar en EXISTS con una subconsulta correlacionada con la fila externa.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · EXISTS y NOT EXISTS",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "exists"
+        },
+        {
+          "titulo": "Unidad 5 · Subconsultas correlacionadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "correlacionadas"
+        }
+      ]
+    },
+    {
+      "id": "u05-clasificar-exists-correlacionado",
+      "tema": "Cómo clasificar una subconsulta",
+      "enunciado": "En una consulta sobre clientes AS c, ¿cómo se clasifica la subconsulta de WHERE EXISTS (SELECT 1 FROM ventas AS v WHERE v.id_cliente = c.id_cliente)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Escalar e independiente, porque SELECT 1 devuelve un único valor.",
+          "explicacion": "Con EXISTS no interesan los valores; además usa c.id_cliente, así que no es independiente."
+        },
+        {
+          "id": "b",
+          "texto": "De lista y correlacionada, porque puede devolver varias filas.",
+          "explicacion": "Es correlacionada, pero con EXISTS no se usan los valores como lista: solo importa si aparece alguna fila."
+        },
+        {
+          "id": "c",
+          "texto": "De existencia y correlacionada.",
+          "explicacion": "Correcto: solo importa si hay filas (existencia) y depende de c.id_cliente, una columna de la consulta externa."
+        },
+        {
+          "id": "d",
+          "texto": "De existencia e independiente, porque EXISTS nunca depende de la consulta externa.",
+          "explicacion": "EXISTS puede usarse con o sin correlación; esta subconsulta usa c.id_cliente, así que es correlacionada."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Se clasifica con dos criterios separados: la forma del resultado (escalar, lista, matricial o existencia) y la dependencia (independiente o correlacionada).",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Cómo clasificar una subconsulta",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "clasificar"
+        },
+        {
+          "titulo": "Unidad 5 · EXISTS y NOT EXISTS",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "exists"
+        }
+      ]
+    },
+    {
+      "id": "u05-comparacion-por-categoria",
+      "tema": "Subconsultas correlacionadas",
+      "enunciado": "En SELECT p1.nombre FROM productos AS p1 WHERE p1.precio > (SELECT AVG(p2.precio) FROM productos AS p2 WHERE p2.categoria = p1.categoria), ¿contra qué se compara el precio de cada producto?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Contra el promedio de precios de su propia categoría.",
+          "explicacion": "Correcto: p1.categoria pertenece a la consulta externa, así que el promedio se calcula para la categoría del producto que se evalúa."
+        },
+        {
+          "id": "b",
+          "texto": "Contra el promedio general de todos los productos.",
+          "explicacion": "Eso ocurriría sin la condición p2.categoria = p1.categoria; con ella, el promedio depende de cada producto."
+        },
+        {
+          "id": "c",
+          "texto": "Contra la lista de promedios de todas las categorías.",
+          "explicacion": "Para cada fila externa la subconsulta devuelve un único valor: es escalar, no una lista."
+        },
+        {
+          "id": "d",
+          "texto": "Contra el precio máximo de su categoría.",
+          "explicacion": "La subconsulta usa AVG, no MAX: calcula un promedio."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Una subconsulta correlacionada usa una columna de la consulta externa, por lo que su resultado depende de la fila exterior que se está evaluando.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas correlacionadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "correlacionadas"
+        }
+      ]
+    },
+    {
+      "id": "u05-quitar-la-correlacion",
+      "tema": "Subconsultas correlacionadas",
+      "enunciado": "En WHERE p1.precio > (SELECT AVG(p2.precio) FROM productos AS p2 WHERE p2.categoria = p1.categoria) se borra la condición p2.categoria = p1.categoria (y su WHERE) de la subconsulta. ¿Qué cambia?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La consulta produce un error, porque ya no se usa p1.",
+          "explicacion": "No es obligatorio que la subconsulta use la consulta externa: sin esa referencia sigue siendo válida."
+        },
+        {
+          "id": "b",
+          "texto": "Pasa a ser independiente y cada precio se compara con el promedio general.",
+          "explicacion": "Correcto: ya no usa columnas de la consulta externa, así que calcula un único promedio para todos los productos."
+        },
+        {
+          "id": "c",
+          "texto": "Pasa a devolver una lista de promedios, uno por categoría.",
+          "explicacion": "Sin GROUP BY, AVG devuelve un único valor: la subconsulta sigue siendo escalar."
+        },
+        {
+          "id": "d",
+          "texto": "Nada: sigue siendo correlacionada porque usa la misma tabla que la consulta externa.",
+          "explicacion": "Usar la misma tabla no genera correlación; la genera referirse a una columna o alias de la consulta externa."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "La correlación la define el uso de columnas de la consulta externa, no la tabla consultada ni la ubicación de la subconsulta.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas correlacionadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "correlacionadas"
+        },
+        {
+          "titulo": "Unidad 5 · Cómo clasificar una subconsulta",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "clasificar"
+        }
+      ]
+    },
+    {
+      "id": "u05-rendimiento-correlacionadas",
+      "tema": "Subconsultas correlacionadas",
+      "enunciado": "¿Qué plantea el material sobre el rendimiento de las subconsultas correlacionadas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Siempre son más rápidas que un JOIN, porque evalúan una fila por vez.",
+          "explicacion": "El material no afirma que sean más rápidas: en conjuntos grandes pueden ser más costosas."
+        },
+        {
+          "id": "b",
+          "texto": "MySQL no permite usarlas sobre tablas con muchas filas.",
+          "explicacion": "No existe esa restricción; el tamaño de las tablas influye en el costo, no en si se pueden usar."
+        },
+        {
+          "id": "c",
+          "texto": "Son siempre la opción más lenta, así que hay que reemplazarlas por JOIN en todos los casos, sin excepción.",
+          "explicacion": "No hay una herramienta ganadora: una correlacionada puede expresar el problema con mucha claridad."
+        },
+        {
+          "id": "d",
+          "texto": "Pueden ser costosas en conjuntos grandes: primero se entiende la lógica y luego se comparan alternativas.",
+          "explicacion": "Correcto: cuando sea necesario, se comparan otras formulaciones y sus planes de ejecución."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una correlacionada puede expresar el problema con claridad, pero en conjuntos grandes puede ser más costosa que otra formulación; primero se entiende la lógica y después se evalúan alternativas.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas correlacionadas",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "correlacionadas"
+        }
+      ]
+    },
+    {
+      "id": "u05-funcion-subconsulta-en-having",
+      "tema": "Subconsultas en SELECT, WHERE, FROM y HAVING",
+      "enunciado": "En SELECT categoria, AVG(precio) FROM productos GROUP BY categoria HAVING AVG(precio) > (SELECT AVG(precio) FROM productos), ¿qué función cumple la subconsulta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Agrega el promedio general como una columna más, que se muestra al lado de cada categoría.",
+          "explicacion": "Para mostrar un valor como columna, la subconsulta tendría que estar en el SELECT."
+        },
+        {
+          "id": "b",
+          "texto": "Filtra los productos individuales antes de agruparlos.",
+          "explicacion": "El filtrado de filas antes de agrupar se hace en WHERE; HAVING trabaja sobre los grupos."
+        },
+        {
+          "id": "c",
+          "texto": "Aporta el promedio general para conservar las categorías cuyo promedio lo supera.",
+          "explicacion": "Correcto: en HAVING, la subconsulta aporta un valor intermedio contra el cual se filtran los grupos."
+        },
+        {
+          "id": "d",
+          "texto": "Produce un error, porque HAVING no admite subconsultas.",
+          "explicacion": "Una subconsulta puede aparecer en HAVING para filtrar grupos."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "En HAVING, una subconsulta permite filtrar grupos comparándolos contra un cálculo obtenido por otra consulta.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas en SELECT, WHERE, FROM y HAVING",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "ubicacion"
+        }
+      ]
+    },
+    {
+      "id": "u05-clausulas-validas",
+      "tema": "Subconsultas en SELECT, WHERE, FROM y HAVING",
+      "enunciado": "Según el material, ¿en qué cláusulas de una consulta puede aparecer una subconsulta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo en WHERE.",
+          "explicacion": "WHERE es la ubicación más habitual, pero no la única."
+        },
+        {
+          "id": "b",
+          "texto": "En WHERE y en HAVING, pero nunca en FROM.",
+          "explicacion": "En FROM la subconsulta se usa como tabla derivada, con un alias."
+        },
+        {
+          "id": "c",
+          "texto": "En WHERE y en FROM, pero nunca en SELECT.",
+          "explicacion": "En SELECT una subconsulta escalar agrega un cálculo como columna del resultado."
+        },
+        {
+          "id": "d",
+          "texto": "En SELECT, WHERE, FROM y HAVING.",
+          "explicacion": "Correcto: en SELECT agrega una columna, en WHERE filtra filas, en FROM actúa como tabla y en HAVING filtra grupos."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La ubicación define el uso: columna calculada en SELECT, filtro de filas en WHERE, tabla derivada en FROM y filtro de grupos en HAVING.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Subconsultas en SELECT, WHERE, FROM y HAVING",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "ubicacion"
+        }
+      ]
+    },
+    {
+      "id": "u05-sql-declarativo",
+      "tema": "Pensar en conjuntos, no en bucles",
+      "enunciado": "¿Por qué se dice que SQL es un lenguaje declarativo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque obliga a declarar variables antes de recorrer las filas de una tabla.",
+          "explicacion": "En una consulta SQL no se declaran variables ni se recorren filas manualmente."
+        },
+        {
+          "id": "b",
+          "texto": "Porque describimos qué conjunto de datos queremos, no un ciclo que recorra las filas.",
+          "explicacion": "Correcto: el motor decide cómo obtener ese conjunto; el optimizador puede elegir la estrategia."
+        },
+        {
+          "id": "c",
+          "texto": "Porque cada subconsulta correlacionada se ejecuta como un bucle explícito que el programador declara fila por fila.",
+          "explicacion": "Imaginar una evaluación por fila ayuda a entender la correlación, pero MySQL no está obligado a ejecutar un bucle literal."
+        },
+        {
+          "id": "d",
+          "texto": "Porque toda consulta debe declarar primero las tablas en FROM y recién después las columnas.",
+          "explicacion": "El orden de las cláusulas no es lo que hace declarativo al lenguaje."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Pensar en conjuntos (“clientes para los que exista una venta”) en lugar de bucles (“recorrer cada cliente…”) es el primer acercamiento al enfoque set-based.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Pensar en conjuntos, no en bucles",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "conjuntos"
+        }
+      ]
+    },
+    {
+      "id": "u05-herramienta-comparar-maximo",
+      "tema": "¿Subconsulta, JOIN o GROUP BY?",
+      "enunciado": "Se quiere listar los empleados cuyo sueldo es igual al sueldo máximo de la empresa. Según el material, ¿qué herramienta suele expresar mejor esa necesidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Un JOIN entre empleados y otra tabla relacionada.",
+          "explicacion": "Un JOIN conviene para mostrar columnas de varias tablas; aquí todo está en empleados."
+        },
+        {
+          "id": "b",
+          "texto": "NOT EXISTS con una subconsulta correlacionada.",
+          "explicacion": "NOT EXISTS expresa ausencia de filas relacionadas, no comparación contra un máximo."
+        },
+        {
+          "id": "c",
+          "texto": "Una subconsulta escalar con MAX, comparada con =.",
+          "explicacion": "Correcto: comparar contra un promedio, máximo o mínimo es la necesidad típica de una subconsulta escalar."
+        },
+        {
+          "id": "d",
+          "texto": "Un GROUP BY sueldo, sin subconsulta.",
+          "explicacion": "GROUP BY calcula resultados por grupo; no obtiene el máximo general para compararlo con cada fila."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Cada herramienta expresa bien una necesidad: subconsulta escalar para comparar contra un valor calculado, IN para pertenencia, EXISTS para existencia, JOIN para combinar columnas y GROUP BY para cálculos por grupo.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ¿Subconsulta, JOIN o GROUP BY?",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "eleccion"
+        },
+        {
+          "titulo": "Unidad 5 · Subconsultas escalares",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "escalares"
+        }
+      ]
+    },
+    {
+      "id": "u05-criterio-subconsulta-o-join",
+      "tema": "¿Subconsulta, JOIN o GROUP BY?",
+      "enunciado": "Un ejercicio puede resolverse con un JOIN claro o con varias subconsultas anidadas. ¿Qué criterio propone el material?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Elegir la formulación que exprese con claridad la pregunta, sea correcta y resulte mantenible.",
+          "explicacion": "Correcto: no hay una herramienta ganadora; una consulta anidada no es automáticamente mejor."
+        },
+        {
+          "id": "b",
+          "texto": "Usar siempre subconsultas, porque una consulta anidada es más avanzada.",
+          "explicacion": "Crear una subconsulta porque sí es uno de los errores frecuentes: anidar no hace mejor la consulta."
+        },
+        {
+          "id": "c",
+          "texto": "Usar siempre JOIN, porque las subconsultas son una técnica obsoleta en MySQL 8 y conviene evitarlas.",
+          "explicacion": "Las subconsultas no son obsoletas: resuelven necesidades diferentes y a veces ofrecen soluciones alternativas."
+        },
+        {
+          "id": "d",
+          "texto": "Usar la opción con más niveles de anidamiento, para demostrar dominio del tema.",
+          "explicacion": "La profundidad del anidamiento no es un criterio de calidad; la claridad y la corrección sí lo son."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Subconsultas, JOINs y GROUP BY no compiten: si un JOIN o un GROUP BY expresa el problema con mayor claridad, puede ser preferible.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · ¿Subconsulta, JOIN o GROUP BY?",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "eleccion"
+        },
+        {
+          "titulo": "Unidad 5 · Errores frecuentes",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "errores"
+        }
+      ]
+    },
+    {
+      "id": "u05-primer-paso-del-metodo",
+      "tema": "Método de resolución recomendado",
+      "enunciado": "¿Cuál es el primer paso del método de resolución recomendado?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Escribir primero la consulta interna y ejecutarla sola para observar su resultado.",
+          "explicacion": "Ese es el tercer paso: antes hay que saber qué debe mostrar la consulta externa y qué dato intermedio falta."
+        },
+        {
+          "id": "b",
+          "texto": "Leer qué debe mostrar la consulta externa: columnas finales y filas esperadas.",
+          "explicacion": "Correcto: a partir de eso se detecta si hace falta un dato intermedio."
+        },
+        {
+          "id": "c",
+          "texto": "Elegir el operador: =, IN, ANY, ALL o EXISTS.",
+          "explicacion": "El operador se elige recién después de clasificar lo que devuelve la subconsulta (quinto paso)."
+        },
+        {
+          "id": "d",
+          "texto": "Clasificar lo que devuelve la subconsulta.",
+          "explicacion": "Clasificar es el cuarto paso; requiere haber escrito antes la consulta interna."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El método: leer qué debe mostrar la consulta externa, detectar el dato intermedio, escribir la interna, clasificar lo que devuelve, elegir el operador e integrar y verificar.",
+      "material": [
+        {
+          "titulo": "Unidad 5 · Método de resolución recomendado",
+          "ruta": "unidad-05-subconsultas/subconsultas.html",
+          "seccion": "metodo"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+---
+/**
+ * Sprites pixel art dibujados como matrices de caracteres.
+ * Cada carácter es un píxel: "." transparente, "#" contorno, "w" brillo, "p" primario, "a" acento.
+ * Se renderizan como SVG con bordes nítidos, así escalan sin perder el aspecto pixelado.
+ */
+const SPRITES = {
+  db: [
+    '...######...',
+    '.##wwwwww##.',
+    '#wwwwwwwwww#',
+    '##wwwwwwww##',
+    '#p########p#',
+    '#pppppppaap#',
+    '#pppppppaap#',
+    '##pppppppp##',
+    '#p########p#',
+    '#pppppppaap#',
+    '#pppppppaap#',
+    '.##pppppp##.',
+    '...######...',
+  ],
+  tabla: [
+    '############',
+    '#pppppppppp#',
+    '############',
+    '#ww#www#www#',
+    '############',
+    '#ww#www#www#',
+    '############',
+    '#ww#www#www#',
+    '############',
+  ],
+  trofeo: [
+    '..########..',
+    '###aawaaa###',
+    '#.#aawaaa#.#',
+    '#.#aaaaaa#.#',
+    '###aaaaaa###',
+    '..#aaaaaa#..',
+    '...#aaaa#...',
+    '....#aa#....',
+    '....#aa#....',
+    '...######...',
+    '..#pppppp#..',
+    '..########..',
+  ],
+  mando: [
+    '.##########.',
+    '#wwwwwwwwww#',
+    '#ww#wwwwaww#',
+    '#w###wwawaw#',
+    '#ww#wwwwaww#',
+    '#wwwwwwwwww#',
+    '#ww######ww#',
+    '.##......##.',
+  ],
+} as const;
+
+const COLORES: Record<string, string> = {
+  '#': 'var(--contorno)',
+  w: 'var(--brillo)',
+  p: 'var(--primario)',
+  a: 'var(--acento)',
+};
+
+export type NombreSprite = keyof typeof SPRITES;
+
+interface Props {
+  nombre: NombreSprite;
+  /** Tamaño de cada píxel en px de pantalla. */
+  escala?: number;
+  class?: string;
+}
+
+const { nombre, escala = 3, class: clase } = Astro.props;
+const filas = SPRITES[nombre];
+const alto = filas.length;
+const ancho = Math.max(...filas.map((fila) => fila.length));
+
+// Une píxeles contiguos del mismo color en un solo rectángulo para aligerar el SVG.
+const rectangulos: { x: number; y: number; w: number; color: string }[] = [];
+filas.forEach((fila, y) => {
+  let x = 0;
+  while (x < fila.length) {
+    const caracter = fila.charAt(x);
+    let largo = 1;
+    while (fila.charAt(x + largo) === caracter) largo++;
+    const color = COLORES[caracter];
+    if (color) rectangulos.push({ x, y, w: largo, color });
+    x += largo;
+  }
+});
+---
+
+<svg
+  class={clase}
+  width={ancho * escala}
+  height={alto * escala}
+  viewBox={`0 0 ${ancho} ${alto}`}
+  shape-rendering="crispEdges"
+  aria-hidden="true"
+  focusable="false"
+>
+  {rectangulos.map((r) => <rect x={r.x} y={r.y} width={r.w} height="1" fill={r.color} />)}
+</svg>

@@ -1,0 +1,99 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PixelSprite from '@/components/PixelSprite.astro';
+import UnidadCard from '@/components/UnidadCard.astro';
+import { obtenerBancosPreguntas } from '@/services/preguntas';
+import { pluralizar } from '@/utils/formato';
+import { MODO_TODAS, modoUnidad, rutaCuestionario } from '@/utils/rutas';
+
+const bancos = await obtenerBancosPreguntas();
+const totalPreguntas = bancos.reduce((suma, banco) => suma + banco.preguntas.length, 0);
+---
+
+<BaseLayout title="Quiz BDD">
+  <main class="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
+    <!-- Hero con forma de ventana de terminal -->
+    <section class="caja-pixel bg-panel shadow-pixel-lg" aria-labelledby="titulo-principal">
+      <div class="flex items-center gap-2 border-b-[3px] border-borde bg-panel-2 px-3 py-2">
+        <span class="size-3 border-2 border-borde bg-error" aria-hidden="true"></span>
+        <span class="size-3 border-2 border-borde bg-acento" aria-hidden="true"></span>
+        <span class="size-3 border-2 border-borde bg-ok" aria-hidden="true"></span>
+        <span class="ml-2 truncate text-xs text-tenue">mysql — tienda_subconsultas</span>
+      </div>
+      <div class="flex flex-col gap-6 p-5 sm:flex-row sm:items-center sm:p-8">
+        <div class="flex-1">
+          <p class="text-sm text-tenue wrap-anywhere">
+            <span class="text-ok">mysql&gt;</span>{' '}<span class="font-bold text-sql-clave">SELECT</span>{' * '}<span class="font-bold text-sql-clave">FROM</span>{' quiz '}<span class="font-bold text-sql-clave">WHERE</span>{' materia = '}<span class="text-sql-cadena">'BDD'</span>;
+          </p>
+          <h1 id="titulo-principal" class="mt-4 text-4xl font-bold text-tinta sm:text-6xl">
+            Quiz<span class="text-primario">_</span>BDD<span class="cursor-terminal ml-2 text-acento"></span>
+          </h1>
+          <p class="mt-4 max-w-xl text-sm leading-relaxed text-tenue sm:text-base">
+            Cuestionarios de opción múltiple para aprender y repasar Bases de Datos, con explicaciones y
+            material de estudio en cada respuesta.
+          </p>
+          <p class="mt-3 text-xs text-tenue">
+            <span class="text-ok">Query OK</span>, {pluralizar(totalPreguntas, 'row', 'rows')} in set
+          </p>
+        </div>
+        <PixelSprite nombre="db" escala={10} class="hidden shrink-0 sm:block" />
+      </div>
+    </section>
+
+    <section class="mt-10 grid gap-5 md:grid-cols-2" aria-label="Modos de práctica">
+      <a
+        href={rutaCuestionario(MODO_TODAS)}
+        class="group caja-pixel flex flex-col justify-between gap-5 bg-primario p-6 text-sobre-primario transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 sm:p-7"
+      >
+        <div class="flex items-start gap-4">
+          <PixelSprite nombre="tabla" escala={4} class="shrink-0" />
+          <div>
+            <p class="text-xs uppercase tracking-widest opacity-80">Repaso general · Individual</p>
+            <h2 class="mt-1 text-2xl font-bold">Todas las unidades</h2>
+            <p class="mt-2 text-sm opacity-90">
+              {pluralizar(totalPreguntas, 'pregunta', 'preguntas')} de {pluralizar(bancos.length, 'unidad', 'unidades')}, en orden aleatorio.
+            </p>
+          </div>
+        </div>
+        <span class="boton-pixel self-start bg-panel text-tinta group-hover:bg-acento group-hover:text-sobre-acento">
+          ▶ Empezar
+        </span>
+      </a>
+
+      <a
+        href="/juego/"
+        class="group caja-pixel flex flex-col justify-between gap-5 bg-panel p-6 transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 sm:p-7"
+      >
+        <div class="flex items-start gap-4">
+          <PixelSprite nombre="mando" escala={4} class="shrink-0" />
+          <div>
+            <p class="text-xs uppercase tracking-widest text-primario">Multijugador · 2 a 8</p>
+            <h2 class="mt-1 text-2xl font-bold text-tinta">Modo juego</h2>
+            <p class="mt-2 text-sm text-tenue">
+              Agregá jugadores y voten cada respuesta: se ve quién votó qué y quién acertó.
+            </p>
+          </div>
+        </div>
+        <span class="boton-pixel self-start bg-acento text-sobre-acento">▶ Armar partida</span>
+      </a>
+    </section>
+
+    <section class="mt-12" aria-labelledby="titulo-unidades">
+      <h2 id="titulo-unidades" class="text-xl font-bold text-tinta sm:text-2xl">
+        <span class="font-sans text-base font-normal text-tenue">--</span> Practicar por unidad
+      </h2>
+      <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          bancos.map((banco) => (
+            <UnidadCard
+              unidad={banco.unidad}
+              titulo={banco.titulo}
+              cantidadPreguntas={banco.preguntas.length}
+              href={rutaCuestionario(modoUnidad(banco.unidad))}
+            />
+          ))
+        }
+      </div>
+    </section>
+  </main>
+</BaseLayout>

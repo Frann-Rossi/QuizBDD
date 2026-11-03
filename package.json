@@ -1,0 +1,36 @@
+{
+  "name": "quiz-bdd",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aplicación web educativa de cuestionarios para aprender y repasar Bases de Datos.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "verify": "npm run check && npm run test && npm run build && npm run test:e2e",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource/vt323": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.4",
+    "astro": "^7.4.5",
+    "tailwindcss": "^4.3.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^24.19.2",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  }
+}
