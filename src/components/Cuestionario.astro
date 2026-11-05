@@ -59,10 +59,13 @@ const { preguntas, mostrarUnidad } = Astro.props;
           <p class="font-pixel text-base font-semibold text-tinta">Material de estudio</p>
           <ul data-retro-enlaces class="mt-2 space-y-1"></ul>
         </div>
-        <div class="mt-6 flex justify-end">
-          <button type="button" data-siguiente class="boton-pixel w-full bg-primario text-sobre-primario sm:w-auto"></button>
-        </div>
       </div>
+    </div>
+
+    <!-- Navegación entre preguntas -->
+    <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <button type="button" data-anterior class="boton-pixel w-full bg-panel text-tinta sm:w-auto">◀ Anterior</button>
+      <button type="button" data-siguiente class="boton-pixel hidden w-full bg-primario text-sobre-primario sm:ml-auto sm:w-auto"></button>
     </div>
   </section>
 

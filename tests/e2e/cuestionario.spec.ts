@@ -116,6 +116,40 @@ test.describe('Cuestionario individual', () => {
     }
   });
 
+  test('con "Anterior" se vuelve a una pregunta respondida, que queda bloqueada con su respuesta', async ({ page }) => {
+    const { raiz, banco } = await abrir(page);
+    const anterior = raiz.locator('[data-anterior]');
+    const siguiente = raiz.locator('[data-siguiente]');
+
+    await expect(anterior).toBeHidden();
+    await expect(siguiente).toBeHidden();
+
+    const primera = await preguntaEnPantalla(raiz, banco);
+    const elegida = idIncorrecta(primera);
+    await raiz.locator(`button[data-opcion="${elegida}"]`).click();
+    await siguiente.click();
+
+    // En la segunda pregunta, sin responder, se puede volver.
+    await expect(raiz.locator('[data-progreso]')).toHaveText(`Pregunta 2/${banco.length}`);
+    const segunda = await preguntaEnPantalla(raiz, banco);
+    await anterior.click();
+
+    await expect(raiz.locator('[data-progreso]')).toHaveText(`Pregunta 1/${banco.length}`);
+    expect((await preguntaEnPantalla(raiz, banco)).id).toBe(primera.id);
+    await expect(raiz.locator('[data-retro-titulo]')).toHaveText('Incorrecto');
+    await expect(raiz.locator(`button[data-opcion="${elegida}"]`)).toHaveClass(/border-error/);
+    for (const boton of await raiz.locator('button[data-opcion]').all()) await expect(boton).toBeDisabled();
+    await expect(raiz.locator('[data-puntaje]')).toHaveText('0 correctas de 1');
+    await expect(anterior).toBeHidden();
+
+    // Al avanzar se retoma la segunda pregunta, todavía sin responder.
+    await siguiente.click();
+    expect((await preguntaEnPantalla(raiz, banco)).id).toBe(segunda.id);
+    await expect(raiz.locator('[data-retro]')).toBeHidden();
+    await expect(siguiente).toBeHidden();
+    await expect(raiz.locator('button[data-opcion]').first()).toBeEnabled();
+  });
+
   test('el modo mezclado incluye preguntas de varias unidades', async ({ page }) => {
     const { raiz, banco } = await abrir(page, '/quiz/todas/');
     expect(new Set(banco.map((p) => p.unidad)).size).toBe(3);

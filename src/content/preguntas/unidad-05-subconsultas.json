@@ -822,7 +822,7 @@
     {
       "id": "u05-elegir-join-para-columnas",
       "tema": "¿Subconsulta, JOIN o GROUP BY?",
-      "enunciado": "Se quiere mostrar el nombre de cada cliente junto con la fecha de cada una de sus ventas. Según el material, ¿qué herramienta suele expresar mejor esta necesidad?",
+      "enunciado": "Se quiere mostrar el nombre de cada cliente junto con la fecha de cada una de sus ventas. ¿Qué herramienta suele expresar mejor esta necesidad?",
       "opciones": [
         {
           "id": "a",
@@ -858,7 +858,7 @@
     {
       "id": "u05-elegir-group-by",
       "tema": "¿Subconsulta, JOIN o GROUP BY?",
-      "enunciado": "Se pide la cantidad de clientes de cada ciudad. Según la tabla de herramientas del material, ¿qué expresa mejor esta necesidad?",
+      "enunciado": "Se pide la cantidad de clientes de cada ciudad. ¿Qué herramienta expresa mejor esta necesidad?",
       "opciones": [
         {
           "id": "a",
@@ -1767,7 +1767,7 @@
     {
       "id": "u05-herramienta-comparar-maximo",
       "tema": "¿Subconsulta, JOIN o GROUP BY?",
-      "enunciado": "Se quiere listar los empleados cuyo sueldo es igual al sueldo máximo de la empresa. Según el material, ¿qué herramienta suele expresar mejor esa necesidad?",
+      "enunciado": "Se quiere listar los empleados cuyo sueldo es igual al sueldo máximo de la empresa. ¿Qué herramienta suele expresar mejor esa necesidad?",
       "opciones": [
         {
           "id": "a",

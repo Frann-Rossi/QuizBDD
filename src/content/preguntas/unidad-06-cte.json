@@ -77,7 +77,7 @@
     {
       "id": "u06-ventaja-reutilizar",
       "tema": "El mismo problema resuelto con subconsultas y con CTE",
-      "enunciado": "Para mostrar los clientes que compraron más que el promedio se comparó una solución con subconsultas y otra con la CTE compras_por_cliente. ¿Qué aporta la CTE?",
+      "enunciado": "Para mostrar los clientes que compraron más que el promedio, una solución con subconsultas repite en varios niveles el cálculo del total de cada cliente. Otra la reescribe así: WITH compras_por_cliente AS (SELECT id_cliente, nombre, total_comprado …) SELECT id_cliente, nombre, total_comprado FROM compras_por_cliente WHERE total_comprado > (SELECT AVG(total_comprado) FROM compras_por_cliente). ¿Qué aporta la CTE?",
       "opciones": [
         {
           "id": "a",
@@ -113,7 +113,7 @@
     {
       "id": "u06-left-join-coalesce",
       "tema": "El mismo problema resuelto con subconsultas y con CTE",
-      "enunciado": "La CTE compras_por_cliente usa LEFT JOIN entre clientes, ventas y detalle_ventas y calcula COALESCE(SUM(dv.cantidad * dv.precio_unitario), 0). ¿Para qué?",
+      "enunciado": "Se quiere listar los clientes que compraron más que el promedio por cliente, contando también a los que nunca compraron. La CTE compras_por_cliente usa LEFT JOIN entre clientes, ventas y detalle_ventas y calcula COALESCE(SUM(dv.cantidad * dv.precio_unitario), 0) AS total_comprado. ¿Para qué?",
       "opciones": [
         {
           "id": "a",
@@ -447,7 +447,7 @@
     {
       "id": "u06-cte-join-vs-correlacionada",
       "tema": "CTE + JOIN",
-      "enunciado": "Para mostrar los productos más caros que el promedio de su categoría, se usa la CTE promedios_categoria unida con productos mediante JOIN. ¿Qué cambia respecto de la versión con subconsulta correlacionada?",
+      "enunciado": "Para mostrar los productos más caros que el promedio de su categoría, una versión usa la subconsulta correlacionada WHERE p1.precio > (SELECT AVG(p2.precio) FROM productos AS p2 WHERE p2.categoria = p1.categoria). Otra usa WITH promedios_categoria AS (SELECT categoria, AVG(precio) AS promedio_categoria FROM productos GROUP BY categoria) y la une con productos mediante JOIN … ON p.categoria = pc.categoria. ¿Qué cambia?",
       "opciones": [
         {
           "id": "a",
@@ -539,7 +539,7 @@
         {
           "id": "d",
           "texto": "El SELECT inicial que genera las primeras filas sin referenciar a la CTE.",
-          "explicacion": "Correcto: en el ejemplo, SELECT 1 AS n genera el primer valor."
+          "explicacion": "Correcto: en WITH RECURSIVE numeros AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM numeros WHERE n < 4), la parte ancla es SELECT 1 AS n, que genera el primer valor."
         }
       ],
       "respuestaCorrecta": "d",
@@ -909,7 +909,7 @@
         {
           "id": "b",
           "texto": "En el FROM, en un JOIN o dentro de una subconsulta de esa sentencia, tantas veces como haga falta.",
-          "explicacion": "Correcto: en el ejemplo, totales_cliente se usa en el JOIN y otra vez en la subconsulta que calcula AVG(total_gastado)."
+          "explicacion": "Correcto: por ejemplo, una CTE totales_cliente puede usarse en un JOIN y otra vez en una subconsulta que calcule AVG(total_gastado), dentro de la misma sentencia."
         },
         {
           "id": "c",
@@ -940,7 +940,7 @@
     {
       "id": "u06-elegir-join",
       "tema": "CTE, subconsulta o consulta directa",
-      "enunciado": "Se necesita listar cada venta con su fecha y el nombre del cliente que la hizo. Según la tabla comparativa, ¿cuál es la opción natural?",
+      "enunciado": "Se necesita listar cada venta con su fecha y el nombre del cliente que la hizo. ¿Cuál es la opción natural: consulta directa con JOIN, subconsulta o CTE?",
       "opciones": [
         {
           "id": "a",
@@ -1185,7 +1185,7 @@
         }
       ],
       "respuestaCorrecta": "d",
-      "explicacion": "Es el mismo mecanismo del ejemplo del material (del 1 al 4), solo que con otra condición de corte.",
+      "explicacion": "Es el mismo mecanismo que con WHERE n < 4 (que genera del 1 al 4), solo que con otra condición de corte.",
       "material": [
         {
           "titulo": "Unidad 6 · CTE recursivas",
@@ -1613,7 +1613,7 @@
     {
       "id": "u06-comparar-resumen-complejo",
       "tema": "CTE, subconsulta o consulta directa",
-      "enunciado": "Se necesita armar un resumen por categoría (cantidad de productos, precio promedio y precio máximo) y después filtrarlo y ordenarlo. Según la tabla comparativa, ¿qué opción es la natural?",
+      "enunciado": "Se necesita armar un resumen por categoría (cantidad de productos, precio promedio y precio máximo) y después filtrarlo y ordenarlo. ¿Qué opción es la natural?",
       "opciones": [
         {
           "id": "a",

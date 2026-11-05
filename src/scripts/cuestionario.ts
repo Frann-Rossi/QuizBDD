@@ -55,6 +55,7 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
   const retroCuerpo = requerir<HTMLElement>(raiz, '[data-retro-cuerpo]');
   const retroEnlaces = requerir<HTMLUListElement>(raiz, '[data-retro-enlaces]');
   const botonSiguiente = requerir<HTMLButtonElement>(raiz, '[data-siguiente]');
+  const botonAnterior = requerir<HTMLButtonElement>(raiz, '[data-anterior]');
 
   const vistaResultado = requerir<HTMLElement>(raiz, '[data-vista-resultado]');
   const resultadoTitulo = requerir<HTMLElement>(raiz, '[data-resultado-titulo]');
@@ -67,6 +68,7 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
 
   let preguntas: PreguntaCuestionario[] = [];
   let indice = 0;
+  /** Respuestas en el orden de las preguntas: `respuestas[i]` corresponde a `preguntas[i]`. */
   let respuestas: RespuestaRegistrada[] = [];
 
   function renderizarSegmentos(): void {
@@ -80,7 +82,9 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
           : i === indice
             ? 'bg-acento'
             : 'bg-panel-2';
-        return crear('span', `min-w-0 flex-1 ${color}`);
+        // Al revisar una pregunta ya respondida, se recuadra su segmento.
+        const actual = respuesta && i === indice ? ' outline-2 outline-offset-1 outline-acento' : '';
+        return crear('span', `min-w-0 flex-1 ${color}${actual}`);
       }),
     );
     segmentos.setAttribute('aria-valuemax', String(preguntas.length));
@@ -97,9 +101,10 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
   function mostrarPregunta(): void {
     const pregunta = preguntas[indice];
     if (!pregunta) return;
+    const previa = respuestas[indice];
 
     // Recordar dónde quedó la correcta: la próxima vez no se repite esa posición.
-    guardarPosicion(pregunta.id, posicionCorrecta(pregunta));
+    if (!previa) guardarPosicion(pregunta.id, posicionCorrecta(pregunta));
 
     etiqueta.textContent = mostrarUnidad
       ? `Unidad ${pregunta.unidad} · ${pregunta.tituloUnidad} — ${pregunta.tema}`
@@ -116,15 +121,32 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
       }),
     );
 
-    retro.classList.add('hidden');
+    botonAnterior.classList.toggle('hidden', indice === 0);
+
+    if (previa) {
+      // Pregunta ya respondida: se muestra tal como quedó, sin poder cambiar la respuesta.
+      mostrarRetroalimentacion(pregunta, previa.resultado);
+    } else {
+      retro.classList.add('hidden');
+      botonSiguiente.classList.add('hidden');
+    }
     actualizarProgreso();
     enunciado.focus();
   }
 
   function responder(pregunta: PreguntaCuestionario, opcionId: OpcionId): void {
+    if (respuestas[indice]) return;
     const resultado = evaluarRespuesta(pregunta, opcionId);
-    respuestas.push({ pregunta, resultado });
+    respuestas[indice] = { pregunta, resultado };
 
+    mostrarRetroalimentacion(pregunta, resultado);
+    actualizarProgreso();
+    botonSiguiente.focus({ preventScroll: true });
+    retro.scrollIntoView({ behavior: comportamientoScroll(), block: 'nearest' });
+  }
+
+  /** Bloquea las opciones, marca la correcta y la elegida, y muestra la explicación. */
+  function mostrarRetroalimentacion(pregunta: PreguntaCuestionario, resultado: ResultadoRespuesta): void {
     listaOpciones.querySelectorAll<HTMLButtonElement>('button[data-opcion]').forEach((boton) => {
       const id = boton.dataset['opcion'];
       boton.disabled = true;
@@ -161,10 +183,7 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
 
     retroEnlaces.replaceChildren(...resultado.material.map(crearEnlaceMaterial));
     botonSiguiente.textContent = indice === preguntas.length - 1 ? 'Ver resultado ▶' : 'Siguiente ▶';
-
-    actualizarProgreso();
-    botonSiguiente.focus({ preventScroll: true });
-    retro.scrollIntoView({ behavior: comportamientoScroll(), block: 'nearest' });
+    botonSiguiente.classList.remove('hidden');
   }
 
   function mostrarResultado(): void {
@@ -216,6 +235,13 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
     } else {
       mostrarResultado();
     }
+  });
+
+  botonAnterior.addEventListener('click', () => {
+    if (indice === 0) return;
+    indice--;
+    mostrarPregunta();
+    window.scrollTo({ top: 0, behavior: comportamientoScroll() });
   });
 
   botonReintentar.addEventListener('click', comenzar);
