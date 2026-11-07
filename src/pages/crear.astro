@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import CabeceraPagina from '@/components/CabeceraPagina.astro';
+import VolverInicio from '@/components/VolverInicio.astro';
 import { obtenerDocumentosMaterial } from '@/services/material';
 import { serializarParaScript } from '@/utils/serializar';
 
@@ -21,18 +23,15 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
 
 <BaseLayout title="Crear pregunta · Quiz BDD">
   <main class="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
-    <a href="/" class="font-pixel text-sm uppercase text-tenue hover:text-tinta">◀ Volver al inicio</a>
+    <VolverInicio />
 
-    <header class="mt-4">
-      <p class="text-xs text-tenue">
-        <span class="text-ok">mysql&gt;</span>{' '}<span class="font-bold text-sql-clave">INSERT INTO</span>{' '}<span class="text-sql-funcion">banco</span>{' ...;'}
-      </p>
-      <h1 class="mt-2 text-3xl font-bold text-tinta sm:text-4xl">Crear pregunta</h1>
-      <p class="mt-2 text-sm text-tenue">
+    <CabeceraPagina titulo="Crear pregunta">
+      <span class="font-bold text-sql-clave">INSERT INTO</span>{' '}<span class="text-sql-funcion">banco</span>{' ...;'}
+      <Fragment slot="descripcion">
         Completá el formulario, revisá la vista previa y descargá el archivo de la unidad ya actualizado.
         Después reemplazalo en <code class="text-sql-cadena">src/content/preguntas/</code>.
-      </p>
-    </header>
+      </Fragment>
+    </CabeceraPagina>
 
     <form id="formulario-pregunta" class="mt-8 flex flex-col gap-6" novalidate>
       <!-- Unidad e identificador -->

@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import CabeceraPagina from '@/components/CabeceraPagina.astro';
+import VolverInicio from '@/components/VolverInicio.astro';
 import { obtenerBancosPreguntas } from '@/services/preguntas';
 import { pluralizar } from '@/utils/formato';
 import { MODO_TODAS, rutaCuestionario } from '@/utils/rutas';
@@ -9,17 +11,14 @@ const bancos = await obtenerBancosPreguntas();
 
 <BaseLayout title="Elegir unidades · Quiz BDD">
   <main class="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
-    <a href="/" class="font-pixel text-sm uppercase text-tenue hover:text-tinta">◀ Volver al inicio</a>
+    <VolverInicio />
 
-    <header class="mt-4">
-      <p class="text-xs text-tenue">
-        <span class="text-ok">mysql&gt;</span>{' '}<span class="font-bold text-sql-clave">SELECT</span>{' * '}<span class="font-bold text-sql-clave">FROM</span>{' unidades '}<span class="font-bold text-sql-clave">WHERE</span>{' elegida = 1;'}
-      </p>
-      <h1 class="mt-2 text-3xl font-bold text-tinta sm:text-4xl">Elegir unidades</h1>
-      <p class="mt-2 text-sm text-tenue">
+    <CabeceraPagina titulo="Elegir unidades">
+      <span class="font-bold text-sql-clave">SELECT</span>{' * '}<span class="font-bold text-sql-clave">FROM</span>{' unidades '}<span class="font-bold text-sql-clave">WHERE</span>{' elegida = 1;'}
+      <Fragment slot="descripcion">
         Marcá las unidades que querés repasar. Las preguntas de todas ellas se mezclan en un solo cuestionario.
-      </p>
-    </header>
+      </Fragment>
+    </CabeceraPagina>
 
     <form id="formulario-seleccion" action={rutaCuestionario(MODO_TODAS)} method="get" class="mt-8 flex flex-col gap-5">
       <div class="flex flex-wrap gap-3">

@@ -1,0 +1,37 @@
+---
+interface Props {
+  titulo: string;
+  tituloId?: string;
+  /** Línea en mayúsculas debajo del título (p. ej. el nombre del modo de práctica). */
+  subtitulo?: string;
+  subtituloId?: string;
+}
+
+const { titulo, tituloId, subtitulo, subtituloId } = Astro.props;
+---
+
+<!--
+  Cabecera de las páginas internas. La sentencia del terminal (`mysql> …`) va en el slot por
+  defecto, para que cada página resalte sus propias palabras clave. El párrafo opcional va en
+  el slot "descripcion".
+-->
+<header class="mt-4">
+  <p class="text-xs text-tenue">
+    <span class="text-ok">mysql&gt;</span>{' '}<slot />
+  </p>
+  <h1 id={tituloId} class="mt-2 text-3xl font-bold text-tinta sm:text-4xl">{titulo}</h1>
+  {
+    subtitulo && (
+      <p id={subtituloId} class="mt-1 text-sm uppercase tracking-widest text-primario">
+        {subtitulo}
+      </p>
+    )
+  }
+  {
+    Astro.slots.has('descripcion') && (
+      <p class="mt-2 text-sm leading-relaxed text-tenue">
+        <slot name="descripcion" />
+      </p>
+    )
+  }
+</header>
