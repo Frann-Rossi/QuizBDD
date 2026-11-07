@@ -745,7 +745,7 @@
     {
       "id": "u04-groupby-una-columna-otras",
       "tema": "Agrupar por una sola columna",
-      "enunciado": "Si se agrupa solamente por una columna, ¿qué sucede con las filas que tienen valores distintos en otra columna no agrupada?",
+      "enunciado": "Si se agrupa solamente por una columna, ¿qué sucede con las filas que tienen valores distintos en otra columna no agrupada, si esa columna no aparece en el SELECT ni dentro de una función de agregación?",
       "opciones": [
         {
           "id": "a",
@@ -769,7 +769,7 @@
         }
       ],
       "respuestaCorrecta": "a",
-      "explicacion": "Los grupos se forman con las columnas indicadas en GROUP BY. Las filas que difieren solo en otra columna no agrupada quedan juntas en el mismo grupo.",
+      "explicacion": "Los grupos se forman con las columnas indicadas en GROUP BY. Las filas que difieren solo en otra columna no agrupada quedan juntas en el mismo grupo. Por eso, si esa columna aparece en el SELECT sin una función de agregación, MySQL 8 con ONLY_FULL_GROUP_BY muestra un error en lugar de devolver filas.",
       "resumen": "Solo las columnas de GROUP BY separan los grupos.",
       "material": [
         {
