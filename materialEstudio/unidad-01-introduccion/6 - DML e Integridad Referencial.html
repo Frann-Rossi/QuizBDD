@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+
+<html data-theme="light" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Base de Datos I: INSERT, UPDATE, DELETE, integridad referencial, acciones referenciales, transacciones iniciales y uso seguro de DML en MySQL 8." name="description"/>
+<title>Unidad 1 · Parte 6 · DML e integridad referencial</title>
+<style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #eef3f8;
+      --text: #172033;
+      --muted: #5d687b;
+      --line: #dbe3ee;
+      --primary: #174f78;
+      --primary-2: #0f6b69;
+      --accent: #d97706;
+      --good: #13795b;
+      --warn: #a15c00;
+      --danger: #a63446;
+      --code: #132236;
+      --code-text: #eaf2ff;
+      --shadow: 0 14px 34px rgba(35, 55, 80, .09);
+      --radius: 18px;
+      --sidebar: 315px;
+      --max: 1080px;
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0d1420;
+      --surface: #151f2e;
+      --surface-2: #1c293b;
+      --text: #edf4ff;
+      --muted: #aebbd0;
+      --line: #314158;
+      --primary: #72b7e4;
+      --primary-2: #63c7c0;
+      --accent: #f1b45b;
+      --good: #71d6ae;
+      --warn: #f1b45b;
+      --danger: #ff99aa;
+      --code: #09111d;
+      --code-text: #eaf2ff;
+      --shadow: 0 16px 38px rgba(0, 0, 0, .26);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.68;
+    }
+
+    a { color: var(--primary); }
+    button, summary { font: inherit; }
+
+    .progress {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 4px;
+      z-index: 1000;
+      background: transparent;
+    }
+    .progress > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2), var(--accent));
+    }
+
+    .institutional-header {
+      border-bottom: 1px solid #d8dde5;
+      background: #ffffff;
+      color: #15191f;
+    }
+    .institutional-inner {
+      width: min(1500px, calc(100% - 36px));
+      min-height: 92px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: auto minmax(250px, 1fr) auto;
+      align-items: center;
+      gap: clamp(18px, 3vw, 42px);
+      padding: 12px 0;
+    }
+    .institutional-logo {
+      display: block;
+      width: clamp(215px, 20vw, 305px);
+      height: auto;
+      object-fit: contain;
+    }
+    .institutional-course { min-width: 0; }
+    .institutional-course .institutional-kicker {
+      display: block;
+      margin-bottom: 3px;
+      color: #4e5968;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .institutional-course strong {
+      display: block;
+      font-size: clamp(1.02rem, 1.7vw, 1.42rem);
+      line-height: 1.18;
+      letter-spacing: -.02em;
+    }
+    .institutional-course span:last-child {
+      display: block;
+      margin-top: 3px;
+      color: #5d6673;
+      font-size: .84rem;
+    }
+    .institutional-meta {
+      text-align: right;
+      font-size: .72rem;
+      line-height: 1.28;
+      white-space: nowrap;
+    }
+    .institutional-meta strong { display: block; font-size: .74rem; }
+    .institutional-year { margin-top: 2px; color: #3e4651; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(12px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      background: linear-gradient(145deg, #174f78, #0f6b69);
+      box-shadow: 0 7px 18px rgba(23, 79, 120, .25);
+    }
+    .brand-text { min-width: 0; }
+    .brand-text strong, .brand-text span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-text strong { font-size: .96rem; }
+    .brand-text span { color: var(--muted); font-size: .78rem; }
+
+    .top-actions { display: flex; gap: 8px; }
+    .icon-btn {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 12px;
+      min-width: 42px;
+      height: 42px;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .icon-btn:hover { transform: translateY(-1px); border-color: var(--primary); }
+    #menuButton { display: none; }
+
+    .layout { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); min-height: calc(100vh - 64px); }
+
+    .sidebar {
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      overflow: auto;
+      padding: 22px 18px 34px;
+      border-right: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .sidebar h2 {
+      margin: 2px 10px 12px;
+      color: var(--muted);
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+    .unit-label {
+      margin: 18px 10px 7px;
+      color: var(--text);
+      font-size: .83rem;
+      font-weight: 800;
+    }
+    .nav-list { list-style: none; margin: 0; padding: 0; }
+    .nav-list a {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 9px 10px;
+      margin: 2px 0;
+      border-radius: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .88rem;
+      line-height: 1.35;
+    }
+    .nav-list a span:first-child {
+      display: grid;
+      place-items: center;
+      height: 24px;
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--primary);
+      font-size: .72rem;
+      font-weight: 800;
+    }
+    .nav-list a:hover, .nav-list a.active { background: var(--surface-2); color: var(--text); }
+    .nav-list a.active { box-shadow: inset 3px 0 0 var(--primary); }
+
+    .future-units {
+      margin-top: 20px;
+      padding: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+    .future-units strong { display: block; margin-bottom: 7px; font-size: .82rem; }
+    .future-units p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.45; }
+
+    main { min-width: 0; }
+    .content { width: min(var(--max), calc(100% - 48px)); margin: 0 auto; padding: 42px 0 90px; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(28px, 6vw, 62px);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 92% 10%, rgba(255,255,255,.23), transparent 28%),
+        linear-gradient(135deg, #123f61 0%, #155d70 57%, #0f6b69 100%);
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      bottom: -120px;
+      width: 310px;
+      height: 310px;
+      border: 34px solid rgba(255,255,255,.08);
+      border-radius: 50%;
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 11px;
+      border: 1px solid rgba(255,255,255,.26);
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .hero h1 { max-width: 760px; margin: 18px 0 12px; font-size: clamp(2rem, 5vw, 4rem); line-height: 1.03; letter-spacing: -.045em; }
+    .hero p { max-width: 780px; margin: 0; color: rgba(255,255,255,.88); font-size: clamp(1rem, 2vw, 1.16rem); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
+    .hero-meta span { padding: 7px 10px; border-radius: 10px; background: rgba(255,255,255,.11); font-size: .82rem; }
+
+    .route {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 13px;
+      margin: 22px 0 34px;
+    }
+    .route-item {
+      position: relative;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .route-item b { display: block; color: var(--primary); font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; }
+    .route-item span { display: block; margin-top: 6px; font-weight: 730; line-height: 1.3; }
+
+    section { margin-top: 34px; }
+    .section-card {
+      padding: clamp(22px, 4vw, 42px);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .section-kicker { color: var(--primary-2); font-size: .78rem; font-weight: 850; text-transform: uppercase; letter-spacing: .1em; }
+    h2 { margin: 4px 0 13px; font-size: clamp(1.55rem, 3vw, 2.35rem); line-height: 1.18; letter-spacing: -.03em; }
+    h3 { margin: 28px 0 8px; font-size: 1.2rem; line-height: 1.3; }
+    h4 { margin: 20px 0 6px; }
+    p { margin: 10px 0; }
+    .lead { color: var(--muted); font-size: 1.06rem; }
+
+    .callout {
+      margin: 19px 0;
+      padding: 16px 18px;
+      border-left: 5px solid var(--primary);
+      border-radius: 0 14px 14px 0;
+      background: var(--surface-2);
+    }
+    .callout strong { color: var(--primary); }
+    .callout.warning { border-color: var(--accent); }
+    .callout.warning strong { color: var(--warn); }
+    .callout.good { border-color: var(--good); }
+    .callout.good strong { color: var(--good); }
+
+    .grid-2, .grid-3, .grid-4 { display: grid; gap: 15px; margin: 18px 0; }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .mini-card { padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-2); }
+    .mini-card h3, .mini-card h4 { margin-top: 0; }
+    .mini-card p { color: var(--muted); font-size: .92rem; }
+    .mini-card .tag { display: inline-block; padding: 4px 8px; border-radius: 999px; color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, transparent); font-size: .72rem; font-weight: 800; }
+
+    .timeline { position: relative; margin: 22px 0; padding-left: 32px; }
+    .timeline::before { content: ""; position: absolute; left: 10px; top: 7px; bottom: 7px; width: 2px; background: var(--line); }
+    .timeline-item { position: relative; margin: 0 0 21px; }
+    .timeline-item::before { content: ""; position: absolute; left: -28px; top: 7px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 5px var(--surface-2); }
+    .timeline-item strong { display: block; }
+    .timeline-item span { color: var(--muted); }
+
+    .compare { width: 100%; border-collapse: collapse; margin: 18px 0; overflow: hidden; border-radius: 14px; }
+    .compare th, .compare td { padding: 12px 14px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .compare th { background: var(--surface-2); color: var(--primary); font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; }
+
+    .stack {
+      display: grid;
+      gap: 10px;
+      margin: 22px auto;
+      max-width: 720px;
+    }
+    .stack-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--surface-2);
+    }
+    .stack-row b { color: var(--primary); }
+    .stack-arrow { text-align: center; color: var(--muted); font-size: 1.25rem; }
+
+    .client-server {
+      display: grid;
+      grid-template-columns: 1fr 90px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin: 24px 0;
+    }
+    .node {
+      min-height: 170px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface-2);
+    }
+    .node h3 { margin-top: 0; color: var(--primary); }
+    .flow { text-align: center; color: var(--primary-2); font-weight: 800; }
+    .flow span { display: block; font-size: 1.8rem; }
+
+    .grid-2 > *, .grid-3 > *, .grid-4 > *, .mini-card, .code-wrap { min-width: 0; }
+    .code-wrap {
+      position: relative;
+      max-width: 100%;
+      margin: 17px 0;
+    }
+    pre {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-x: auto;
+      overflow-y: hidden;
+      margin: 0;
+      padding: 20px 88px 20px 20px;
+      border-radius: 16px;
+      background: var(--code);
+      color: var(--code-text);
+      line-height: 1.55;
+      font-size: .91rem;
+      tab-size: 2;
+      -webkit-overflow-scrolling: touch;
+    }
+    code { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; }
+    :not(pre) > code { padding: .12em .36em; border-radius: 6px; background: var(--surface-2); color: var(--primary); }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 6px 10px;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 9px;
+      background: rgba(255,255,255,.09);
+      color: #fff;
+      cursor: pointer;
+      font-size: .75rem;
+    }
+
+    details {
+      margin: 12px 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+    summary {
+      cursor: pointer;
+      padding: 15px 17px;
+      font-weight: 750;
+      list-style: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; float: right; color: var(--primary); font-size: 1.25rem; }
+    details[open] summary::after { content: "−"; }
+    details > div { padding: 0 17px 17px; color: var(--muted); }
+
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { position: relative; padding: 8px 0 8px 30px; }
+    .checklist li::before { content: "✓"; position: absolute; left: 0; top: 7px; display: grid; place-items: center; width: 21px; height: 21px; border-radius: 50%; background: color-mix(in srgb, var(--good) 15%, transparent); color: var(--good); font-weight: 900; }
+
+    .activity {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+    }
+    .activity h3 { margin-top: 0; color: var(--warn); }
+
+    .model-map {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 13px;
+      margin: 20px 0;
+    }
+    .model { padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-2); }
+    .model.focus { border: 2px solid var(--primary); background: color-mix(in srgb, var(--primary) 7%, var(--surface)); }
+    .model b { display: block; margin-bottom: 5px; }
+    .model small { color: var(--muted); }
+
+    .db-tree {
+      max-width: 560px;
+      margin: 18px auto;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: var(--surface-2);
+      font-family: "Cascadia Code", Consolas, monospace;
+      line-height: 1.8;
+    }
+    .db-tree .root { color: var(--primary); font-weight: 800; }
+    .db-tree .table { padding-left: 26px; }
+
+    .sources { font-size: .88rem; color: var(--muted); }
+    .sources li { margin: 6px 0; }
+
+    .footer {
+      margin-top: 35px;
+      padding: 25px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    .to-top {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 800;
+      width: 45px;
+      height: 45px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: .2s ease;
+    }
+    .to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+    @media (max-width: 900px) {
+      .institutional-inner {
+        grid-template-columns: auto 1fr;
+        min-height: 82px;
+        gap: 16px;
+      }
+      .institutional-logo { width: clamp(190px, 34vw, 250px); }
+      .institutional-meta { display: none; }
+    }
+
+    @media (max-width: 620px) {
+      .institutional-inner {
+        width: min(100% - 24px, 1500px);
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 10px 0 12px;
+      }
+      .institutional-logo { width: 210px; }
+      .institutional-course .institutional-kicker { font-size: .64rem; }
+      .institutional-course strong { font-size: 1rem; }
+      .institutional-course span:last-child { font-size: .75rem; }
+    }
+
+    @media (max-width: 1020px) {
+      .layout { grid-template-columns: 1fr; }
+      #menuButton { display: inline-grid; place-items: center; }
+      .sidebar {
+        position: fixed;
+        z-index: 850;
+        top: 64px;
+        left: 0;
+        width: min(88vw, var(--sidebar));
+        transform: translateX(-105%);
+        transition: transform .22s ease;
+        box-shadow: 18px 0 35px rgba(0,0,0,.16);
+      }
+      body.menu-open .sidebar { transform: translateX(0); }
+      body.menu-open::after { content: ""; position: fixed; z-index: 840; inset: 64px 0 0 0; background: rgba(6, 12, 22, .44); }
+      .route { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 760px) {
+      .content { width: min(100% - 28px, var(--max)); padding-top: 20px; }
+      .hero { border-radius: 20px; }
+      .route, .grid-2, .grid-3, .grid-4, .model-map { grid-template-columns: 1fr; }
+      .client-server { grid-template-columns: 1fr; }
+      .flow span { transform: rotate(90deg); }
+      .stack-row { grid-template-columns: 1fr; gap: 2px; }
+      .brand-text span { display: none; }
+      .section-card { border-radius: 19px; }
+      .compare { display: block; overflow-x: auto; white-space: normal; }
+      .code-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        overflow: hidden;
+      }
+      .copy-btn {
+        position: static;
+        align-self: flex-end;
+        margin: 0 0 6px;
+        background: var(--code);
+        border-color: rgba(255,255,255,.18);
+      }
+      pre {
+        padding: 16px;
+        border-radius: 14px;
+        font-size: .82rem;
+      }
+    }
+
+    @media print {
+      .topbar, .sidebar, .progress, .to-top, .copy-btn { display: none !important; }
+      .institutional-header { border-bottom: 1px solid #777; }
+      .institutional-inner { width: 100%; min-height: 78px; padding: 8px 0; grid-template-columns: auto 1fr auto; }
+      .institutional-logo { width: 220px; }
+      .layout { display: block; }
+      .content { width: 100%; padding: 0; }
+      .hero { color: #000; background: #fff; box-shadow: none; border: 1px solid #aaa; }
+      .section-card, .route-item { box-shadow: none; break-inside: avoid; }
+      a { color: #000; text-decoration: none; }
+    }
+  
+    .figure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:18px;}
+    .shot-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow-soft);}
+    .shot-card img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);background:#fff;}
+    .shot-card figcaption{font-size:.95rem;color:var(--muted);margin-top:10px;line-height:1.55;}
+    .shot-card figcaption b{color:var(--text);display:block;margin-bottom:4px;}
+    @media (max-width: 860px){.figure-grid{grid-template-columns:1fr;}}
+
+  
+    .figure-grid-compact{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:18px;}
+    .figure-grid-compact .shot-card{padding:12px;}
+    .shot-card small.helper{display:block;color:var(--muted);margin-top:8px;line-height:1.5;}
+    .wide-figure{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow-soft);}
+    .wide-figure img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);background:#fff;}
+    .wide-figure figcaption{font-size:.96rem;color:var(--muted);margin-top:10px;line-height:1.6;}
+    .wide-figure figcaption b{color:var(--text);display:block;margin-bottom:4px;}
+    @media (max-width: 860px){.figure-grid-compact{grid-template-columns:1fr;}}
+
+  
+    .syntax-line{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--code-bg);border:1px solid var(--line);padding:12px 14px;border-radius:12px;overflow:auto;white-space:nowrap;color:var(--code-text);}
+    .type-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0;}
+    .type-card{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:16px;box-shadow:var(--shadow-soft);}
+    .type-card h3{margin:0 0 8px;font-size:1.05rem;}
+    .type-card code{font-size:.92rem;}
+    .decision-table{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--card);}
+    .decision-table th,.decision-table td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;}
+    .decision-table th{background:var(--soft);color:var(--text);font-size:.92rem;}
+    .decision-table tr:last-child td{border-bottom:0;}
+    .key-diagram{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin:18px 0;}
+    .key-table{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-soft);}
+    .key-table header{background:var(--soft);padding:12px 16px;font-weight:800;}
+    .key-table div{padding:9px 16px;border-top:1px solid var(--line);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92rem;}
+    .key-table .pk{background:color-mix(in srgb,var(--accent) 13%,transparent);}
+    .key-table .fk{background:color-mix(in srgb,#8b5cf6 13%,transparent);}
+    .relation-arrow{font-size:2rem;color:var(--accent);font-weight:900;}
+    .step{display:grid;grid-template-columns:42px 1fr;gap:14px;margin:16px 0;align-items:start;}
+    .step-number{width:42px;height:42px;border-radius:13px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:900;box-shadow:var(--shadow-soft);}
+    .step-body{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:15px 17px;box-shadow:var(--shadow-soft);}
+    .legend-inline{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 18px;}
+    .legend-inline span{font-size:.88rem;border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:var(--soft);}
+    .mini-quiz{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px;}
+    .mini-quiz details{margin:0;}
+    .shot-single{margin:18px 0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow-soft);}
+    .shot-single img{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff;}
+    .shot-single figcaption{color:var(--muted);font-size:.95rem;line-height:1.6;margin-top:10px;}
+    .scope-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-size:.88rem;font-weight:700;margin:4px 5px 4px 0;}
+    @media(max-width:980px){.type-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.key-diagram{grid-template-columns:1fr}.relation-arrow{transform:rotate(90deg);text-align:center}.mini-quiz{grid-template-columns:1fr}}
+    @media(max-width:620px){.type-grid{grid-template-columns:1fr}.decision-table{display:block;overflow-x:auto;white-space:normal}.step{grid-template-columns:34px 1fr}.step-number{width:34px;height:34px;border-radius:10px}}
+
+    .dml-triad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:18px 0;}
+    .dml-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:18px;padding:18px;background:var(--surface);box-shadow:var(--shadow);}
+    .dml-card::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:linear-gradient(var(--primary),var(--primary-2));}
+    .dml-card h3{margin:0 0 8px;color:var(--primary);}
+    .dml-card p{margin:0;color:var(--muted);}
+    .load-flow{display:grid;grid-template-columns:minmax(0,1fr) 52px minmax(0,1fr) 52px minmax(0,1fr);gap:10px;align-items:center;margin:20px 0;}
+    .load-node{min-height:112px;border:1px solid var(--line);border-radius:17px;padding:16px;background:var(--surface-2);display:flex;flex-direction:column;justify-content:center;text-align:center;}
+    .load-node strong{color:var(--primary);font-size:1.02rem;}
+    .load-node small{margin-top:6px;color:var(--muted);line-height:1.45;}
+    .flow-arrow{font-size:1.75rem;text-align:center;color:var(--primary);font-weight:800;}
+    .constraint-map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:18px 0;}
+    .constraint-item{border:1px solid var(--line);border-radius:15px;padding:15px;background:var(--surface-2);}
+    .constraint-item b{display:block;color:var(--primary);margin-bottom:5px;}
+    .safety-sequence{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0;counter-reset:safety;}
+    .safety-step{counter-increment:safety;border:1px solid var(--line);border-radius:16px;padding:17px;background:var(--surface);}
+    .safety-step::before{content:counter(safety);display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--primary);color:white;font-weight:800;margin-bottom:10px;}
+    .safety-step h3{margin:0 0 7px;font-size:1rem;}
+    .safety-step p{margin:0;color:var(--muted);}
+    .ref-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:18px 0;}
+    .ref-card{border:1px solid var(--line);border-radius:17px;padding:17px;background:var(--surface);}
+    .ref-card .ref-tag{display:inline-block;padding:5px 9px;border-radius:999px;background:var(--surface-2);color:var(--primary);font-weight:800;font-size:.82rem;margin-bottom:9px;}
+    .ref-card h3{margin:0 0 7px;}
+    .ref-card p{margin:0;color:var(--muted);}
+    .transaction-track{display:grid;grid-template-columns:1fr 54px 1fr 54px 1fr;align-items:center;gap:8px;margin:18px 0;}
+    .transaction-box{border:1px solid var(--line);border-radius:15px;padding:15px;text-align:center;background:var(--surface-2);min-height:100px;display:flex;flex-direction:column;justify-content:center;}
+    .transaction-box strong{color:var(--primary);}
+    .transaction-box small{color:var(--muted);margin-top:5px;}
+    .danger-strip{border:1px solid color-mix(in srgb,var(--danger) 45%,var(--line));border-left:6px solid var(--danger);border-radius:15px;padding:15px 17px;background:color-mix(in srgb,var(--danger) 8%,var(--surface));margin:17px 0;}
+    .danger-strip strong{color:var(--danger);}
+    .comparison-table td:first-child{font-weight:800;color:var(--primary);white-space:nowrap;}
+    .verification-note{font-size:.93rem;color:var(--muted);border-top:1px dashed var(--line);margin-top:14px;padding-top:12px;}
+    @media(max-width:980px){.dml-triad,.ref-grid{grid-template-columns:1fr}.load-flow,.transaction-track{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg)}.constraint-map,.safety-sequence{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div aria-hidden="true" class="progress"><span id="progressBar"></span></div>
+<header aria-label="Encabezado institucional" class="institutional-header">
+<div class="institutional-inner">
+<img alt="UTN MDP · Regional Mar del Plata" class="institutional-logo" src="data:image/jpeg;base64,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"/>
+<div class="institutional-course">
+<span class="institutional-kicker">UTN · FR Mar del Plata · TUP</span>
+<strong>Tecnicatura Universitaria en Programación</strong>
+<span>Base de Datos I · Material general de cátedra</span>
+</div>
+<div class="institutional-meta">
+<strong>Ministerio de Capital Humano</strong>
+<div>Universidad Tecnológica Nacional</div>
+<div>Facultad Regional Mar del Plata</div>
+<div class="institutional-year">2026 · Año de la Grandeza Argentina</div>
+</div>
+</div>
+</header>
+<header class="topbar">
+<div class="brand"><div class="brand-mark">U1.6</div><div class="brand-text"><strong>DML e integridad referencial</strong><span>Base de Datos I · Unidad 1 · Parte 6</span></div></div>
+<div class="top-actions"><button aria-expanded="false" aria-label="Abrir menú" class="icon-btn" id="menuButton">☰</button><button aria-label="Cambiar tema" class="icon-btn" id="themeButton" title="Cambiar tema">◐</button></div>
+</header>
+<div class="layout">
+<aside aria-label="Índice del documento" class="sidebar"><h2>Unidad 1 · Parte 6</h2><ul class="nav-list"><li><a href="#inicio"><span>00</span><span>Presentación</span></a></li><li><a href="#ubicacion"><span>01</span><span>Del diseño a los datos</span></a></li><li><a href="#preparacion"><span>02</span><span>Preparar la práctica</span></a></li><li><a href="#insert"><span>03</span><span>INSERT: agregar filas</span></a></li><li><a href="#insertmultiple"><span>04</span><span>Varias filas, DEFAULT y NULL</span></a></li><li><a href="#orden"><span>05</span><span>Orden de carga</span></a></li><li><a href="#restricciones"><span>06</span><span>Errores que protegen datos</span></a></li><li><a href="#update"><span>07</span><span>UPDATE: modificar filas</span></a></li><li><a href="#delete"><span>08</span><span>DELETE: eliminar filas</span></a></li><li><a href="#seguridad"><span>09</span><span>WHERE y trabajo seguro</span></a></li><li><a href="#referencial"><span>10</span><span>Acciones referenciales</span></a></li><li><a href="#comparacion"><span>11</span><span>DELETE, TRUNCATE y DROP</span></a></li><li><a href="#transacciones"><span>12</span><span>Primer vistazo a transacciones</span></a></li><li><a href="#casoguiado"><span>13</span><span>Caso guiado completo</span></a></li><li><a href="#errores"><span>14</span><span>Errores frecuentes</span></a></li><li><a href="#comprobacion"><span>15</span><span>Comprobación y práctica</span></a></li><li><a href="#cierre"><span>16</span><span>Síntesis y glosario</span></a></li></ul><div class="future-units"><strong>Siguiente paso</strong><p>La Parte 7 presentará el tipo <code>JSON</code> en MySQL. Después comenzará la Unidad 2 con consultas <code>SELECT</code>.</p></div></aside>
+<main><div class="content">
+<section class="hero" id="inicio">
+<span class="eyebrow">Unidad 1 · Parte 6 · Manipulación de datos</span>
+<h1>DML e integridad referencial</h1>
+<p>Las tablas ya existen. Ahora vas a aprender a cargar, corregir y eliminar filas sin romper las reglas del modelo. El objetivo no es memorizar tres comandos: es comprender qué cambia cada sentencia, qué restricciones intervienen y cómo trabajar sin modificar datos por accidente.</p>
+<div class="hero-meta"><span>Nivel inicial</span><span>MySQL 8</span><span>Lectura autónoma</span><span>Práctica segura</span></div>
+<div class="hero-goals">
+<h2>Al finalizar vas a poder</h2>
+<ul>
+<li>Agregar una o varias filas con <code>INSERT</code>.</li>
+<li>Modificar datos existentes con <code>UPDATE</code> y una condición precisa.</li>
+<li>Eliminar filas con <code>DELETE</code> sin confundirlo con <code>TRUNCATE</code> o <code>DROP</code>.</li>
+<li>Interpretar errores producidos por PK, FK, <code>UNIQUE</code>, <code>NOT NULL</code> y <code>CHECK</code>.</li>
+<li>Comprender cómo actúan <code>RESTRICT</code>, <code>CASCADE</code> y <code>SET NULL</code>.</li>
+<li>Usar una transacción básica para probar cambios reversibles.</li>
+</ul>
+</div>
+</section>
+<section class="section-card" id="ubicacion">
+<span class="section-kicker">01 · Continuidad del recorrido</span>
+<h2>Del diseño a los datos</h2>
+<p>En la Parte 5 convertimos el modelo relacional en estructuras reales mediante DDL. En esta parte trabajaremos con las <strong>filas</strong> que viven dentro de esas tablas.</p>
+<div class="dml-triad">
+<article class="dml-card"><h3>INSERT</h3><p>Agrega nuevas filas.</p></article>
+<article class="dml-card"><h3>UPDATE</h3><p>Modifica filas que ya existen.</p></article>
+<article class="dml-card"><h3>DELETE</h3><p>Elimina filas seleccionadas.</p></article>
+</div>
+<div class="callout"><strong>DML</strong> significa <em>Data Manipulation Language</em> o Lenguaje de Manipulación de Datos. Mientras DDL cambia la estructura, DML cambia el contenido.</div>
+<table class="decision-table">
+<thead><tr><th>Necesidad</th><th>Sentencia</th><th>Qué cambia</th></tr></thead>
+<tbody>
+<tr><td>Crear la tabla <code>alumnos</code></td><td><code>CREATE TABLE</code></td><td>La estructura</td></tr>
+<tr><td>Registrar a una alumna</td><td><code>INSERT</code></td><td>Las filas</td></tr>
+<tr><td>Corregir su correo</td><td><code>UPDATE</code></td><td>Una o más filas</td></tr>
+<tr><td>Eliminar un registro de prueba</td><td><code>DELETE</code></td><td>Una o más filas</td></tr>
+</tbody>
+</table>
+</section>
+<section class="section-card" id="preparacion">
+<span class="section-kicker">02 · Punto de partida reproducible</span>
+<h2>Preparar la práctica</h2>
+<p>Los ejemplos utilizan la base <code>gestion_academica</code>. Si ya ejecutaste el script de la Parte 5, podés continuar. Si necesitás reconstruir el escenario, este script mínimo crea cinco tablas relacionadas.</p>
+<details>
+<summary>Mostrar script base completo</summary>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>CREATE DATABASE IF NOT EXISTS gestion_academica
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_0900_ai_ci;
+
+USE gestion_academica;
+
+CREATE TABLE carreras (
+    id_carrera INT UNSIGNED AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    duracion_anios TINYINT UNSIGNED NOT NULL,
+    estado ENUM('Activa', 'Inactiva') NOT NULL DEFAULT 'Activa',
+    CONSTRAINT pk_carreras PRIMARY KEY (id_carrera),
+    CONSTRAINT uq_carreras_nombre UNIQUE (nombre),
+    CONSTRAINT chk_carreras_duracion CHECK (duracion_anios BETWEEN 1 AND 8)
+) ENGINE = InnoDB;
+
+CREATE TABLE materias (
+    id_materia INT UNSIGNED AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    carga_horaria SMALLINT UNSIGNED NOT NULL,
+    CONSTRAINT pk_materias PRIMARY KEY (id_materia),
+    CONSTRAINT uq_materias_nombre UNIQUE (nombre),
+    CONSTRAINT chk_materias_carga CHECK (carga_horaria BETWEEN 16 AND 300)
+) ENGINE = InnoDB;
+
+CREATE TABLE alumnos (
+    id_alumno BIGINT UNSIGNED AUTO_INCREMENT,
+    legajo VARCHAR(20) NOT NULL,
+    dni VARCHAR(15) NOT NULL,
+    apellido VARCHAR(60) NOT NULL,
+    nombre VARCHAR(60) NOT NULL,
+    fecha_nacimiento DATE NULL,
+    email VARCHAR(120) NULL,
+    id_carrera INT UNSIGNED NOT NULL,
+    CONSTRAINT pk_alumnos PRIMARY KEY (id_alumno),
+    CONSTRAINT uq_alumnos_legajo UNIQUE (legajo),
+    CONSTRAINT uq_alumnos_dni UNIQUE (dni),
+    CONSTRAINT uq_alumnos_email UNIQUE (email),
+    CONSTRAINT fk_alumnos_carreras
+        FOREIGN KEY (id_carrera) REFERENCES carreras (id_carrera)
+        ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE = InnoDB;
+
+CREATE TABLE comisiones (
+    id_comision INT UNSIGNED AUTO_INCREMENT,
+    id_materia INT UNSIGNED NOT NULL,
+    anio SMALLINT UNSIGNED NOT NULL,
+    cuatrimestre TINYINT UNSIGNED NOT NULL,
+    turno ENUM('Mañana', 'Tarde', 'Noche') NOT NULL,
+    CONSTRAINT pk_comisiones PRIMARY KEY (id_comision),
+    CONSTRAINT fk_comisiones_materias
+        FOREIGN KEY (id_materia) REFERENCES materias (id_materia)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT chk_comisiones_cuatrimestre CHECK (cuatrimestre IN (1, 2))
+) ENGINE = InnoDB;
+
+CREATE TABLE inscripciones (
+    id_inscripcion BIGINT UNSIGNED AUTO_INCREMENT,
+    id_alumno BIGINT UNSIGNED NOT NULL,
+    id_comision INT UNSIGNED NOT NULL,
+    fecha_inscripcion DATE NOT NULL,
+    estado ENUM('Activa', 'Baja', 'Aprobada') NOT NULL DEFAULT 'Activa',
+    CONSTRAINT pk_inscripciones PRIMARY KEY (id_inscripcion),
+    CONSTRAINT uq_inscripciones_alumno_comision UNIQUE (id_alumno, id_comision),
+    CONSTRAINT fk_inscripciones_alumnos
+        FOREIGN KEY (id_alumno) REFERENCES alumnos (id_alumno)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_inscripciones_comisiones
+        FOREIGN KEY (id_comision) REFERENCES comisiones (id_comision)
+        ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE = InnoDB;</code></pre></div>
+</details>
+<div class="callout warning"><strong>No ejecutes el script de creación sobre tablas que ya contienen trabajo importante.</strong> Antes de recrear estructuras, confirmar qué objetos existen y conservar una copia de los datos.</div>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>USE gestion_academica;
+SHOW TABLES;</code></pre></div>
+</section>
+<section class="section-card" id="insert">
+<span class="section-kicker">03 · Crear filas</span>
+<h2>INSERT: agregar datos</h2>
+<p>La forma más clara de insertar una fila es nombrar explícitamente las columnas y luego proporcionar sus valores en el mismo orden.</p>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO carreras (nombre, duracion_anios)
+VALUES ('Tecnicatura Universitaria en Programación', 2);</code></pre></div>
+<div class="grid-3">
+<article class="mini-card"><h3>Tabla destino</h3><p><code>carreras</code></p></article>
+<article class="mini-card"><h3>Columnas</h3><p><code>nombre</code> y <code>duracion_anios</code></p></article>
+<article class="mini-card"><h3>Valores</h3><p>Uno por cada columna, en el mismo orden.</p></article>
+</div>
+<p>No se incluyó <code>id_carrera</code> porque es <code>AUTO_INCREMENT</code>. Tampoco se indicó <code>estado</code>, por lo que MySQL utiliza su valor <code>DEFAULT</code>: <code>'Activa'</code>.</p>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO alumnos
+    (legajo, dni, apellido, nombre, fecha_nacimiento, email, id_carrera)
+VALUES
+    ('A-1001', '45111222', 'Gómez', 'Lucía', '2005-08-17',
+     'lucia.gomez@ejemplo.edu.ar', 1);</code></pre></div>
+<div class="callout good"><strong>Buena práctica:</strong> escribir siempre la lista de columnas. Una sentencia como <code>INSERT INTO alumnos VALUES (...)</code> depende del orden físico de todas las columnas y se vuelve frágil si la estructura cambia.</div>
+<details><summary>¿Cómo puedo conocer el ID generado?</summary><div>Después de un <code>INSERT</code> que generó un valor <code>AUTO_INCREMENT</code>, MySQL permite consultar <code>SELECT LAST_INSERT_ID();</code>. En una inserción múltiple devuelve el primer ID generado por esa sentencia.</div></details>
+</section>
+<section class="section-card" id="insertmultiple">
+<span class="section-kicker">04 · Variantes útiles de INSERT</span>
+<h2>Varias filas, DEFAULT y NULL</h2>
+<h3>Insertar varias filas en una sola sentencia</h3>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO materias (nombre, carga_horaria)
+VALUES
+    ('Programación I', 128),
+    ('Base de Datos I', 128),
+    ('Matemática', 96);</code></pre></div>
+<p>Cada paréntesis representa una fila. La cantidad y el orden de valores deben coincidir con la lista de columnas.</p>
+<h3>Usar DEFAULT de forma explícita</h3>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO carreras (nombre, duracion_anios, estado)
+VALUES ('Carrera de prueba', 3, DEFAULT);</code></pre></div>
+<h3>Guardar un dato desconocido con NULL</h3>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO alumnos
+    (legajo, dni, apellido, nombre, fecha_nacimiento, email, id_carrera)
+VALUES
+    ('A-1002', '45999888', 'Pérez', 'Martín', NULL, NULL, 1);</code></pre></div>
+<div class="constraint-map">
+<article class="constraint-item"><b>Omitir una columna</b>MySQL usa su <code>DEFAULT</code>, genera el valor automático o intenta guardar <code>NULL</code> según la definición.</article>
+<article class="constraint-item"><b>Escribir NULL</b>Significa que el valor no está disponible. Solo funciona si la columna admite <code>NULL</code>.</article>
+<article class="constraint-item"><b>Cadena vacía ''</b>Es un texto conocido de longitud cero. No equivale a <code>NULL</code>.</article>
+<article class="constraint-item"><b>Valor 0</b>Es un número real. No significa automáticamente “sin dato”.</article>
+</div>
+</section>
+<section class="section-card" id="orden">
+<span class="section-kicker">05 · Las relaciones imponen una secuencia</span>
+<h2>Orden correcto para cargar tablas relacionadas</h2>
+<p>Una clave foránea solo puede guardar un valor que ya exista en la tabla referenciada. Por eso se cargan primero las tablas independientes y después las dependientes.</p>
+<div class="load-flow">
+<div class="load-node"><strong>1 · Tablas padre</strong><small><code>carreras</code> y <code>materias</code></small></div>
+<div class="flow-arrow">→</div>
+<div class="load-node"><strong>2 · Tablas hijas</strong><small><code>alumnos</code> y <code>comisiones</code></small></div>
+<div class="flow-arrow">→</div>
+<div class="load-node"><strong>3 · Tabla asociativa</strong><small><code>inscripciones</code></small></div>
+</div>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>-- 1. Ya existen la carrera y la materia.
+INSERT INTO carreras (nombre, duracion_anios)
+VALUES ('Analista de Sistemas', 3);
+
+INSERT INTO materias (nombre, carga_horaria)
+VALUES ('Algoritmos I', 128);
+
+-- 2. Se crean alumno y comisión usando IDs existentes.
+INSERT INTO alumnos
+    (legajo, dni, apellido, nombre, id_carrera)
+VALUES ('A-1003', '44777111', 'López', 'Sofía', 1);
+
+INSERT INTO comisiones
+    (id_materia, anio, cuatrimestre, turno)
+VALUES (1, 2026, 1, 'Noche');
+
+-- 3. Recién ahora puede crearse la inscripción.
+INSERT INTO inscripciones
+    (id_alumno, id_comision, fecha_inscripcion)
+VALUES (1, 1, '2026-03-10');</code></pre></div>
+<div class="callout warning"><strong>No adivinar IDs.</strong> En una práctica pequeña pueden verse fácilmente, pero en una aplicación real se recupera el ID generado o se consulta el registro correspondiente antes de crear la relación.</div>
+</section>
+<section class="section-card" id="restricciones">
+<span class="section-kicker">06 · Un error también puede ser una defensa</span>
+<h2>Restricciones que protegen los datos</h2>
+<p>Cuando una operación viola una regla, MySQL la rechaza. El mensaje puede parecer incómodo, pero indica que la base está evitando una inconsistencia.</p>
+<table class="decision-table">
+<thead><tr><th>Intento</th><th>Restricción</th><th>Por qué falla</th></tr></thead>
+<tbody>
+<tr><td>Repetir un legajo</td><td><code>UNIQUE</code></td><td>El legajo debe identificar a una sola persona.</td></tr>
+<tr><td>Guardar apellido en <code>NULL</code></td><td><code>NOT NULL</code></td><td>La columna exige un valor.</td></tr>
+<tr><td>Usar una carrera inexistente</td><td><code>FOREIGN KEY</code></td><td>La fila hija no puede apuntar a un padre inexistente.</td></tr>
+<tr><td>Duración igual a 20 años</td><td><code>CHECK</code></td><td>El valor queda fuera del rango permitido.</td></tr>
+<tr><td>Repetir alumno y comisión</td><td><code>UNIQUE</code> compuesto</td><td>La misma inscripción no puede duplicarse.</td></tr>
+</tbody>
+</table>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>-- Este INSERT debe fallar si no existe id_carrera = 9999.
+INSERT INTO alumnos
+    (legajo, dni, apellido, nombre, id_carrera)
+VALUES ('A-9999', '40000000', 'Prueba', 'Error FK', 9999);</code></pre></div>
+<div class="callout"><strong>Leer el error con método:</strong> identificar la tabla, la restricción mencionada y el dato que intentaba violarla. No conviene desactivar una restricción para “hacer funcionar” una carga incorrecta.</div>
+</section>
+<section class="section-card" id="update">
+<span class="section-kicker">07 · Cambiar filas existentes</span>
+<h2>UPDATE: modificar datos</h2>
+<p><code>UPDATE</code> selecciona una tabla, indica las nuevas asignaciones con <code>SET</code> y utiliza <code>WHERE</code> para decidir qué filas se modifican.</p>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>UPDATE alumnos
+SET email = 'lucia.gomez@utn.edu.ar'
+WHERE id_alumno = 1;</code></pre></div>
+<h3>Modificar varias columnas</h3>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>UPDATE alumnos
+SET apellido = 'Gómez Díaz',
+    email = 'lucia.gomez.diaz@utn.edu.ar'
+WHERE id_alumno = 1;</code></pre></div>
+<h3>Modificar varias filas de manera intencional</h3>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>UPDATE carreras
+SET estado = 'Inactiva'
+WHERE nombre = 'Carrera de prueba';</code></pre></div>
+<div class="danger-strip"><strong>UPDATE sin WHERE:</strong> modifica todas las filas de la tabla. Puede ser válido en un caso excepcional, pero nunca debe ocurrir por olvido.</div>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>-- PELIGRO: modifica el estado de todas las carreras.
+UPDATE carreras
+SET estado = 'Inactiva';</code></pre></div>
+</section>
+<section class="section-card" id="delete">
+<span class="section-kicker">08 · Quitar filas</span>
+<h2>DELETE: eliminar datos</h2>
+<p><code>DELETE</code> elimina filas, pero conserva la tabla, sus columnas, claves y restricciones.</p>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>DELETE FROM carreras
+WHERE nombre = 'Carrera de prueba';</code></pre></div>
+<p>Si una carrera tiene alumnos asociados y la FK utiliza <code>ON DELETE RESTRICT</code>, MySQL impide el borrado. La solución no es borrar la relación a la fuerza: primero hay que decidir qué debería ocurrir con esos alumnos.</p>
+<div class="danger-strip"><strong>DELETE sin WHERE:</strong> elimina todas las filas de la tabla. La estructura sigue existiendo, pero el contenido desaparece.</div>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>-- PELIGRO: elimina todas las filas de carreras.
+DELETE FROM carreras;</code></pre></div>
+<details><summary>¿DELETE recupera automáticamente el espacio y reinicia los IDs?</summary><div>No debe suponerse eso. <code>DELETE</code> elimina filas y no reinicia por sí mismo el contador <code>AUTO_INCREMENT</code>. La administración física del espacio depende del motor y de otras operaciones.</div></details>
+</section>
+<section class="section-card" id="seguridad">
+<span class="section-kicker">09 · Antes de ejecutar, comprobar</span>
+<h2>WHERE y un flujo de trabajo seguro</h2>
+<p>La condición de <code>WHERE</code> es el cinturón de seguridad de <code>UPDATE</code> y <code>DELETE</code>. Hasta estudiar <code>SELECT</code> en profundidad, lo utilizaremos de manera mínima para comprobar qué filas coincide con la misma condición.</p>
+<div class="safety-sequence">
+<article class="safety-step"><h3>Previsualizar</h3><p>Ejecutar un <code>SELECT</code> con la condición que se piensa usar.</p></article>
+<article class="safety-step"><h3>Contar mentalmente</h3><p>Preguntarse cuántas filas deberían verse afectadas.</p></article>
+<article class="safety-step"><h3>Ejecutar y verificar</h3><p>Aplicar el DML y revisar el número de filas modificadas.</p></article>
+</div>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>-- 1. Comprobar la fila objetivo.
+SELECT *
+FROM alumnos
+WHERE id_alumno = 1;
+
+-- 2. Reutilizar exactamente la misma condición.
+UPDATE alumnos
+SET email = 'nuevo.correo@utn.edu.ar'
+WHERE id_alumno = 1;</code></pre></div>
+<div class="callout warning"><strong>Safe Updates en Workbench:</strong> suele estar habilitado para rechazar <code>UPDATE</code> y <code>DELETE</code> considerados inseguros, por ejemplo cuando no usan una clave en <code>WHERE</code> ni un <code>LIMIT</code>. No conviene desactivarlo automáticamente: primero revisar la sentencia.</div>
+<details><summary>¿Por qué podría aparecer el error 1175?</summary><div>Workbench puede estar usando el modo seguro y considerar que la condición no identifica las filas mediante una columna clave. La respuesta correcta suele ser mejorar el <code>WHERE</code>; desactivar la protección debería ser una decisión consciente y temporal.</div></details>
+</section>
+<section class="section-card" id="referencial">
+<span class="section-kicker">10 · Qué ocurre con las filas relacionadas</span>
+<h2>Acciones referenciales: RESTRICT, CASCADE y SET NULL</h2>
+<p>Cuando se modifica o elimina una clave en la tabla padre, las cláusulas <code>ON UPDATE</code> y <code>ON DELETE</code> establecen qué debe ocurrir con las filas hijas.</p>
+<div class="ref-grid">
+<article class="ref-card"><span class="ref-tag">RESTRICT</span><h3>Rechazar la operación</h3><p>Protege la relación. Es apropiado cuando el padre no debería desaparecer mientras tenga dependencias.</p></article>
+<article class="ref-card"><span class="ref-tag">CASCADE</span><h3>Propagar el cambio</h3><p>Actualiza o elimina automáticamente las filas hijas relacionadas. Debe reflejar una regla real del negocio.</p></article>
+<article class="ref-card"><span class="ref-tag">SET NULL</span><h3>Conservar la fila hija</h3><p>Coloca la FK en <code>NULL</code>. Solo es posible si esa columna acepta valores nulos.</p></article>
+</div>
+<h3>Ejemplo: carrera y alumnos</h3>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>CONSTRAINT fk_alumnos_carreras
+    FOREIGN KEY (id_carrera)
+    REFERENCES carreras (id_carrera)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT</code></pre></div>
+<ul class="checklist">
+<li>Si cambia el ID de la carrera, se actualiza en sus alumnos por <code>ON UPDATE CASCADE</code>.</li>
+<li>Si se intenta eliminar una carrera que todavía tiene alumnos, la operación se rechaza por <code>ON DELETE RESTRICT</code>.</li>
+</ul>
+<h3>Ejemplo donde CASCADE puede tener sentido</h3>
+<p>Una tabla de preferencias puramente dependiente del alumno podría eliminarse junto con él:</p>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>CREATE TABLE preferencias_alumno (
+    id_alumno BIGINT UNSIGNED PRIMARY KEY,
+    recibir_novedades BOOLEAN NOT NULL DEFAULT TRUE,
+    tema_interfaz ENUM('Claro', 'Oscuro') NOT NULL DEFAULT 'Claro',
+    CONSTRAINT fk_preferencias_alumno
+        FOREIGN KEY (id_alumno) REFERENCES alumnos (id_alumno)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE = InnoDB;</code></pre></div>
+<div class="callout"><strong>No existe una acción universalmente mejor.</strong> La elección depende del significado de la relación y de si la información hija tiene valor histórico propio.</div>
+</section>
+<section class="section-card" id="comparacion">
+<span class="section-kicker">11 · Tres instrucciones que no son equivalentes</span>
+<h2>DELETE, TRUNCATE y DROP</h2>
+<table class="decision-table comparison-table">
+<thead><tr><th>Sentencia</th><th>Elimina filas</th><th>Conserva estructura</th><th>Permite WHERE</th><th>Se revierte con ROLLBACK</th><th>AUTO_INCREMENT</th></tr></thead>
+<tbody>
+<tr><td><code>DELETE</code></td><td>Sí, algunas o todas</td><td>Sí</td><td>Sí</td><td>Sí, dentro de una transacción InnoDB no confirmada</td><td>No se reinicia automáticamente</td></tr>
+<tr><td><code>TRUNCATE</code></td><td>Todas</td><td>Sí, recrea la tabla vacía</td><td>No</td><td>No; es DDL y produce commit implícito</td><td>Se reinicia</td></tr>
+<tr><td><code>DROP TABLE</code></td><td>Todas</td><td>No</td><td>No</td><td>No como DML</td><td>La tabla deja de existir</td></tr>
+</tbody>
+</table>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>DELETE FROM tabla_pruebas WHERE id = 5;
+TRUNCATE TABLE tabla_pruebas;
+DROP TABLE tabla_pruebas;</code></pre></div>
+<div class="callout warning"><strong>TRUNCATE y foreign keys:</strong> puede fallar si otra tabla posee una clave foránea que referencia la tabla que se intenta vaciar.</div>
+</section>
+<section class="section-card" id="transacciones">
+<span class="section-kicker">12 · Una red de seguridad inicial</span>
+<h2>Primer vistazo a las transacciones</h2>
+<p>Una transacción permite agrupar varias operaciones. Mientras no se ejecute <code>COMMIT</code>, los cambios DML pueden deshacerse con <code>ROLLBACK</code> en tablas InnoDB.</p>
+<div class="transaction-track">
+<div class="transaction-box"><strong>START TRANSACTION</strong><small>Comienza el bloque controlado.</small></div>
+<div class="flow-arrow">→</div>
+<div class="transaction-box"><strong>DML</strong><small>INSERT, UPDATE o DELETE.</small></div>
+<div class="flow-arrow">→</div>
+<div class="transaction-box"><strong>COMMIT / ROLLBACK</strong><small>Confirmar o deshacer.</small></div>
+</div>
+<div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>START TRANSACTION;
+
+UPDATE alumnos
+SET email = 'prueba.temporal@utn.edu.ar'
+WHERE id_alumno = 1;
+
+-- Observar el cambio antes de decidir.
+SELECT * FROM alumnos WHERE id_alumno = 1;
+
+ROLLBACK;</code></pre></div>
+<div class="callout good"><strong>Para confirmar:</strong> reemplazar <code>ROLLBACK</code> por <code>COMMIT</code>. Por defecto MySQL usa <em>autocommit</em>, por lo que una sentencia ejecutada fuera de una transacción explícita queda confirmada automáticamente.</div>
+<div class="callout warning"><strong>Atención con DDL:</strong> sentencias como <code>CREATE</code>, <code>ALTER</code>, <code>DROP</code> y <code>TRUNCATE</code> no se comportan como DML reversible y pueden producir commits implícitos.</div>
+</section>
+<section class="section-card" id="casoguiado">
+<span class="section-kicker">13 · Integrar el recorrido</span>
+<h2>Caso guiado: registrar una inscripción</h2>
+<p>Vamos a cargar los datos en el orden correcto, crear la inscripción y luego modificar su estado.</p>
+<div class="step"><div class="step-number">1</div><div class="step-body"><h3>Crear la carrera y conservar su ID</h3><div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO carreras (nombre, duracion_anios)
+VALUES ('Tecnicatura en Desarrollo de Software', 3);
+
+SET @id_carrera = LAST_INSERT_ID();</code></pre></div></div></div>
+<div class="step"><div class="step-number">2</div><div class="step-body"><h3>Crear la materia y conservar su ID</h3><div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO materias (nombre, carga_horaria)
+VALUES ('Laboratorio de Programación', 128);
+
+SET @id_materia = LAST_INSERT_ID();</code></pre></div></div></div>
+<div class="step"><div class="step-number">3</div><div class="step-body"><h3>Crear el alumno</h3><div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO alumnos
+    (legajo, dni, apellido, nombre, email, id_carrera)
+VALUES
+    ('A-2026-15', '46123456', 'Fernández', 'Valentina',
+     'valentina.fernandez@ejemplo.edu.ar', @id_carrera);
+
+SET @id_alumno = LAST_INSERT_ID();</code></pre></div></div></div>
+<div class="step"><div class="step-number">4</div><div class="step-body"><h3>Crear la comisión</h3><div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO comisiones
+    (id_materia, anio, cuatrimestre, turno)
+VALUES
+    (@id_materia, 2026, 1, 'Noche');
+
+SET @id_comision = LAST_INSERT_ID();</code></pre></div></div></div>
+<div class="step"><div class="step-number">5</div><div class="step-body"><h3>Crear la inscripción usando los IDs reales</h3><div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>INSERT INTO inscripciones
+    (id_alumno, id_comision, fecha_inscripcion)
+VALUES
+    (@id_alumno, @id_comision, '2026-03-12');
+
+SET @id_inscripcion = LAST_INSERT_ID();</code></pre></div><p class="verification-note">Las variables con <code>@</code> solo guardan temporalmente los IDs en la sesión actual. Se usan aquí como ayuda práctica; su estudio detallado no forma parte del mínimo de esta unidad.</p></div></div>
+<div class="step"><div class="step-number">6</div><div class="step-body"><h3>Modificar el estado de la inscripción creada</h3><div class="code-wrap"><button class="copy-btn">Copiar</button><pre><code>UPDATE inscripciones
+SET estado = 'Aprobada'
+WHERE id_inscripcion = @id_inscripcion;</code></pre></div></div></div>
+<div class="callout"><strong>La lógica del caso importa más que los números:</strong> primero existen los padres, luego los hijos y por último la relación N a N representada por <code>inscripciones</code>.</div>
+</section>
+<section class="section-card" id="errores">
+<span class="section-kicker">14 · Patrones que conviene evitar</span>
+<h2>Errores frecuentes</h2>
+<div class="grid-2">
+<article class="mini-card"><h3>No nombrar columnas</h3><p>Hace que el <code>INSERT</code> dependa del orden total de la tabla.</p></article>
+<article class="mini-card"><h3>Confundir NULL con texto vacío</h3><p>Representan situaciones distintas.</p></article>
+<article class="mini-card"><h3>Insertar hijos antes que padres</h3><p>La FK rechaza la referencia inexistente.</p></article>
+<article class="mini-card"><h3>Usar IDs inventados</h3><p>Puede relacionar filas incorrectas o producir errores.</p></article>
+<article class="mini-card"><h3>Olvidar WHERE</h3><p>UPDATE o DELETE afecta todas las filas.</p></article>
+<article class="mini-card"><h3>Aplicar CASCADE por comodidad</h3><p>Puede borrar información histórica de manera no deseada.</p></article>
+<article class="mini-card"><h3>Desactivar restricciones</h3><p>Oculta el problema en vez de corregir los datos.</p></article>
+<article class="mini-card"><h3>Probar sobre datos importantes</h3><p>La práctica debe hacerse en una base controlada o dentro de una transacción.</p></article>
+</div>
+<details><summary>¿Un mensaje de foreign key significa que MySQL “anda mal”?</summary><div>No. Generalmente significa que la operación intenta crear una relación imposible o borrar una fila todavía necesaria. Hay que revisar el modelo, el orden de carga y los IDs utilizados.</div></details>
+<details><summary>¿CASCADE es siempre peligroso?</summary><div>No. Es correcto cuando la fila hija carece de sentido sin su padre. El problema aparece cuando se elige sin analizar qué información se perdería.</div></details>
+</section>
+<section class="section-card" id="comprobacion">
+<span class="section-kicker">15 · Detenerse y comprobar</span>
+<h2>Preguntas y práctica mínima</h2>
+<p>Intentá responder antes de desplegar cada solución.</p>
+<details><summary>1. ¿Por qué se insertan primero las carreras y después los alumnos?</summary><div>Porque <code>alumnos.id_carrera</code> es una foreign key y solo puede referenciar una carrera que ya exista.</div></details>
+<details><summary>2. ¿Qué diferencia hay entre omitir <code>estado</code> y escribir <code>NULL</code>?</summary><div>Al omitirlo se utiliza el <code>DEFAULT</code> si fue definido. Escribir <code>NULL</code> intenta guardar ausencia de valor y falla si la columna es <code>NOT NULL</code>.</div></details>
+<details><summary>3. ¿Qué ocurre si UPDATE no incluye WHERE?</summary><div>Todas las filas reciben los nuevos valores indicados en <code>SET</code>.</div></details>
+<details><summary>4. ¿Por qué RESTRICT puede impedir borrar una carrera?</summary><div>Porque existen alumnos que todavía la referencian y el borrado dejaría foreign keys sin una fila padre válida.</div></details>
+<details><summary>5. ¿TRUNCATE es simplemente un DELETE más rápido?</summary><div>No. Vacía toda la tabla, es DDL, no admite <code>WHERE</code>, produce un commit implícito, reinicia <code>AUTO_INCREMENT</code> y tiene restricciones específicas con foreign keys.</div></details>
+<div class="practice-box">
+<h3>Actividad mínima</h3>
+<ol>
+<li>Cargar dos carreras y tres materias.</li>
+<li>Cargar tres alumnos, dejando un correo en <code>NULL</code>.</li>
+<li>Crear dos comisiones y tres inscripciones válidas.</li>
+<li>Intentar una inscripción con un alumno inexistente y explicar el error.</li>
+<li>Modificar el correo de un alumno usando su PK en <code>WHERE</code>.</li>
+<li>Crear una fila de prueba, eliminarla dentro de una transacción y ejecutar <code>ROLLBACK</code>.</li>
+<li>Explicar qué ocurriría al intentar borrar una carrera con alumnos asociados.</li>
+</ol>
+</div>
+</section>
+<section class="section-card" id="cierre">
+<span class="section-kicker">16 · Cierre</span>
+<h2>Síntesis de la parte</h2>
+<ul class="checklist">
+<li><code>INSERT</code> agrega filas y conviene indicar siempre las columnas.</li>
+<li><code>AUTO_INCREMENT</code>, <code>DEFAULT</code> y <code>NULL</code> resuelven situaciones diferentes.</li>
+<li>Las tablas padre se cargan antes que las tablas hijas.</li>
+<li>Las restricciones rechazan operaciones que producirían datos inválidos.</li>
+<li><code>UPDATE</code> y <code>DELETE</code> requieren una condición precisa cuando no se desea afectar toda la tabla.</li>
+<li>Las acciones referenciales deben elegirse según el significado de la relación.</li>
+<li><code>DELETE</code>, <code>TRUNCATE</code> y <code>DROP</code> no son equivalentes.</li>
+<li>Una transacción permite confirmar o deshacer DML antes del <code>COMMIT</code>.</li>
+</ul>
+<h3>Glosario mínimo</h3>
+<table class="decision-table"><tbody>
+<tr><td><strong>DML</strong></td><td>Sentencias que agregan, modifican o eliminan filas.</td></tr>
+<tr><td><strong>Fila padre</strong></td><td>Registro que posee la clave referenciada.</td></tr>
+<tr><td><strong>Fila hija</strong></td><td>Registro que contiene la foreign key.</td></tr>
+<tr><td><strong>RESTRICT</strong></td><td>Impide una modificación o eliminación que rompería la referencia.</td></tr>
+<tr><td><strong>CASCADE</strong></td><td>Propaga la operación hacia las filas relacionadas.</td></tr>
+<tr><td><strong>SET NULL</strong></td><td>Conserva la fila hija y reemplaza la FK por <code>NULL</code>.</td></tr>
+<tr><td><strong>Transacción</strong></td><td>Conjunto de operaciones que se confirma con <code>COMMIT</code> o se deshace con <code>ROLLBACK</code>.</td></tr>
+<tr><td><strong>Autocommit</strong></td><td>Modo predeterminado que confirma cada sentencia ejecutada fuera de una transacción explícita.</td></tr>
+</tbody></table>
+<h3>Documentación oficial para profundizar</h3>
+<ul>
+<li><a href="https://dev.mysql.com/doc/refman/8.4/en/insert.html" rel="noopener" target="_blank">INSERT</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/8.4/en/update.html" rel="noopener" target="_blank">UPDATE</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/8.4/en/delete.html" rel="noopener" target="_blank">DELETE</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/8.4/en/example-foreign-keys.html" rel="noopener" target="_blank">Foreign keys y acciones referenciales</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/8.4/en/truncate-table.html" rel="noopener" target="_blank">TRUNCATE TABLE</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/8.4/en/commit.html" rel="noopener" target="_blank">START TRANSACTION, COMMIT y ROLLBACK</a></li>
+</ul>
+</section>
+<footer><span>UTN · Facultad Regional Mar del Plata · Base de Datos I</span></footer>
+</div></main>
+</div>
+<button aria-label="Volver arriba" class="to-top" id="toTop">↑</button>
+<script>
+    const body = document.body;
+    const menuButton = document.getElementById('menuButton');
+    const themeButton = document.getElementById('themeButton');
+    const progressBar = document.getElementById('progressBar');
+    const toTop = document.getElementById('toTop');
+    const navLinks = [...document.querySelectorAll('.nav-list a')];
+    const sections = navLinks.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+
+    const savedTheme = localStorage.getItem('bd-theme');
+    if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+
+    menuButton.addEventListener('click', () => {
+      const open = body.classList.toggle('menu-open');
+      menuButton.setAttribute('aria-expanded', open);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (body.classList.contains('menu-open') && !event.target.closest('.sidebar') && !event.target.closest('#menuButton')) {
+        body.classList.remove('menu-open');
+        menuButton.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    navLinks.forEach(link => link.addEventListener('click', () => {
+      body.classList.remove('menu-open');
+      menuButton.setAttribute('aria-expanded', 'false');
+    }));
+
+    themeButton.addEventListener('click', () => {
+      const current = document.documentElement.dataset.theme;
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem('bd-theme', next);
+    });
+
+    document.querySelectorAll('.copy-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const text = button.parentElement.querySelector('code').innerText;
+        try {
+          await navigator.clipboard.writeText(text);
+          const old = button.textContent;
+          button.textContent = 'Copiado';
+          setTimeout(() => button.textContent = old, 1200);
+        } catch {
+          button.textContent = 'Seleccionar';
+        }
+      });
+    });
+
+    function onScroll() {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const percent = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+      progressBar.style.width = `${percent}%`;
+      toTop.classList.toggle('show', window.scrollY > 600);
+
+      let current = sections[0]?.id;
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= 140) current = section.id;
+      }
+      navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${current}`));
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    onScroll();
+  </script>
+</body>
+</html>
