@@ -67,6 +67,21 @@ test.describe('Crear pregunta', () => {
     await expect(page.locator('#lista-errores')).toContainText('Agregá al menos un material de estudio.');
   });
 
+  test('no agrega material si no se eligió documento ni sección', async ({ page }) => {
+    await page.goto('/crear/');
+    await expect(page.locator('#campo-seccion')).toBeDisabled();
+
+    await page.getByRole('button', { name: '+ Agregar material' }).click();
+    await expect(page.locator('#lista-material li')).toHaveCount(0);
+    await expect(page.getByRole('status')).toContainText('Primero elegí un documento.');
+
+    await page.locator('#campo-documento').selectOption('unidad-05-subconsultas/subconsultas.html');
+    await expect(page.locator('#campo-seccion')).toBeEnabled();
+    await page.getByRole('button', { name: '+ Agregar material' }).click();
+    await expect(page.locator('#lista-material li')).toHaveCount(0);
+    await expect(page.getByRole('status')).toContainText('Elegí la sección del documento.');
+  });
+
   test('la pestaña Crear está en el menú, visible en escritorio y celular, y lleva al formulario', async ({ page }) => {
     await page.goto('/');
 

@@ -126,6 +126,7 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
           <div>
             <label for="campo-documento" class={clasesEtiqueta}>Documento</label>
             <select id="campo-documento" class={clasesInput}>
+              <option value="">— Elegí un documento —</option>
               {
                 documentos.map((doc) => (
                   <option value={doc.ruta} data-titulo={doc.titulo}>
@@ -137,7 +138,9 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
           </div>
           <div>
             <label for="campo-seccion" class={clasesEtiqueta}>Sección</label>
-            <select id="campo-seccion" class={clasesInput}></select>
+            <select id="campo-seccion" class={clasesInput} disabled>
+              <option value="">— Primero elegí un documento —</option>
+            </select>
           </div>
         </div>
         <label class={`${clasesEtiqueta} mt-4`}>

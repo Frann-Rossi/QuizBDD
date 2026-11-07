@@ -106,13 +106,16 @@ export function iniciarCrear(): void {
 
   // ---------- Material de estudio ----------
 
+  /** Sin documento elegido, el select de secciones queda deshabilitado y sin opciones reales. */
   function cargarSecciones() {
     const documento = datos.documentos.find((doc) => doc.ruta === campoDocumento.value);
     const secciones = documento?.secciones ?? [];
     campoSeccion.replaceChildren(
+      new Option(documento ? '— Elegí una sección —' : '— Primero elegí un documento —', ''),
       ...secciones.map((seccion) => new Option(`${seccion.titulo} (#${seccion.id})`, seccion.id)),
     );
-    campoTituloMaterial.value = secciones[0]?.titulo ?? documento?.titulo ?? '';
+    campoSeccion.disabled = !documento;
+    campoTituloMaterial.value = '';
   }
 
   campoDocumento.addEventListener('change', cargarSecciones);
@@ -159,8 +162,16 @@ export function iniciarCrear(): void {
     const titulo = campoTituloMaterial.value.trim();
     const seccion = campoSeccion.value;
     const ruta = campoDocumento.value;
-    if (!titulo || !seccion || !ruta) {
-      mostrarMensaje('Elegí un documento y una sección, y escribí el nombre del material.', 'error');
+    if (!ruta) {
+      mostrarMensaje('Primero elegí un documento.', 'error');
+      return;
+    }
+    if (!seccion) {
+      mostrarMensaje('Elegí la sección del documento.', 'error');
+      return;
+    }
+    if (!titulo) {
+      mostrarMensaje('Escribí el nombre que verá quien estudie.', 'error');
       return;
     }
     if (material.some((item) => item.ruta === ruta && item.seccion === seccion)) {
