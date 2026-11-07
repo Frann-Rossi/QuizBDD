@@ -1207,7 +1207,7 @@
     {
       "id": "u07-delete-en-tabla-base",
       "tema": "Una vista no es una foto ni una copia de los datos",
-      "enunciado": "La vista v_productos_tecnologia se definió como SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia'. El producto con id_producto = 3 aparece en la vista. Luego se ejecuta DELETE FROM productos WHERE id_producto = 3. ¿Qué ocurre al volver a consultar la vista?",
+      "enunciado": "La vista v_productos_tecnologia se definió como SELECT id_producto, nombre, precio FROM productos WHERE categoria = 'Tecnologia'. El producto con id_producto = 3 aparece en la vista. Luego se ejecuta DELETE FROM productos WHERE id_producto = 3, y ninguna otra tabla hace referencia a ese producto. ¿Qué ocurre al volver a consultar la vista?",
       "opciones": [
         {
           "id": "a",

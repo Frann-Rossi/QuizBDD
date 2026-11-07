@@ -745,7 +745,7 @@
     {
       "id": "u06-cte-usa-posterior",
       "tema": "Alcance, duración y sintaxis",
-      "enunciado": "¿Qué ocurre al ejecutar WITH totales_cliente AS (SELECT v.id_cliente, SUM(tv.total_venta) AS total_cliente FROM ventas AS v JOIN totales_venta AS tv ON v.id_venta = tv.id_venta GROUP BY v.id_cliente), totales_venta AS (SELECT id_venta, SUM(cantidad * precio_unitario) AS total_venta FROM detalle_ventas GROUP BY id_venta) SELECT * FROM totales_cliente;?",
+      "enunciado": "¿Qué ocurre al ejecutar WITH totales_cliente AS (SELECT v.id_cliente, SUM(tv.total_venta) AS total_cliente FROM ventas AS v JOIN totales_venta AS tv ON v.id_venta = tv.id_venta GROUP BY v.id_cliente), totales_venta AS (SELECT id_venta, SUM(cantidad * precio_unitario) AS total_venta FROM detalle_ventas GROUP BY id_venta) SELECT * FROM totales_cliente?",
       "opciones": [
         {
           "id": "a",
@@ -918,8 +918,8 @@
         },
         {
           "id": "c",
-          "texto": "Repetir la misma subconsulta, completa, en cada uno de los lugares de la sentencia donde se la necesite.",
-          "explicacion": "Funciona, pero repite lógica; es justamente lo que la CTE permite evitar."
+          "texto": "Repetir en cada lugar donde se la necesite la misma subconsulta, porque dentro de una sentencia no se puede nombrar un resultado intermedio.",
+          "explicacion": "Falso: dentro de una sentencia sí se puede nombrar un resultado intermedio con WITH; repetir el bloque es justamente lo que la CTE evita."
         },
         {
           "id": "d",
@@ -1346,7 +1346,7 @@
     {
       "id": "u06-coma-antes-select",
       "tema": "Definir varias CTE en la misma sentencia",
-      "enunciado": "¿Qué error tiene WITH ids_clientes AS (SELECT id_cliente FROM clientes), ids_ventas AS (SELECT id_cliente FROM ventas), SELECT * FROM ids_clientes AS c JOIN ids_ventas AS v ON c.id_cliente = v.id_cliente;?",
+      "enunciado": "¿Qué error tiene WITH ids_clientes AS (SELECT id_cliente FROM clientes), ids_ventas AS (SELECT id_cliente FROM ventas), SELECT * FROM ids_clientes AS c JOIN ids_ventas AS v ON c.id_cliente = v.id_cliente?",
       "opciones": [
         {
           "id": "a",
@@ -1401,8 +1401,8 @@
         },
         {
           "id": "c",
-          "texto": "Una sola CTE que resuelva todo con tres subconsultas anidadas dentro de ella.",
-          "explicacion": "Volvería a esconder las etapas en lógica anidada, que es justamente lo que las CTE encadenadas permiten evitar."
+          "texto": "Una única CTE que concentre las tres etapas, porque cada CTE solo puede leer tablas reales y no resultados de otras CTE.",
+          "explicacion": "Falso: una CTE puede usar las definidas antes en el mismo WITH; por eso las etapas pueden separarse."
         },
         {
           "id": "d",
