@@ -5,7 +5,7 @@
     {
       "id": "u01-inconsistencia-copias",
       "tema": "Problemas de los archivos separados",
-      "enunciado": "Un mismo dato figura en varios archivos independientes y solo se actualiza en uno de ellos. ¿Qué problema aparece?",
+      "enunciado": "Un mismo dato figura en varios archivos independientes y solo se actualiza en uno de ellos. ¿Qué problema genera esa actualización incompleta?",
       "opciones": [
         {
           "id": "a",
@@ -1420,8 +1420,8 @@
         },
         {
           "id": "b",
-          "texto": "Una clave sustituta que se genera automáticamente con AUTO_INCREMENT.",
-          "explicacion": "Incorrecto: la clave sustituta es la que se crea para identificar internamente; no es necesariamente alternativa."
+          "texto": "Una clave que puede repetir valores, siempre que la tabla tenga una clave primaria.",
+          "explicacion": "Incorrecto: toda clave candidata, y por lo tanto también la alternativa, identifica filas sin repetir valores."
         },
         {
           "id": "c",
@@ -2096,8 +2096,8 @@
         },
         {
           "id": "d",
-          "texto": "Cuando la información proviene de otro sistema y debe normalizarse hasta la 3FN.",
-          "explicacion": "Incorrecto: los datos normalizados se modelan con tablas; JSON es una herramienta complementaria para datos flexibles."
+          "texto": "Cuando los datos centrales del negocio pueden guardarse en una única columna JSON, sin claves ni relaciones.",
+          "explicacion": "Incorrecto: los datos centrales, con claves y relaciones, siguen en tablas y columnas normales; JSON es complementario."
         }
       ],
       "respuestaCorrecta": "a",

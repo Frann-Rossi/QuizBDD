@@ -759,8 +759,8 @@
         },
         {
           "id": "c",
-          "texto": "No, porque LEFT JOIN exige siempre una condición ON.",
-          "explicacion": "USING reemplaza la condición ON en los casos simples y puede usarse con LEFT JOIN."
+          "texto": "No, porque USING exige que la columna tenga nombres distintos en cada tabla.",
+          "explicacion": "Incorrecto: USING exige el mismo nombre de columna en ambas tablas, y eso no impide usarlo con LEFT JOIN."
         },
         {
           "id": "d",
@@ -893,7 +893,7 @@
     {
       "id": "u03-sin-coincidencia-significado",
       "tema": "Filas sin coincidencia",
-      "enunciado": "Después de un LEFT JOIN, una columna de la tabla derecha aparece en NULL. ¿Qué indica esto?",
+      "enunciado": "Después de un LEFT JOIN, una columna de la tabla derecha aparece en NULL. ¿Qué puede indicar esto?",
       "opciones": [
         {
           "id": "a",

@@ -574,7 +574,7 @@
         { "id": "d", "texto": "CURDATE()", "explicacion": "CURDATE() devuelve la fecha actual; por sí sola no calcula una diferencia." }
       ],
       "respuestaCorrecta": "c",
-      "explicacion": "Entre las funciones de fecha de la unidad: CURDATE() y NOW() obtienen el momento actual, DATE() extrae la parte de fecha, DATEDIFF() calcula días entre fechas, y YEAR() y MONTH() extraen partes de una fecha.",
+      "explicacion": "Entre las funciones de fecha de la unidad: CURDATE() obtiene la fecha actual y NOW() la fecha y hora actuales, DATE() extrae la parte de fecha, DATEDIFF() calcula días entre fechas, y YEAR() y MONTH() extraen partes de una fecha.",
       "resumen": "DATEDIFF() calcula la cantidad de días entre dos fechas.",
       "material": [
         { "titulo": "Unidad 2 · Funciones de fecha", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "funciones" }
