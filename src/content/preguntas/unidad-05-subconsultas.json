@@ -1349,42 +1349,6 @@
       ]
     },
     {
-      "id": "u05-tabla-derivada-no-persiste",
-      "tema": "Subconsultas matriciales y tablas derivadas",
-      "enunciado": "Una tabla derivada es una subconsulta ubicada en FROM. ¿Qué ocurre con ella cuando termina de ejecutarse la instrucción?",
-      "opciones": [
-        {
-          "id": "a",
-          "texto": "Deja de existir: no queda guardada como tabla ni como vista.",
-          "explicacion": "Correcto: la tabla derivada existe únicamente durante la ejecución de esa instrucción."
-        },
-        {
-          "id": "b",
-          "texto": "Queda guardada como una vista con el nombre de su alias.",
-          "explicacion": "Para guardar una consulta como vista hace falta crearla explícitamente; el alias solo sirve dentro de esa instrucción."
-        },
-        {
-          "id": "c",
-          "texto": "Queda disponible como tabla temporal hasta que se cierra la sesión.",
-          "explicacion": "Una tabla derivada no se conserva entre instrucciones: no es una tabla temporal de la sesión."
-        },
-        {
-          "id": "d",
-          "texto": "Se convierte en una tabla real que se puede consultar con su alias.",
-          "explicacion": "No se crea ninguna tabla real en la base: el alias solo existe dentro de la consulta que lo define."
-        }
-      ],
-      "respuestaCorrecta": "a",
-      "explicacion": "Un resultado tabular dentro de FROM se usa como tabla derivada: necesita alias y vive solo mientras se ejecuta la instrucción.",
-      "material": [
-        {
-          "titulo": "Unidad 5 · Subconsultas matriciales y tablas derivadas",
-          "ruta": "unidad-05-subconsultas/subconsultas.html",
-          "seccion": "matriciales"
-        }
-      ]
-    },
-    {
       "id": "u05-cuando-usar-tabla-derivada",
       "tema": "Subconsultas matriciales y tablas derivadas",
       "enunciado": "Se necesita primero un resumen con dos columnas (id_cliente y total gastado), con una fila por cliente, para después filtrar ese resumen. ¿Qué recurso expresa mejor esa idea?",

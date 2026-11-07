@@ -39,42 +39,6 @@
       ]
     },
     {
-      "id": "u06-tabla-temporal-fisica",
-      "tema": "Qué es una CTE",
-      "enunciado": "Decimos que una CTE “se usa como una tabla”. ¿Significa eso que MySQL crea físicamente una tabla temporal?",
-      "opciones": [
-        {
-          "id": "a",
-          "texto": "Sí: cada vez que se usa WITH, MySQL crea siempre una tabla temporal física en disco con el resultado.",
-          "explicacion": "La sintaxis describe el resultado deseado; cómo se ejecuta no está fijado por el hecho de usar WITH."
-        },
-        {
-          "id": "b",
-          "texto": "Sí, pero solo cuando la CTE tiene GROUP BY.",
-          "explicacion": "El material no establece ninguna regla de ese tipo: la estrategia de ejecución la decide el optimizador."
-        },
-        {
-          "id": "c",
-          "texto": "No: MySQL siempre la transforma en una subconsulta anidada.",
-          "explicacion": "Tampoco hay una transformación garantizada; el optimizador puede elegir distintas estrategias."
-        },
-        {
-          "id": "d",
-          "texto": "No necesariamente: nosotros describimos el resultado y el optimizador decide cómo ejecutarlo.",
-          "explicacion": "Correcto: “se usa como una tabla” es una ayuda para entenderla, no una descripción del plan físico."
-        }
-      ],
-      "respuestaCorrecta": "d",
-      "explicacion": "SQL es declarativo: describimos qué resultado queremos. Pensar la CTE como una tabla ayuda a leerla, pero no implica que exista una tabla física.",
-      "material": [
-        {
-          "titulo": "Unidad 6 · Qué es una CTE",
-          "ruta": "unidad-06-cte/cte.html",
-          "seccion": "idea"
-        }
-      ]
-    },
-    {
       "id": "u06-ventaja-reutilizar",
       "tema": "El mismo problema resuelto con subconsultas y con CTE",
       "enunciado": "Para mostrar los clientes que compraron más que el promedio, una solución con subconsultas repite en varios niveles el cálculo del total de cada cliente. Otra la reescribe así: WITH compras_por_cliente AS (SELECT id_cliente, nombre, total_comprado …) SELECT id_cliente, nombre, total_comprado FROM compras_por_cliente WHERE total_comprado > (SELECT AVG(total_comprado) FROM compras_por_cliente). ¿Qué aporta la CTE?",
@@ -328,42 +292,6 @@
       ],
       "respuestaCorrecta": "a",
       "explicacion": "En esta unidad la CTE se utiliza principalmente para organizar y expresar mejor la lógica de una consulta con varios pasos.",
-      "material": [
-        {
-          "titulo": "Unidad 6 · CTE, subconsulta o consulta directa",
-          "ruta": "unidad-06-cte/cte.html",
-          "seccion": "comparar"
-        }
-      ]
-    },
-    {
-      "id": "u06-valor-unico-where",
-      "tema": "CTE, subconsulta o consulta directa",
-      "enunciado": "Si solo se necesita un único valor dentro de WHERE, por ejemplo el precio promedio de todos los productos, ¿cuál es la opción natural?",
-      "opciones": [
-        {
-          "id": "a",
-          "texto": "Una CTE.",
-          "explicacion": "La CTE es más natural para resultados intermedios complejos o reutilizados en la sentencia."
-        },
-        {
-          "id": "b",
-          "texto": "Una vista.",
-          "explicacion": "Una vista tiene sentido para reutilizar una consulta en muchas sentencias, no para un valor puntual."
-        },
-        {
-          "id": "c",
-          "texto": "Una subconsulta escalar.",
-          "explicacion": "Correcto: suele ser breve y muy clara, por ejemplo WHERE precio > (SELECT AVG(precio) FROM productos)."
-        },
-        {
-          "id": "d",
-          "texto": "Una CTE recursiva.",
-          "explicacion": "Las CTE recursivas sirven para recorrer jerarquías o generar secuencias, no para calcular un valor simple."
-        }
-      ],
-      "respuestaCorrecta": "c",
-      "explicacion": "Cada herramienta tiene su lugar: consulta directa para filtros simples, subconsulta escalar para un valor en WHERE, CTE para resultados intermedios complejos o reutilizados, JOIN para combinar tablas.",
       "material": [
         {
           "titulo": "Unidad 6 · CTE, subconsulta o consulta directa",
@@ -1530,42 +1458,6 @@
           "titulo": "Unidad 6 · Alcance, duración y sintaxis",
           "ruta": "unidad-06-cte/cte.html",
           "seccion": "alcance"
-        }
-      ]
-    },
-    {
-      "id": "u06-reutilizar-autojoin",
-      "tema": "La misma CTE puede referenciarse más de una vez",
-      "enunciado": "¿Es válido usar la misma CTE dos veces en el FROM con alias distintos, por ejemplo FROM totales AS t1 JOIN totales AS t2 ON t1.id_cliente < t2.id_cliente?",
-      "opciones": [
-        {
-          "id": "a",
-          "texto": "No: dentro de una sentencia, cada CTE puede referenciarse una única vez, en un solo lugar.",
-          "explicacion": "Una vez definida, la CTE puede usarse en distintos lugares de la misma sentencia, tantas veces como haga falta."
-        },
-        {
-          "id": "b",
-          "texto": "Sí, pero solo si la CTE se declara con WITH RECURSIVE.",
-          "explicacion": "RECURSIVE se usa cuando la CTE se referencia a sí misma en su definición, no para usarla varias veces."
-        },
-        {
-          "id": "c",
-          "texto": "Sí: una vez definida, puede usarse varias veces, cada una con su alias.",
-          "explicacion": "Correcto: cada referencia funciona como una fuente de datos distinta dentro del mismo FROM."
-        },
-        {
-          "id": "d",
-          "texto": "No: para eso hay que copiarla dentro del mismo WITH con otro nombre.",
-          "explicacion": "No hace falta duplicar la definición; justamente la ventaja es escribir el cálculo una sola vez."
-        }
-      ],
-      "respuestaCorrecta": "c",
-      "explicacion": "Una CTE se define una vez y su nombre puede usarse en varios lugares de la misma sentencia: en el FROM, en un JOIN o en una subconsulta.",
-      "material": [
-        {
-          "titulo": "Unidad 6 · Reutilizar una CTE",
-          "ruta": "unidad-06-cte/cte.html",
-          "seccion": "reutilizar"
         }
       ]
     },

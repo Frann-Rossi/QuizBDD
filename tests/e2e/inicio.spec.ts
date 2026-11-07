@@ -21,7 +21,7 @@ test.describe('Inicio', () => {
     const porUnidad = await page.locator('a[href^="/quiz/unidad-"]').evaluateAll((tarjetas) =>
       tarjetas.map((t) => Number(t.textContent?.match(/COUNT\(\*\) = (\d+)/)?.[1] ?? 0)),
     );
-    expect(total).toBeGreaterThanOrEqual(150);
+    expect(total).toBeGreaterThanOrEqual(139);
     expect(porUnidad.reduce((a, b) => a + b, 0)).toBe(total);
   });
 
