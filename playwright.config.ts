@@ -1,10 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PUERTO = 4322;
+// Puerto por defecto de `astro dev`: si ya hay un servidor de desarrollo, Playwright lo reutiliza.
+const PUERTO_DESARROLLO = 4321;
 
 /**
- * Tests de interfaz (end-to-end) sobre el sitio construido.
- * Usan el Chrome instalado en la máquina (channel: 'chrome'), sin descargar navegadores aparte.
+ * Tests de interfaz (end-to-end). Usan el Chrome instalado en la máquina (channel: 'chrome'),
+ * sin descargar navegadores aparte.
+ *
+ * - Escritorio y celular: sobre el sitio construido (producción).
+ * - Desarrollo (`crear.spec.ts`): la página Crear solo existe con el servidor de desarrollo.
  */
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -20,13 +25,39 @@ export default defineConfig({
     contextOptions: { reducedMotion: 'reduce' },
   },
   projects: [
-    { name: 'escritorio', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },
-    { name: 'celular', use: { ...devices['Pixel 7'], channel: 'chrome' } },
+    {
+      name: 'escritorio',
+      testIgnore: /crear\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    },
+    {
+      name: 'celular',
+      testIgnore: /crear\.spec\.ts/,
+      use: { ...devices['Pixel 7'], channel: 'chrome' },
+    },
+    {
+      name: 'desarrollo-escritorio',
+      testMatch: /crear\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], channel: 'chrome', baseURL: `http://localhost:${PUERTO_DESARROLLO}` },
+    },
+    {
+      name: 'desarrollo-celular',
+      testMatch: /crear\.spec\.ts/,
+      use: { ...devices['Pixel 7'], channel: 'chrome', baseURL: `http://localhost:${PUERTO_DESARROLLO}` },
+    },
   ],
-  webServer: {
-    command: `npm run build && npx astro preview --port ${PUERTO}`,
-    url: `http://localhost:${PUERTO}`,
-    reuseExistingServer: !process.env['CI'],
-    timeout: 180_000,
-  },
+  webServer: [
+    {
+      command: `npm run build && npx astro preview --port ${PUERTO}`,
+      url: `http://localhost:${PUERTO}`,
+      reuseExistingServer: !process.env['CI'],
+      timeout: 180_000,
+    },
+    {
+      command: `npx astro dev --port ${PUERTO_DESARROLLO}`,
+      url: `http://localhost:${PUERTO_DESARROLLO}`,
+      reuseExistingServer: !process.env['CI'],
+      timeout: 180_000,
+    },
+  ],
 });
