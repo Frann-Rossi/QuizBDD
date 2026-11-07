@@ -5,6 +5,7 @@
 import { evaluarRespuesta } from '@/lib/quiz/evaluar';
 import { prepararCuestionario, resumirResultados } from '@/lib/quiz/cuestionario';
 import { posicionCorrecta } from '@/lib/quiz/mezclar';
+import { filtrarPorUnidades, unidadesDesdeBusqueda } from '@/lib/quiz/seleccion';
 import type { OpcionId, PreguntaCuestionario, ResultadoRespuesta } from '@/types/quiz';
 import { pluralizar } from '@/utils/formato';
 import {
@@ -37,6 +38,10 @@ function mensajeFinal(porcentaje: number): string {
 
 export function iniciarCuestionario(raiz: HTMLElement): void {
   const preguntasOriginales = leerDatos<PreguntaCuestionario[]>(raiz, '[data-preguntas]');
+  // Con selección de unidades en la URL se repasan solo esas; si ninguna pregunta coincide, se usa todo el banco.
+  const seleccion = raiz.dataset['permiteSeleccion'] === 'si' ? unidadesDesdeBusqueda(window.location.search) : null;
+  const preguntasElegidas = seleccion ? filtrarPorUnidades(preguntasOriginales, seleccion) : [];
+  const preguntasBase = preguntasElegidas.length > 0 ? preguntasElegidas : preguntasOriginales;
   const mostrarUnidad = raiz.dataset['mostrarUnidad'] === 'si';
 
   const zonaProgreso = requerir<HTMLElement>(raiz, '[data-zona-progreso]');
@@ -217,7 +222,7 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
   }
 
   function comenzar(): void {
-    preguntas = prepararCuestionario(preguntasOriginales, Math.random, leerPosicionesPrevias());
+    preguntas = prepararCuestionario(preguntasBase, Math.random, leerPosicionesPrevias());
     indice = 0;
     respuestas = [];
 

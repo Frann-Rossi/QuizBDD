@@ -1,0 +1,98 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { obtenerBancosPreguntas } from '@/services/preguntas';
+import { pluralizar } from '@/utils/formato';
+import { MODO_TODAS, rutaCuestionario } from '@/utils/rutas';
+
+const bancos = await obtenerBancosPreguntas();
+---
+
+<BaseLayout title="Elegir unidades · Quiz BDD">
+  <main class="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+    <a href="/" class="font-pixel text-sm uppercase text-tenue hover:text-tinta">◀ Volver al inicio</a>
+
+    <header class="mt-4">
+      <p class="text-xs text-tenue">
+        <span class="text-ok">mysql&gt;</span>{' '}<span class="font-bold text-sql-clave">SELECT</span>{' * '}<span class="font-bold text-sql-clave">FROM</span>{' unidades '}<span class="font-bold text-sql-clave">WHERE</span>{' elegida = 1;'}
+      </p>
+      <h1 class="mt-2 text-3xl font-bold text-tinta sm:text-4xl">Elegir unidades</h1>
+      <p class="mt-2 text-sm text-tenue">
+        Marcá las unidades que querés repasar. Las preguntas de todas ellas se mezclan en un solo cuestionario.
+      </p>
+    </header>
+
+    <form id="formulario-seleccion" action={rutaCuestionario(MODO_TODAS)} method="get" class="mt-8 flex flex-col gap-5">
+      <div class="flex flex-wrap gap-3">
+        <button type="button" id="marcar-todas" class="boton-pixel bg-panel-2 text-tinta">Marcar todas</button>
+        <button type="button" id="desmarcar-todas" class="boton-pixel bg-panel-2 text-tenue">Desmarcar</button>
+      </div>
+
+      <ul class="grid gap-4 sm:grid-cols-2">
+        {
+          bancos.map((banco) => (
+            <li>
+              <label class="caja-pixel flex cursor-pointer items-start gap-4 bg-panel p-4 has-[:checked]:bg-panel-2">
+                <input
+                  type="checkbox"
+                  name="unidades"
+                  value={banco.unidad}
+                  data-cantidad={banco.preguntas.length}
+                  class="mt-1 size-5 shrink-0 accent-primario"
+                />
+                <span>
+                  <span class="block font-pixel text-2xl font-bold text-tinta">Unidad {banco.unidad}</span>
+                  <span class="block text-sm text-tinta">{banco.titulo}</span>
+                  <span class="mt-1 block text-xs text-tenue">
+                    {pluralizar(banco.preguntas.length, 'pregunta', 'preguntas')}
+                  </span>
+                </span>
+              </label>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="caja-pixel flex flex-col gap-4 bg-panel-2 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <p id="resumen-seleccion" class="text-sm text-tinta" aria-live="polite">Elegí al menos una unidad.</p>
+        <button type="submit" id="boton-empezar" class="boton-pixel bg-primario text-sobre-primario" disabled>
+          ▶ Empezar
+        </button>
+      </div>
+    </form>
+  </main>
+</BaseLayout>
+
+<script>
+  const formulario = document.getElementById('formulario-seleccion');
+  const resumen = document.getElementById('resumen-seleccion');
+  const boton = document.getElementById('boton-empezar') as HTMLButtonElement | null;
+
+  if (formulario instanceof HTMLFormElement && resumen && boton) {
+    const casillas = [...formulario.querySelectorAll<HTMLInputElement>('input[name="unidades"]')];
+
+    const actualizar = () => {
+      const marcadas = casillas.filter((casilla) => casilla.checked);
+      const preguntas = marcadas.reduce((total, casilla) => total + Number(casilla.dataset['cantidad'] ?? 0), 0);
+      boton.disabled = marcadas.length === 0;
+      resumen.textContent =
+        marcadas.length === 0
+          ? 'Elegí al menos una unidad.'
+          : `${marcadas.length} ${marcadas.length === 1 ? 'unidad' : 'unidades'} · ${preguntas} ${preguntas === 1 ? 'pregunta' : 'preguntas'}`;
+    };
+
+    casillas.forEach((casilla) => casilla.addEventListener('change', actualizar));
+    document.getElementById('marcar-todas')?.addEventListener('click', () => {
+      casillas.forEach((casilla) => (casilla.checked = true));
+      actualizar();
+    });
+    document.getElementById('desmarcar-todas')?.addEventListener('click', () => {
+      casillas.forEach((casilla) => (casilla.checked = false));
+      actualizar();
+    });
+    // Sin ninguna unidad no se envía: evitaría caer en el banco completo.
+    formulario.addEventListener('submit', (evento) => {
+      if (!casillas.some((casilla) => casilla.checked)) evento.preventDefault();
+    });
+    actualizar();
+  }
+</script>

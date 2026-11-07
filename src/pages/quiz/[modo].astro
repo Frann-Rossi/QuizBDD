@@ -47,10 +47,27 @@ const { titulo, subtitulo, consulta, preguntas, mostrarUnidad } = Astro.props;
       <p class="text-xs text-tenue">
         <span class="text-ok">mysql&gt;</span>{' '}<span class="font-bold text-sql-clave">SELECT</span>{' * '}<span class="font-bold text-sql-clave">FROM</span>{` ${consulta};`}
       </p>
-      <h1 class="mt-2 text-3xl font-bold text-tinta sm:text-4xl">{titulo}</h1>
-      <p class="mt-1 text-sm uppercase tracking-widest text-primario">{subtitulo}</p>
+      <h1 id="titulo-cuestionario" class="mt-2 text-3xl font-bold text-tinta sm:text-4xl">{titulo}</h1>
+      <p id="subtitulo-cuestionario" class="mt-1 text-sm uppercase tracking-widest text-primario">{subtitulo}</p>
     </header>
 
-    <Cuestionario preguntas={preguntas} mostrarUnidad={mostrarUnidad} />
+    <Cuestionario preguntas={preguntas} mostrarUnidad={mostrarUnidad} permiteSeleccion={mostrarUnidad} />
   </main>
 </BaseLayout>
+
+<script>
+  // En el modo mezclado con unidades elegidas (?unidades=…), el título refleja la selección.
+  import { etiquetaUnidades, filtrarPorUnidades, unidadesDesdeBusqueda } from '@/lib/quiz/seleccion';
+
+  const raiz = document.querySelector<HTMLElement>('[data-cuestionario]');
+  const seleccion = raiz?.dataset['permiteSeleccion'] === 'si' ? unidadesDesdeBusqueda(window.location.search) : null;
+  const banco = JSON.parse(raiz?.querySelector('[data-preguntas]')?.textContent ?? '[]');
+  // Solo se muestra la selección si realmente hay preguntas de esas unidades (igual que en el cuestionario).
+  const unidades = seleccion && filtrarPorUnidades(banco, seleccion).length > 0 ? seleccion : null;
+  if (unidades) {
+    const titulo = document.getElementById('titulo-cuestionario');
+    const subtitulo = document.getElementById('subtitulo-cuestionario');
+    if (titulo) titulo.textContent = etiquetaUnidades(unidades);
+    if (subtitulo) subtitulo.textContent = 'Selección de unidades';
+  }
+</script>

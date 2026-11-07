@@ -82,6 +82,17 @@ const totalPreguntas = bancos.reduce((suma, banco) => suma + banco.preguntas.len
       <h2 id="titulo-unidades" class="text-xl font-bold text-tinta sm:text-2xl">
         <span class="font-sans text-base font-normal text-tenue">--</span> Practicar por unidad
       </h2>
+      <a
+        href="/seleccion/"
+        class="group caja-pixel mt-5 flex flex-col gap-3 bg-panel p-5 transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <p class="text-xs uppercase tracking-widest text-primario">Repaso combinado</p>
+          <h3 class="mt-1 text-xl font-bold text-tinta">Elegir unidades</h3>
+          <p class="mt-1 text-sm text-tenue">Por ejemplo, la 2 y la 3, o la 1, la 3 y la 4: las preguntas se mezclan.</p>
+        </div>
+        <span class="boton-pixel self-start bg-acento text-sobre-acento group-hover:bg-primario sm:self-center">▶ Elegir</span>
+      </a>
       <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {
           bancos.map((banco) => (

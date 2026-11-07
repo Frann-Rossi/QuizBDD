@@ -7,12 +7,19 @@ interface Props {
   preguntas: PreguntaCuestionario[];
   /** Muestra la unidad de cada pregunta (útil en el modo con todas las unidades mezcladas). */
   mostrarUnidad: boolean;
+  /** Permite repasar solo las unidades elegidas en la URL (`?unidades=2&unidades=3`). */
+  permiteSeleccion?: boolean;
 }
 
-const { preguntas, mostrarUnidad } = Astro.props;
+const { preguntas, mostrarUnidad, permiteSeleccion = false } = Astro.props;
 ---
 
-<div data-cuestionario data-mostrar-unidad={mostrarUnidad ? 'si' : 'no'} class="mt-6">
+<div
+  data-cuestionario
+  data-mostrar-unidad={mostrarUnidad ? 'si' : 'no'}
+  data-permite-seleccion={permiteSeleccion ? 'si' : 'no'}
+  class="mt-6"
+>
   <script is:inline type="application/json" data-preguntas set:html={serializarParaScript(preguntas)}></script>
 
   <noscript>
