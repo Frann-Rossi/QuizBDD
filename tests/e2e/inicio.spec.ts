@@ -18,6 +18,11 @@ test.describe('Inicio', () => {
     await expect(unidades).toHaveCount(CANTIDAD_UNIDADES);
   });
 
+  test('el menú muestra Juego también en celular', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Juego' })).toBeVisible();
+  });
+
   test('el total de preguntas coincide con la suma de las unidades', async ({ page }) => {
     await page.goto('/');
     const textoTotal = await page.getByText(/\d+ preguntas de \d+ unidades/).textContent();

@@ -15,7 +15,7 @@ const rutaActual = Astro.url.pathname;
 /** `siempreVisible`: el enlace también se ve en celular (por defecto, solo desde 640px). */
 const enlaces: { href: string; texto: string; siempreVisible?: boolean }[] = [
   { href: '/', texto: 'Inicio' },
-  { href: '/juego/', texto: 'Juego' },
+  { href: '/juego/', texto: 'Juego', siempreVisible: true },
   // «Crear» es herramienta de autoría: solo aparece en desarrollo.
   ...(import.meta.env.DEV ? [{ href: '/crear/', texto: 'Crear', siempreVisible: true }] : []),
 ];
