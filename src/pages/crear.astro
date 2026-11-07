@@ -1,0 +1,182 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { obtenerDocumentosMaterial } from '@/services/material';
+import { serializarParaScript } from '@/utils/serializar';
+
+// Herramienta de autoría: carga la pregunta y genera el JSON de la unidad para reemplazarlo.
+const entradas = await getCollection('preguntas');
+const bancos = entradas
+  .map((entrada) => ({ archivo: `${entrada.id}.json`, banco: entrada.data }))
+  .sort((a, b) => a.banco.unidad - b.banco.unidad);
+const documentos = await obtenerDocumentosMaterial();
+const idsExistentes = bancos.flatMap(({ banco }) => banco.preguntas.map((p) => p.id));
+
+const clasesInput =
+  'mt-1 w-full border-[3px] border-borde bg-panel px-3 py-2 text-sm text-tinta placeholder:text-tenue focus:outline-none focus:bg-panel-2';
+const clasesEtiqueta = 'block text-sm font-bold text-tinta';
+const clasesAyuda = 'mt-1 block text-xs text-tenue';
+const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
+---
+
+<BaseLayout title="Crear pregunta · Quiz BDD">
+  <main class="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+    <a href="/" class="font-pixel text-sm uppercase text-tenue hover:text-tinta">◀ Volver al inicio</a>
+
+    <header class="mt-4">
+      <p class="text-xs text-tenue">
+        <span class="text-ok">mysql&gt;</span>{' '}<span class="font-bold text-sql-clave">INSERT INTO</span>{' '}<span class="text-sql-funcion">banco</span>{' ...;'}
+      </p>
+      <h1 class="mt-2 text-3xl font-bold text-tinta sm:text-4xl">Crear pregunta</h1>
+      <p class="mt-2 text-sm text-tenue">
+        Completá el formulario, revisá la vista previa y descargá el archivo de la unidad ya actualizado.
+        Después reemplazalo en <code class="text-sql-cadena">src/content/preguntas/</code>.
+      </p>
+    </header>
+
+    <form id="formulario-pregunta" class="mt-8 flex flex-col gap-6" novalidate>
+      <!-- Unidad e identificador -->
+      <section class={clasesSeccion} aria-labelledby="t-unidad">
+        <h2 id="t-unidad" class="text-xl font-bold text-tinta">1. Unidad</h2>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="campo-unidad" class={clasesEtiqueta}>Unidad</label>
+            <select id="campo-unidad" class={clasesInput}>
+              {
+                bancos.map(({ banco }) => (
+                  <option value={banco.unidad}>
+                    Unidad {banco.unidad} · {banco.titulo}
+                  </option>
+                ))
+              }
+            </select>
+          </div>
+          <label class={clasesEtiqueta}>
+            Identificador
+            <input id="campo-id" class={clasesInput} type="text" autocomplete="off" placeholder="u05-nueva-pregunta" />
+            <span class={clasesAyuda}>Se sugiere a partir del tema. Solo minúsculas, números y guiones.</span>
+          </label>
+        </div>
+        <label class={`${clasesEtiqueta} mt-4`}>
+          Tema
+          <input id="campo-tema" class={clasesInput} type="text" placeholder="Ej.: Subconsulta escalar" />
+        </label>
+      </section>
+
+      <!-- Enunciado y opciones -->
+      <section class={clasesSeccion} aria-labelledby="t-enunciado">
+        <h2 id="t-enunciado" class="text-xl font-bold text-tinta">2. Pregunta y opciones</h2>
+        <label class={`${clasesEtiqueta} mt-4`}>
+          Enunciado
+          <textarea id="campo-enunciado" class={clasesInput} rows="3" placeholder="¿Qué devuelve una subconsulta escalar?"></textarea>
+        </label>
+
+        <fieldset class="mt-6 flex flex-col gap-4">
+          <legend class="text-sm font-bold text-tinta">Opciones (marcá la correcta)</legend>
+          {
+            ['a', 'b', 'c', 'd'].map((letra) => (
+              <div class="border-[3px] border-borde bg-panel-2 p-4">
+                <div class="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="respuesta"
+                    value={letra}
+                    id={`respuesta-${letra}`}
+                    class="size-4 accent-ok"
+                  />
+                  <label for={`respuesta-${letra}`} class="font-pixel text-lg font-bold uppercase text-tinta">
+                    Opción {letra.toUpperCase()}
+                  </label>
+                  <span class="text-xs text-tenue">marcar si es la correcta</span>
+                </div>
+                <label class={`${clasesEtiqueta} mt-3`}>
+                  Texto de la opción
+                  <input id={`opcion-${letra}-texto`} class={clasesInput} type="text" />
+                </label>
+                <label class={`${clasesEtiqueta} mt-3`}>
+                  Por qué es correcta o incorrecta
+                  <textarea id={`opcion-${letra}-explicacion`} class={clasesInput} rows="2"></textarea>
+                </label>
+              </div>
+            ))
+          }
+        </fieldset>
+      </section>
+
+      <!-- Explicación y resumen -->
+      <section class={clasesSeccion} aria-labelledby="t-explicacion">
+        <h2 id="t-explicacion" class="text-xl font-bold text-tinta">3. Explicación</h2>
+        <label class={`${clasesEtiqueta} mt-4`}>
+          Explicación general del concepto
+          <textarea id="campo-explicacion" class={clasesInput} rows="3"></textarea>
+        </label>
+        <label class={`${clasesEtiqueta} mt-4`}>
+          Resumen <span class="font-normal text-tenue">(opcional)</span>
+          <textarea id="campo-resumen" class={clasesInput} rows="2" placeholder="Idea breve para recordar el concepto."></textarea>
+          <span class={clasesAyuda}>Se guarda en el banco; todavía no se muestra en el cuestionario.</span>
+        </label>
+      </section>
+
+      <!-- Material de estudio -->
+      <section class={clasesSeccion} aria-labelledby="t-material">
+        <h2 id="t-material" class="text-xl font-bold text-tinta">4. Material de estudio</h2>
+        <p class="mt-2 text-sm text-tenue">
+          Elegí el documento y la sección donde está el tema. El enlace se arma solo.
+        </p>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="campo-documento" class={clasesEtiqueta}>Documento</label>
+            <select id="campo-documento" class={clasesInput}>
+              {
+                documentos.map((doc) => (
+                  <option value={doc.ruta} data-titulo={doc.titulo}>
+                    {doc.titulo}
+                  </option>
+                ))
+              }
+            </select>
+          </div>
+          <div>
+            <label for="campo-seccion" class={clasesEtiqueta}>Sección</label>
+            <select id="campo-seccion" class={clasesInput}></select>
+          </div>
+        </div>
+        <label class={`${clasesEtiqueta} mt-4`}>
+          Nombre que verá quien estudie
+          <input id="campo-titulo-material" class={clasesInput} type="text" />
+        </label>
+        <button type="button" id="boton-agregar-material" class="boton-pixel mt-4 bg-acento text-sobre-acento">
+          + Agregar material
+        </button>
+        <ul id="lista-material" class="mt-4 flex flex-col gap-2" aria-live="polite"></ul>
+      </section>
+
+      <!-- Acciones -->
+      <section class={clasesSeccion} aria-labelledby="t-acciones">
+        <h2 id="t-acciones" class="text-xl font-bold text-tinta">5. Vista previa y guardado</h2>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button type="button" id="boton-vista-previa" class="boton-pixel bg-panel-2 text-tinta">👁 Vista previa</button>
+          <button type="button" id="boton-descargar" class="boton-pixel bg-primario text-sobre-primario">⬇ Descargar JSON de la unidad</button>
+          <button type="button" id="boton-copiar" class="boton-pixel bg-panel-2 text-tinta">⧉ Copiar solo la pregunta</button>
+          <button type="button" id="boton-limpiar" class="boton-pixel bg-panel-2 text-tenue">Limpiar</button>
+        </div>
+
+        <div id="mensaje-estado" class="mt-4 text-sm" role="status" aria-live="polite"></div>
+        <ul id="lista-errores" class="mt-2 flex flex-col gap-1 text-sm text-error" aria-live="assertive"></ul>
+        <pre id="vista-previa" class="mt-4 hidden max-h-96 overflow-auto border-[3px] border-borde bg-panel-2 p-4 text-xs text-tinta"></pre>
+      </section>
+    </form>
+
+    <script
+      is:inline
+      type="application/json"
+      id="datos-crear"
+      set:html={serializarParaScript({ bancos, documentos, idsExistentes })}
+    ></script>
+  </main>
+</BaseLayout>
+
+<script>
+  import { iniciarCrear } from '@/scripts/crear';
+  iniciarCrear();
+</script>

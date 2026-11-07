@@ -25,6 +25,8 @@ export const preguntaSchema = z
     opciones: z.tuple([opcionSchema, opcionSchema, opcionSchema, opcionSchema]),
     respuestaCorrecta: z.enum(OPCION_IDS),
     explicacion: textoRequerido,
+    /** Resumen opcional del concepto; no es obligatorio en el banco. */
+    resumen: textoRequerido.optional(),
     material: z.array(materialSchema).min(1),
   })
   .refine((pregunta) => new Set(pregunta.opciones.map((o) => o.id)).size === OPCION_IDS.length, {

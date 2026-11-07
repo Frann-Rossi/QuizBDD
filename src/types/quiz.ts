@@ -26,6 +26,8 @@ export interface Pregunta {
   respuestaCorrecta: OpcionId;
   /** Explicación general del concepto evaluado. */
   explicacion: string;
+  /** Resumen breve del concepto (opcional). */
+  resumen?: string | undefined;
   material: MaterialReferencia[];
 }
 

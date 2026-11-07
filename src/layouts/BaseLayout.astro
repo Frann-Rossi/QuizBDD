@@ -12,9 +12,11 @@ interface Props {
 
 const { title, description = 'Cuestionarios para aprender y repasar Bases de Datos.' } = Astro.props;
 const rutaActual = Astro.url.pathname;
-const enlaces = [
+/** `siempreVisible`: el enlace también se ve en celular (por defecto, solo desde 640px). */
+const enlaces: { href: string; texto: string; siempreVisible?: boolean }[] = [
   { href: '/', texto: 'Inicio' },
   { href: '/juego/', texto: 'Juego' },
+  { href: '/crear/', texto: 'Crear', siempreVisible: true },
 ];
 ---
 
@@ -60,7 +62,8 @@ const enlaces = [
                   href={enlace.href}
                   aria-current={activo ? 'page' : undefined}
                   class:list={[
-                    'hidden font-pixel text-sm uppercase tracking-wide sm:inline',
+                    'font-pixel text-sm uppercase tracking-wide',
+                    enlace.siempreVisible ? '' : 'hidden sm:inline',
                     activo ? 'text-primario underline decoration-[3px] underline-offset-4' : 'text-tenue hover:text-tinta',
                   ]}
                 >
