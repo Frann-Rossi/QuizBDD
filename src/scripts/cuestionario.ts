@@ -161,6 +161,8 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
     });
 
     const letraCorrecta = LETRAS[posicionCorrecta(pregunta)] ?? '';
+    // El resumen es opcional: solo se muestra si la pregunta lo tiene.
+    const bloqueResumen = pregunta.resumen ? [crearBloque('Resumen', pregunta.resumen)] : [];
 
     if (resultado.esCorrecta) {
       retro.className = 'caja-pixel mt-5 border-ok bg-ok-suave shadow-pixel-ok';
@@ -171,6 +173,7 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
       retroCuerpo.replaceChildren(
         crearBloque('Por qué es correcta', resultado.opcionSeleccionada.explicacion),
         crearBloque('Para reforzar el concepto', resultado.explicacion),
+        ...bloqueResumen,
       );
     } else {
       retro.className = 'caja-pixel mt-5 border-error bg-error-suave shadow-pixel-error';
@@ -183,6 +186,7 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
         crearBloque('Por qué tu respuesta no es correcta', resultado.opcionSeleccionada.explicacion),
         crearBloque(`Por qué la ${letraCorrecta} es correcta`, resultado.opcionCorrecta.explicacion),
         crearBloque('Para repasar el concepto', resultado.explicacion),
+        ...bloqueResumen,
       );
     }
 
