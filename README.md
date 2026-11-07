@@ -39,7 +39,7 @@ npm run dev      # servidor de desarrollo en http://localhost:4321
 | `npm run verify`      | Ejecuta `check`, `test`, `build` y `test:e2e`. Útil antes de subir cambios.  |
 | `npm run astro`       | Acceso directo a la CLI de Astro (p. ej. `npm run astro -- --help`).         |
 
-Los tests de interfaz usan el Google Chrome instalado en la máquina (no descargan navegadores) y simulan dos dispositivos: escritorio y un celular (Pixel 7). Cubren el inicio, el tema claro/oscuro, el cuestionario completo, la posición de la respuesta correcta, el modo juego (configuración, votación, revelación, orden de jugadores y ranking) y que ninguna pantalla desborde en el celular.
+Los tests de interfaz usan el Google Chrome instalado en la máquina (no descargan navegadores) y simulan dos dispositivos: escritorio y un celular (Pixel 7). Cubren el inicio, el tema claro/oscuro, el cuestionario completo, la posición de la respuesta correcta, el modo juego (configuración, votación, revelación, orden de jugadores y ranking), la página `/crear/` (armado de una pregunta, descarga del JSON validado contra el esquema del banco, errores en español y visibilidad de la pestaña en escritorio y celular) y que ninguna pantalla desborde en el celular.
 
 ## Estructura del proyecto
 
@@ -57,14 +57,16 @@ QuizBDD/
 │   ├── layouts/                  # Estructuras HTML base de las páginas
 │   ├── lib/
 │   │   ├── quiz/                 # Reglas del cuestionario: esquemas, evaluación, mezcla de opciones
-│   │   └── juego/                # Reglas del modo juego: jugadores, votos, puntos y ranking
+│   │   ├── juego/                # Reglas del modo juego: jugadores, votos, puntos y ranking
+│   │   └── crear/                # Armado y validación de preguntas nuevas (formulario /crear/)
 │   ├── pages/                    # Rutas: cada archivo es una página
 │   │   ├── index.astro           # Inicio: modos y unidades
 │   │   ├── quiz/[modo].astro     # /quiz/todas/ y /quiz/unidad-N/
 │   │   ├── juego.astro           # /juego/ (votación multijugador)
+│   │   ├── crear.astro           # /crear/ (formulario para armar preguntas nuevas)
 │   │   └── material/[...ruta].ts # Publica materialEstudio/ en /material/...
-│   ├── scripts/                  # Código del navegador: cuestionario, juego y utilidades de DOM
-│   ├── services/                 # Acceso a datos (colecciones de contenido)
+│   ├── scripts/                  # Código del navegador: cuestionario, juego, /crear/ y utilidades de DOM
+│   ├── services/                 # Acceso a datos (colecciones de contenido y lista de material)
 │   ├── styles/                   # Estilos globales y tokens de Tailwind
 │   ├── types/                    # Tipos e interfaces TypeScript del dominio
 │   ├── utils/                    # Funciones auxiliares puras
@@ -92,6 +94,7 @@ El alias `@/` apunta a `src/` (p. ej. `import { evaluarRespuesta } from '@/lib/q
 
 - **Todas las unidades mezcladas** (`/quiz/todas/`): repaso general con las preguntas de todas las unidades.
 - **Por unidad** (`/quiz/unidad-5/`, `/quiz/unidad-6/`, …): practicar tema por tema.
+- **Crear pregunta** (`/crear/`, pestaña «Crear» del menú, también visible en celular): formulario para cargar una pregunta nueva sin editar el JSON a mano. Permite elegir la unidad, escribir el enunciado, las cuatro opciones con su explicación, la explicación general y un resumen opcional, y agregar material de estudio eligiendo documento y sección (el enlace se arma solo). «Vista previa» valida la pregunta con las mismas reglas del banco y muestra los errores en español. «Descargar JSON de la unidad» baja el archivo de esa unidad con la pregunta agregada, listo para reemplazar el archivo en `src/content/preguntas/`. Como el sitio es estático, la página no escribe el archivo por sí sola.
 
 - **Modo juego** (`/juego/`): votación de 2 a 8 jugadores en el mismo dispositivo. Se elige tema y cantidad de preguntas. En cada opción aparecen los nombres de los jugadores: cada uno toca su nombre en la opción que elige (tocar otra opción mueve el voto; tocar el mismo nombre lo quita), así se ve quién votó cada respuesta. Cuando votaron todos se habilita «Revelar respuesta», que muestra quién acertó y la explicación. Los jugadores mantienen siempre su orden (el jugador 1 primero). Al final, ranking con empates.
 
@@ -107,7 +110,7 @@ Colocar los documentos en `materialEstudio/`, dentro de una carpeta por unidad c
 
 ### Preguntas
 
-Crear un archivo JSON por unidad en `src/content/preguntas/` con este formato:
+Crear un archivo JSON por unidad en `src/content/preguntas/` con este formato (o armar la pregunta desde `/crear/`, que genera el mismo formato):
 
 ```json
 {
@@ -126,6 +129,7 @@ Crear un archivo JSON por unidad en `src/content/preguntas/` con este formato:
       ],
       "respuestaCorrecta": "a",
       "explicacion": "Explicación general del concepto.",
+      "resumen": "Idea breve para recordar (opcional).",
       "material": [
         {
           "titulo": "Unidad 5 · Subconsultas escalares",
@@ -142,6 +146,7 @@ Reglas validadas automáticamente:
 
 - Exactamente cuatro opciones, con identificadores `a`, `b`, `c` y `d` sin repetir.
 - Sin textos vacíos y con al menos una referencia de material.
+- `resumen` es opcional; si se incluye, no puede estar vacío.
 - Identificadores de pregunta únicos en todo el banco y un solo archivo por unidad.
 - La `ruta` del material debe existir dentro de `materialEstudio/` y la `seccion` debe ser un `id` presente en ese HTML (p. ej. `<section id="escalares">`).
 - En cada banco, las respuestas correctas se reparten entre las cuatro letras.
