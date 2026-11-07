@@ -1,0 +1,686 @@
+{
+  "unidad": 2,
+  "titulo": "Consultas básicas",
+  "preguntas": [
+    {
+      "id": "u02-sentencia-select-categoria",
+      "tema": "Clasificación de sentencias",
+      "enunciado": "En la clasificación que presenta la unidad, ¿a qué categoría pertenece SELECT?",
+      "opciones": [
+        { "id": "a", "texto": "DDL, porque crea o modifica estructuras de la base.", "explicacion": "DDL agrupa las sentencias que crean o modifican estructuras; SELECT no modifica estructuras." },
+        { "id": "b", "texto": "DML, porque agrega, modifica o elimina filas.", "explicacion": "DML agrupa las sentencias que agregan, modifican o eliminan filas; SELECT no modifica filas." },
+        { "id": "c", "texto": "Como categoría propia de consulta: recupera datos y construye un resultado.", "explicacion": "Correcto: el material la presenta aparte de DDL y DML, como la sentencia que consulta los datos y construye un resultado." },
+        { "id": "d", "texto": "Como parte de DDL cuando se combina con WHERE.", "explicacion": "Agregar WHERE no cambia la categoría de la sentencia; el filtro solo condiciona qué filas se devuelven." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "El material separa tres grupos: DDL (crea o modifica estructuras), DML (agrega, modifica o elimina filas) y SELECT (consulta los datos y construye un resultado).",
+      "resumen": "SELECT consulta datos y construye un resultado; no crea estructuras ni modifica filas.",
+      "material": [
+        { "titulo": "Unidad 2 · Clasificación de sentencias", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "punto" }
+      ]
+    },
+    {
+      "id": "u02-select-no-modifica",
+      "tema": "Consultar no es modificar",
+      "enunciado": "¿Qué debe ocurrir con los datos almacenados al ejecutar una consulta SELECT?",
+      "opciones": [
+        { "id": "a", "texto": "No deben alterarse: el objetivo es recuperar información sin modificar lo guardado.", "explicacion": "Correcto: la unidad plantea que consultar no es modificar; SELECT recupera información sin alterar los datos almacenados." },
+        { "id": "b", "texto": "Se actualizan las filas que cumplen la condición indicada en WHERE.", "explicacion": "Actualizar filas es una operación de modificación; WHERE en un SELECT solo filtra lo que se devuelve." },
+        { "id": "c", "texto": "Se eliminan las filas que no cumplen la condición.", "explicacion": "Filtrar no es eliminar: las filas que no cumplen la condición simplemente no aparecen en el resultado." },
+        { "id": "d", "texto": "Se crea una nueva tabla con el resultado de la consulta.", "explicacion": "El resultado se devuelve para mostrarlo; la consulta no crea una tabla con ese contenido." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Un SELECT pertenece a las consultas: construye un resultado a partir de los datos sin cambiar los datos guardados.",
+      "resumen": "Consultar no es modificar: SELECT no altera los datos almacenados.",
+      "material": [
+        { "titulo": "Unidad 2 · Consultar no es modificar", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "punto" }
+      ]
+    },
+    {
+      "id": "u02-select-asterisco",
+      "tema": "SELECT * y columnas",
+      "enunciado": "¿Qué representa el asterisco en SELECT * FROM tabla?",
+      "opciones": [
+        { "id": "a", "texto": "Un filtro que muestra solo las filas con valores completos.", "explicacion": "El asterisco no filtra filas; los filtros se expresan con WHERE." },
+        { "id": "b", "texto": "Todas las columnas de la tabla indicada en FROM.", "explicacion": "Correcto: el asterisco representa todas las columnas de la tabla." },
+        { "id": "c", "texto": "Un ordenamiento descendente de todas las columnas.", "explicacion": "El orden se indica con ORDER BY; el asterisco no ordena nada." },
+        { "id": "d", "texto": "Solo las columnas de tipo numérico.", "explicacion": "El asterisco no se limita a un tipo de dato; representa todas las columnas." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El asterisco es una forma abreviada de pedir todas las columnas de la tabla que aparece en FROM.",
+      "resumen": "* pide todas las columnas de la tabla; no filtra filas ni ordena.",
+      "material": [
+        { "titulo": "Unidad 2 · SELECT * y columnas", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "select" }
+      ]
+    },
+    {
+      "id": "u02-columnas-explicitas",
+      "tema": "SELECT * y columnas",
+      "enunciado": "Según la buena práctica de la unidad, ¿cuándo conviene nombrar las columnas en lugar de usar *?",
+      "opciones": [
+        { "id": "a", "texto": "Siempre, porque MySQL 8 no admite el asterisco.", "explicacion": "Es falso: el material presenta SELECT * como una forma válida de consultar todas las columnas." },
+        { "id": "b", "texto": "Solo cuando la tabla tiene más de una fila.", "explicacion": "La cantidad de filas no determina cómo se escriben las columnas." },
+        { "id": "c", "texto": "Cuando se quiere cambiar el nombre de una columna en el resultado.", "explicacion": "Ese cambio se hace con un alias (AS); no obliga a nombrar todas las columnas." },
+        { "id": "d", "texto": "En consultas reales, cuando solo se necesitan algunas columnas.", "explicacion": "Correcto: el material recomienda pedir solo las columnas que se necesitan." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Nombrar las columnas deja explícito qué datos se piden, y en consultas reales suele ser preferible no traer columnas innecesarias.",
+      "resumen": "En consultas reales, pedí solo las columnas que se necesitan.",
+      "material": [
+        { "titulo": "Unidad 2 · SELECT * y columnas", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "select" }
+      ]
+    },
+    {
+      "id": "u02-clausula-from",
+      "tema": "FROM",
+      "enunciado": "¿Qué cláusula de SELECT indica de qué tabla debe obtenerse la información?",
+      "opciones": [
+        { "id": "a", "texto": "WHERE", "explicacion": "WHERE conserva solo las filas que cumplen una condición; no indica la tabla de origen." },
+        { "id": "b", "texto": "ORDER BY", "explicacion": "ORDER BY establece el orden del resultado; no indica la tabla de origen." },
+        { "id": "c", "texto": "FROM", "explicacion": "Correcto: FROM indica de qué tabla debe obtenerse la información." },
+        { "id": "d", "texto": "LIMIT", "explicacion": "LIMIT indica cuántas filas devolver; no indica la tabla de origen." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "En la forma básica de la consulta, SELECT indica qué se quiere ver y FROM indica de dónde se obtiene.",
+      "resumen": "SELECT define qué columnas ver; FROM define de qué tabla obtenerlas.",
+      "material": [
+        { "titulo": "Unidad 2 · FROM", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "select" }
+      ]
+    },
+    {
+      "id": "u02-forma-basica",
+      "tema": "Forma básica de la consulta",
+      "enunciado": "En la forma básica de una consulta, ¿qué orden tienen las cláusulas SELECT y FROM?",
+      "opciones": [
+        { "id": "a", "texto": "FROM va primero y después SELECT.", "explicacion": "En la forma básica, SELECT va primero: indica qué se quiere ver, y FROM indica de qué tabla." },
+        { "id": "b", "texto": "SELECT va primero y después FROM.", "explicacion": "Correcto: primero se indican las columnas con SELECT y después la tabla con FROM." },
+        { "id": "c", "texto": "WHERE va antes que SELECT.", "explicacion": "WHERE es un filtro que se escribe después de FROM; no va antes de SELECT." },
+        { "id": "d", "texto": "ORDER BY va antes que FROM.", "explicacion": "ORDER BY se escribe al final de la consulta, después de FROM y de WHERE." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "La forma básica es SELECT columnas FROM tabla; los filtros, el orden y el límite se agregan después.",
+      "resumen": "La forma básica es SELECT columnas FROM tabla.",
+      "material": [
+        { "titulo": "Unidad 2 · Forma básica de la consulta", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "select" }
+      ]
+    },
+    {
+      "id": "u02-alias-encabezado",
+      "tema": "Alias con AS",
+      "enunciado": "¿Qué cambia un alias definido con AS en el resultado de una consulta?",
+      "opciones": [
+        { "id": "a", "texto": "El nombre real de la columna en la tabla.", "explicacion": "El alias no modifica la tabla ni el nombre real de la columna." },
+        { "id": "b", "texto": "El encabezado con el que se ve la columna en el resultado.", "explicacion": "Correcto: el alias cambia el encabezado del resultado sin modificar el nombre real." },
+        { "id": "c", "texto": "El tipo de dato de la columna.", "explicacion": "El alias no cambia el tipo de dato; solo cambia cómo se presenta el encabezado." },
+        { "id": "d", "texto": "Los valores almacenados en la columna.", "explicacion": "El alias no modifica los valores; el resultado muestra los mismos datos con otro encabezado." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Un alias sirve para hacer legible el resultado: cambia el encabezado que se ve, no la estructura de la tabla.",
+      "resumen": "Un alias cambia el encabezado del resultado, no la columna real.",
+      "material": [
+        { "titulo": "Unidad 2 · Alias con AS", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "alias" }
+      ]
+    },
+    {
+      "id": "u02-distinct-que-hace",
+      "tema": "DISTINCT",
+      "enunciado": "¿Qué hace DISTINCT en una consulta SELECT?",
+      "opciones": [
+        { "id": "a", "texto": "Elimina valores repetidos del resultado.", "explicacion": "Correcto: DISTINCT quita las repeticiones del resultado." },
+        { "id": "b", "texto": "Ordena el resultado de menor a mayor.", "explicacion": "El orden lo define ORDER BY; ASC es el orden por defecto, no DISTINCT." },
+        { "id": "c", "texto": "Cuenta cuántas filas tiene cada valor.", "explicacion": "Contar corresponde a funciones de agregación, que se ven en la Unidad 4; DISTINCT solo elimina repetidos." },
+        { "id": "d", "texto": "Filtra las filas que contienen NULL.", "explicacion": "Filtrar valores NULL se hace con IS NULL o IS NOT NULL; DISTINCT no es un filtro de ausencia de valor." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "DISTINCT se usa cuando interesa conocer los valores que aparecen, sin repetirlos.",
+      "resumen": "DISTINCT elimina valores repetidos del resultado.",
+      "material": [
+        { "titulo": "Unidad 2 · DISTINCT", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "alias" }
+      ]
+    },
+    {
+      "id": "u02-distinct-repetidos",
+      "tema": "DISTINCT",
+      "enunciado": "Si una columna tiene varias filas con el mismo valor y la consulta usa DISTINCT sobre esa columna, ¿qué aparece en el resultado?",
+      "opciones": [
+        { "id": "a", "texto": "Cada valor distinto, una sola vez.", "explicacion": "Correcto: DISTINCT muestra cada valor distinto una sola vez." },
+        { "id": "b", "texto": "Cada fila original repetida tantas veces como aparece.", "explicacion": "Eso no corresponde a DISTINCT: justamente se eliminan las repeticiones del resultado." },
+        { "id": "c", "texto": "Solo las filas que tienen valores repetidos.", "explicacion": "DISTINCT no selecciona los repetidos; quita las repeticiones del resultado." },
+        { "id": "d", "texto": "Un error de sintaxis, porque DISTINCT no admite columnas.", "explicacion": "Falso: DISTINCT se aplica sobre columnas y la unidad lo presenta como una forma válida de consulta." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Con DISTINCT el resultado muestra cada valor una sola vez; por eso la unidad lo usa para ver qué categorías aparecen.",
+      "resumen": "DISTINCT muestra cada valor una sola vez.",
+      "material": [
+        { "titulo": "Unidad 2 · DISTINCT", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "alias" }
+      ]
+    },
+    {
+      "id": "u02-where-filtra",
+      "tema": "WHERE",
+      "enunciado": "¿Qué hace la cláusula WHERE?",
+      "opciones": [
+        { "id": "a", "texto": "Ordena las filas del resultado.", "explicacion": "Ordenar corresponde a ORDER BY." },
+        { "id": "b", "texto": "Conserva únicamente las filas que cumplen una condición.", "explicacion": "Correcto: WHERE filtra las filas según una condición." },
+        { "id": "c", "texto": "Define qué columnas se muestran en el resultado.", "explicacion": "Las columnas se eligen en SELECT; WHERE trabaja sobre las filas." },
+        { "id": "d", "texto": "Limita la cantidad de filas devueltas.", "explicacion": "Limitar la cantidad de filas es tarea de LIMIT." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "WHERE es el filtro de filas: solo las que cumplen la condición pasan al resultado.",
+      "resumen": "WHERE conserva las filas que cumplen una condición.",
+      "material": [
+        { "titulo": "Unidad 2 · WHERE", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "where" }
+      ]
+    },
+    {
+      "id": "u02-sin-where",
+      "tema": "WHERE",
+      "enunciado": "¿Qué sucede con una consulta SELECT que no incluye WHERE?",
+      "opciones": [
+        { "id": "a", "texto": "Devuelve un error, porque WHERE es obligatorio en toda consulta.", "explicacion": "WHERE es opcional: sin él no se aplica un filtro por condición." },
+        { "id": "b", "texto": "No se filtra por condición y pueden devolverse todas las filas de la tabla.", "explicacion": "Correcto: sin condición de filtro la consulta puede devolver todas las filas; el material señala que un SELECT puede devolver todas las filas." },
+        { "id": "c", "texto": "Devuelve solo las filas que tienen valores NULL.", "explicacion": "Eso requeriría una condición como IS NULL; sin WHERE no se aplica ese filtro." },
+        { "id": "d", "texto": "Devuelve únicamente la primera fila de la tabla.", "explicacion": "Sin WHERE no se elige una sola fila; eso dependería de otra cláusula, como LIMIT con un orden." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "WHERE es la cláusula que expresa un filtro por condición; si no está, la consulta no filtra filas por ese criterio.",
+      "resumen": "Sin WHERE la consulta no filtra por condición.",
+      "material": [
+        { "titulo": "Unidad 2 · WHERE", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "where" }
+      ]
+    },
+    {
+      "id": "u02-operador-distinto",
+      "tema": "Operadores de comparación",
+      "enunciado": "¿Qué operador de comparación significa distinto en MySQL?",
+      "opciones": [
+        { "id": "a", "texto": "=", "explicacion": "= compara igualdad: indica que el valor es igual al indicado." },
+        { "id": "b", "texto": ">=", "explicacion": ">= significa mayor o igual; no es un operador de desigualdad." },
+        { "id": "c", "texto": "<>", "explicacion": "Correcto: <> (o !=) significa distinto." },
+        { "id": "d", "texto": "IN", "explicacion": "IN compara contra una lista de valores posibles; no es un operador de desigualdad." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "La tabla de operadores de la unidad incluye =, <> o !=, >, <, >= y <=.",
+      "resumen": "<> o != significa distinto.",
+      "material": [
+        { "titulo": "Unidad 2 · Operadores de comparación", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "where" }
+      ]
+    },
+    {
+      "id": "u02-mayor-vs-mayor-igual",
+      "tema": "Operadores de comparación",
+      "enunciado": "¿Cuál es la diferencia entre > y >=?",
+      "opciones": [
+        { "id": "a", "texto": "> incluye el valor indicado; >= no.", "explicacion": "Al revés: >= es el que incluye el valor indicado, porque significa mayor o igual." },
+        { "id": "b", "texto": "No hay diferencia en ningún caso.", "explicacion": "Son distintos: > es mayor estricto y >= es mayor o igual." },
+        { "id": "c", "texto": ">= incluye el valor indicado; > no.", "explicacion": "Correcto: >= significa mayor o igual, mientras que > solo acepta valores estrictamente mayores." },
+        { "id": "d", "texto": "Solo >= sirve para números; > sirve solo para fechas.", "explicacion": "Falso: ambos son operadores de comparación; la diferencia está en incluir o no el valor indicado." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Los operadores >= y <= incluyen el valor indicado; > y < no lo incluyen.",
+      "resumen": ">= incluye el valor indicado; > no.",
+      "material": [
+        { "titulo": "Unidad 2 · Operadores de comparación", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "where" }
+      ]
+    },
+    {
+      "id": "u02-and-or",
+      "tema": "AND y OR",
+      "enunciado": "¿Cuál es la diferencia entre AND y OR al combinar condiciones?",
+      "opciones": [
+        { "id": "a", "texto": "AND exige que se cumplan ambas condiciones; OR exige que se cumpla al menos una.", "explicacion": "Correcto: esa es la diferencia que describe la unidad." },
+        { "id": "b", "texto": "AND exige una sola condición; OR exige ambas.", "explicacion": "Está invertido: AND requiere ambas condiciones y OR al menos una." },
+        { "id": "c", "texto": "AND y OR devuelven siempre el mismo resultado.", "explicacion": "No son equivalentes: AND reduce las filas que cumplen y OR las amplía." },
+        { "id": "d", "texto": "AND niega la condición indicada; OR la combina con otra.", "explicacion": "Negar una condición es tarea de NOT; AND y OR combinan condiciones." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "AND combina condiciones que deben cumplirse todas; OR combina condiciones en las que alcanza con que una se cumpla.",
+      "resumen": "AND exige ambas condiciones; OR exige al menos una.",
+      "material": [
+        { "titulo": "Unidad 2 · AND y OR", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "logicos" }
+      ]
+    },
+    {
+      "id": "u02-not-niega",
+      "tema": "NOT",
+      "enunciado": "¿Qué hace el operador NOT en una condición?",
+      "opciones": [
+        { "id": "a", "texto": "Une dos condiciones y exige que ambas se cumplan.", "explicacion": "Eso describe a AND, no a NOT." },
+        { "id": "b", "texto": "Convierte una condición en un rango de valores.", "explicacion": "Los rangos se expresan con BETWEEN, no con NOT." },
+        { "id": "c", "texto": "Reemplaza los valores NULL por otro valor.", "explicacion": "Ese reemplazo lo hace COALESCE, no NOT." },
+        { "id": "d", "texto": "Niega una condición.", "explicacion": "Correcto: NOT niega la condición a la que se aplica." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "NOT invierte el resultado de una condición: lo que se cumplía deja de cumplirse y viceversa.",
+      "resumen": "NOT niega una condición.",
+      "material": [
+        { "titulo": "Unidad 2 · NOT", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "logicos" }
+      ]
+    },
+    {
+      "id": "u02-parentesis-mezcla",
+      "tema": "Paréntesis",
+      "enunciado": "¿Por qué conviene usar paréntesis cuando se mezclan AND y OR en una misma condición?",
+      "opciones": [
+        { "id": "a", "texto": "Porque sin paréntesis la consulta no se ejecuta.", "explicacion": "Es falso: la consulta puede ejecutarse; los paréntesis sirven para dejar clara la intención." },
+        { "id": "b", "texto": "Para que la intención de la condición quede clara.", "explicacion": "Correcto: el material recomienda usar paréntesis para que la intención quede clara." },
+        { "id": "c", "texto": "Porque los paréntesis reemplazan a la cláusula WHERE.", "explicacion": "Los paréntesis agrupan condiciones dentro de WHERE; no lo reemplazan." },
+        { "id": "d", "texto": "Porque cambian el orden de las columnas del resultado.", "explicacion": "Los paréntesis agrupan condiciones; el orden de las columnas se define en SELECT." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Al mezclar AND y OR, los paréntesis dejan explícito qué condiciones se agrupan.",
+      "resumen": "Con AND y OR mezclados, usar paréntesis deja clara la intención.",
+      "material": [
+        { "titulo": "Unidad 2 · AND y OR", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "logicos" }
+      ]
+    },
+    {
+      "id": "u02-and-una-falsa",
+      "tema": "AND",
+      "enunciado": "En una consulta con dos condiciones unidas por AND, ¿qué ocurre con una fila que cumple solo una de las dos?",
+      "opciones": [
+        { "id": "a", "texto": "Se incluye igual, porque basta con que una condición se cumpla.", "explicacion": "Eso describe a OR, no a AND." },
+        { "id": "b", "texto": "No se devuelve, porque AND exige que se cumplan ambas.", "explicacion": "Correcto: AND requiere que ambas condiciones se cumplan." },
+        { "id": "c", "texto": "La consulta muestra un error de sintaxis.", "explicacion": "Combinar condiciones con AND es válido; el resultado depende de las condiciones." },
+        { "id": "d", "texto": "Se devuelve solo si la otra condición es la primera del WHERE.", "explicacion": "El orden en que se escriben las condiciones no cambia el requisito de AND." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "AND combina condiciones y solo devuelve filas en las que ambas son verdaderas.",
+      "resumen": "Con AND, una fila que no cumple alguna condición no se devuelve.",
+      "material": [
+        { "titulo": "Unidad 2 · AND", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "logicos" }
+      ]
+    },
+    {
+      "id": "u02-between-extremos",
+      "tema": "BETWEEN",
+      "enunciado": "¿Qué afirmación sobre BETWEEN es correcta?",
+      "opciones": [
+        { "id": "a", "texto": "Excluye ambos extremos del rango.", "explicacion": "Es falso: la unidad indica que BETWEEN incluye los extremos." },
+        { "id": "b", "texto": "Solo se puede usar con textos.", "explicacion": "Es falso: BETWEEN sirve para comprobar si un valor está dentro de un rango." },
+        { "id": "c", "texto": "Incluye los extremos del rango.", "explicacion": "Correcto: BETWEEN incluye los extremos." },
+        { "id": "d", "texto": "Incluye solo el extremo inferior del rango.", "explicacion": "Es falso: incluye ambos extremos." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "BETWEEN comprueba si un valor se encuentra dentro de un rango, incluyendo el valor inferior y el superior.",
+      "resumen": "BETWEEN incluye los extremos del rango.",
+      "material": [
+        { "titulo": "Unidad 2 · BETWEEN", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "operadores" }
+      ]
+    },
+    {
+      "id": "u02-in-lista",
+      "tema": "IN",
+      "enunciado": "¿Para qué sirve el operador IN?",
+      "opciones": [
+        { "id": "a", "texto": "Para comparar un valor contra una lista de valores posibles.", "explicacion": "Correcto: IN comprueba si el valor está en la lista indicada." },
+        { "id": "b", "texto": "Para buscar patrones dentro de un texto.", "explicacion": "Buscar patrones es tarea de LIKE." },
+        { "id": "c", "texto": "Para comprobar si un valor cae dentro de un rango continuo.", "explicacion": "Eso corresponde a BETWEEN; IN trabaja con una lista de valores." },
+        { "id": "d", "texto": "Para ordenar las filas según un valor.", "explicacion": "Ordenar corresponde a ORDER BY." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "IN permite comparar un valor contra una lista de valores posibles sin escribir una condición separada para cada uno.",
+      "resumen": "IN compara un valor contra una lista de valores posibles.",
+      "material": [
+        { "titulo": "Unidad 2 · IN", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "operadores" }
+      ]
+    },
+    {
+      "id": "u02-like-porcentaje",
+      "tema": "LIKE",
+      "enunciado": "En un patrón de LIKE, ¿qué representa %?",
+      "opciones": [
+        { "id": "a", "texto": "Exactamente un carácter.", "explicacion": "Ese rol corresponde a _ (guion bajo)." },
+        { "id": "b", "texto": "El fin de la cadena de texto.", "explicacion": "% no marca el fin del texto; representa cero o más caracteres." },
+        { "id": "c", "texto": "Un valor numérico cualquiera.", "explicacion": "En LIKE, % es un comodín de texto y no representa un número." },
+        { "id": "d", "texto": "Cero o más caracteres.", "explicacion": "Correcto: % representa cero o más caracteres." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "LIKE busca patrones dentro de textos y usa dos comodines: % (cero o más caracteres) y _ (exactamente un carácter).",
+      "resumen": "% representa cero o más caracteres en LIKE.",
+      "material": [
+        { "titulo": "Unidad 2 · LIKE", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "operadores" }
+      ]
+    },
+    {
+      "id": "u02-like-guion-bajo",
+      "tema": "LIKE",
+      "enunciado": "En un patrón de LIKE, ¿qué representa _ (guion bajo)?",
+      "opciones": [
+        { "id": "a", "texto": "Cero o más caracteres.", "explicacion": "Ese rol corresponde a %." },
+        { "id": "b", "texto": "Un espacio en blanco.", "explicacion": "_ representa un carácter cualquiera, no un espacio en blanco." },
+        { "id": "c", "texto": "El valor NULL.", "explicacion": "NULL es ausencia de valor; _ es un comodín de un carácter." },
+        { "id": "d", "texto": "Exactamente un carácter.", "explicacion": "Correcto: _ representa exactamente un carácter." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "En LIKE, _ coincide con exactamente un carácter, mientras que % coincide con cero o más.",
+      "resumen": "_ representa exactamente un carácter en LIKE.",
+      "material": [
+        { "titulo": "Unidad 2 · LIKE", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "operadores" }
+      ]
+    },
+    {
+      "id": "u02-is-null",
+      "tema": "IS NULL",
+      "enunciado": "¿Cómo se pregunta si una columna no tiene valor (NULL)?",
+      "opciones": [
+        { "id": "a", "texto": "Con = NULL.", "explicacion": "Eso no es correcto: el material indica no escribir descripcion = NULL." },
+        { "id": "b", "texto": "Con IS NULL.", "explicacion": "Correcto: para preguntar por ausencia de valor se utiliza IS NULL." },
+        { "id": "c", "texto": "Con <> ''.", "explicacion": "Esa condición compara contra una cadena vacía, que es un valor distinto de NULL." },
+        { "id": "d", "texto": "Con LIKE NULL.", "explicacion": "LIKE compara patrones de texto; NULL no se consulta con LIKE." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "NULL representa la ausencia de un valor conocido, y se consulta con IS NULL o IS NOT NULL.",
+      "resumen": "Para consultar NULL se usa IS NULL o IS NOT NULL.",
+      "material": [
+        { "titulo": "Unidad 2 · Valores NULL", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "null" }
+      ]
+    },
+    {
+      "id": "u02-null-vs-cadena-vacia",
+      "tema": "NULL y cadena vacía",
+      "enunciado": "¿Qué diferencia hay entre NULL y una cadena vacía ''?",
+      "opciones": [
+        { "id": "a", "texto": "Son sinónimos: ambos representan que el dato no tiene valor.", "explicacion": "No son sinónimos: MySQL los trata como situaciones diferentes." },
+        { "id": "b", "texto": "NULL representa ausencia de valor conocido; '' es un texto que existe pero tiene cero caracteres.", "explicacion": "Correcto: NULL es ausencia de valor y '' es un valor de texto de longitud cero." },
+        { "id": "c", "texto": "'' representa ausencia de valor; NULL es un texto sin caracteres.", "explicacion": "Está invertido: NULL es la ausencia de valor, y '' es un texto existente." },
+        { "id": "d", "texto": "Ambos se consultan siempre con el operador =.", "explicacion": "NULL no se consulta con =, sino con IS NULL o IS NOT NULL." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "NULL no es lo mismo que una cadena vacía: el primero no tiene valor y la segunda sí es un valor de texto, aunque sin caracteres.",
+      "resumen": "NULL es ausencia de valor; '' es un texto vacío.",
+      "material": [
+        { "titulo": "Unidad 2 · Valores NULL", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "null" }
+      ]
+    },
+    {
+      "id": "u02-coalesce-cadena-vacia",
+      "tema": "COALESCE y NULL",
+      "enunciado": "¿COALESCE reemplaza una cadena vacía '' por el valor alternativo indicado?",
+      "opciones": [
+        { "id": "a", "texto": "Sí, porque la considera un valor ausente.", "explicacion": "No: COALESCE no considera la cadena vacía como ausencia de valor." },
+        { "id": "b", "texto": "No, solo reemplaza valores NULL.", "explicacion": "Correcto: COALESCE reemplaza NULL y no considera la cadena vacía como ausencia de valor." },
+        { "id": "c", "texto": "Sí, siempre que la columna sea de tipo VARCHAR.", "explicacion": "El tipo de la columna no cambia que COALESCE solo reemplaza NULL." },
+        { "id": "d", "texto": "Solo si la cadena supera cierta longitud.", "explicacion": "No hay longitud mínima: COALESCE no trata la cadena vacía como NULL." }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "COALESCE devuelve el primer valor que no es NULL; una cadena vacía es un valor no nulo y por eso se conserva.",
+      "resumen": "COALESCE solo reemplaza NULL, no cadenas vacías.",
+      "material": [
+        { "titulo": "Unidad 2 · Valores NULL", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "null" }
+      ]
+    },
+    {
+      "id": "u02-not-null-limite",
+      "tema": "NOT NULL",
+      "enunciado": "¿Qué garantiza por sí sola una columna definida como VARCHAR NOT NULL?",
+      "opciones": [
+        { "id": "a", "texto": "Que nunca se guarde una cadena vacía.", "explicacion": "Es falso: NOT NULL no impide guardar '' por sí solo." },
+        { "id": "b", "texto": "Que todos los valores tengan la misma longitud.", "explicacion": "Es falso: NOT NULL no controla la longitud de los textos." },
+        { "id": "c", "texto": "Que no se pueda guardar NULL, pero no impide guardar cadenas vacías.", "explicacion": "Correcto: la unidad indica que NOT NULL impide NULL, pero por sí sola no impide ''." },
+        { "id": "d", "texto": "Que la columna se ordene automáticamente.", "explicacion": "NOT NULL no ordena nada; el orden se define con ORDER BY." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Si el negocio exige texto real, la regla debe controlarse además con una restricción apropiada o desde la aplicación.",
+      "resumen": "NOT NULL impide NULL, pero no impide ''.",
+      "material": [
+        { "titulo": "Unidad 2 · Valores NULL", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "null" }
+      ]
+    },
+    {
+      "id": "u02-order-by-por-defecto",
+      "tema": "ORDER BY",
+      "enunciado": "¿Qué orden aplica ORDER BY si no se indica ASC ni DESC?",
+      "opciones": [
+        { "id": "a", "texto": "Descendente.", "explicacion": "El orden descendente se indica con DESC; no es el valor por defecto." },
+        { "id": "b", "texto": "Aleatorio.", "explicacion": "ORDER BY no ordena al azar; sin dirección indicada usa ASC." },
+        { "id": "c", "texto": "Ascendente, de menor a mayor.", "explicacion": "Correcto: ASC es el valor por defecto." },
+        { "id": "d", "texto": "Alfabético descendente.", "explicacion": "No es el orden por defecto; ASC ordena de menor a mayor." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "ASC ordena de menor a mayor y es el valor por defecto; DESC invierte el orden.",
+      "resumen": "ASC es el orden por defecto de ORDER BY.",
+      "material": [
+        { "titulo": "Unidad 2 · ORDER BY", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "orden" }
+      ]
+    },
+    {
+      "id": "u02-desc-invierte",
+      "tema": "ORDER BY",
+      "enunciado": "¿Qué hace DESC en una cláusula ORDER BY?",
+      "opciones": [
+        { "id": "a", "texto": "Ordena de menor a mayor, igual que ASC.", "explicacion": "Eso es ASC, que es el orden por defecto." },
+        { "id": "b", "texto": "Quita el orden y devuelve las filas en cualquier posición.", "explicacion": "DESC no quita el orden; lo invierte." },
+        { "id": "c", "texto": "Ordena solo los valores NULL al final.", "explicacion": "DESC no se aplica solo a los NULL: invierte el orden de la columna indicada." },
+        { "id": "d", "texto": "Invierte el orden: de mayor a menor.", "explicacion": "Correcto: DESC invierte el orden respecto del ASC por defecto." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Con DESC el resultado se presenta en sentido inverso al que tendría con ASC.",
+      "resumen": "DESC invierte el orden de ASC.",
+      "material": [
+        { "titulo": "Unidad 2 · ORDER BY", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "orden" }
+      ]
+    },
+    {
+      "id": "u02-limit-cantidad",
+      "tema": "LIMIT",
+      "enunciado": "¿Qué hace LIMIT en una consulta?",
+      "opciones": [
+        { "id": "a", "texto": "Indica cuántas filas devolver.", "explicacion": "Correcto: LIMIT establece la cantidad máxima de filas del resultado." },
+        { "id": "b", "texto": "Ordena el resultado por la columna indicada.", "explicacion": "Ordenar es tarea de ORDER BY." },
+        { "id": "c", "texto": "Omite filas desde el comienzo del resultado.", "explicacion": "Omitir filas es tarea de OFFSET." },
+        { "id": "d", "texto": "Filtra las filas que cumplen una condición.", "explicacion": "Filtrar por condición es tarea de WHERE." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "LIMIT corta el resultado: devuelve como máximo la cantidad de filas indicada, y suele combinarse con ORDER BY.",
+      "resumen": "LIMIT indica cuántas filas devolver.",
+      "material": [
+        { "titulo": "Unidad 2 · LIMIT", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "orden" }
+      ]
+    },
+    {
+      "id": "u02-offset-omite",
+      "tema": "OFFSET",
+      "enunciado": "¿Qué hace OFFSET en una consulta con LIMIT?",
+      "opciones": [
+        { "id": "a", "texto": "Limita cuántas filas se devuelven.", "explicacion": "Eso lo hace LIMIT; OFFSET indica cuántas filas omitir." },
+        { "id": "b", "texto": "Cambia el nombre de las columnas del resultado.", "explicacion": "Cambiar el encabezado es tarea de un alias con AS." },
+        { "id": "c", "texto": "Filtra las filas por una condición.", "explicacion": "Filtrar por condición es tarea de WHERE." },
+        { "id": "d", "texto": "Indica cuántas filas omitir antes de comenzar a mostrar.", "explicacion": "Correcto: OFFSET desplaza el punto de inicio del resultado." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "LIMIT y OFFSET se combinan para mostrar un fragmento del resultado: OFFSET define desde qué fila empezar y LIMIT cuántas mostrar.",
+      "resumen": "OFFSET indica cuántas filas omitir antes de mostrar.",
+      "material": [
+        { "titulo": "Unidad 2 · OFFSET", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "orden" }
+      ]
+    },
+    {
+      "id": "u02-paginacion-order-by",
+      "tema": "Paginación",
+      "enunciado": "¿Por qué conviene usar ORDER BY al paginar resultados con LIMIT y OFFSET?",
+      "opciones": [
+        { "id": "a", "texto": "Porque sin ORDER BY no es posible usar OFFSET.", "explicacion": "Es falso: OFFSET puede usarse sin ORDER BY; el problema es que las páginas quedan menos previsibles." },
+        { "id": "b", "texto": "Porque ORDER BY reemplaza a LIMIT en la paginación.", "explicacion": "ORDER BY establece el orden; LIMIT y OFFSET son los que dividen el resultado en páginas." },
+        { "id": "c", "texto": "Porque ORDER BY elimina las filas repetidas del resultado.", "explicacion": "Eliminar repetidos es tarea de DISTINCT; ORDER BY establece el orden." },
+        { "id": "d", "texto": "Porque una tabla no tiene un orden natural garantizado y así las páginas son previsibles.", "explicacion": "Correcto: sin un ORDER BY, las páginas pueden no ser previsibles." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una tabla no posee un orden natural garantizado; con ORDER BY, y un criterio adicional para desempatar cuando hay valores repetidos, cada página se obtiene de forma previsible.",
+      "resumen": "Para paginar de forma previsible, usá ORDER BY.",
+      "material": [
+        { "titulo": "Unidad 2 · Paginación con LIMIT y OFFSET", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "orden" }
+      ]
+    },
+    {
+      "id": "u02-coalesce-devuelve",
+      "tema": "COALESCE",
+      "enunciado": "¿Qué devuelve COALESCE(a, b, c)?",
+      "opciones": [
+        { "id": "a", "texto": "El primer valor de la lista que no sea NULL.", "explicacion": "Correcto: COALESCE devuelve el primer valor no NULL de la lista." },
+        { "id": "b", "texto": "El último valor de la lista, siempre.", "explicacion": "Devuelve el primero que no sea NULL, no el último." },
+        { "id": "c", "texto": "La suma de los valores de la lista.", "explicacion": "COALESCE no suma valores; devuelve uno de ellos." },
+        { "id": "d", "texto": "Siempre el valor de b, porque es el segundo argumento.", "explicacion": "b se devuelve solo si es el primero que no es NULL; no tiene una posición fija." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "COALESCE recibe una lista de valores y devuelve el primero que no es NULL; forma parte del estándar SQL.",
+      "resumen": "COALESCE devuelve el primer valor no NULL de la lista.",
+      "material": [
+        { "titulo": "Unidad 2 · Funciones útiles", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "funciones" }
+      ]
+    },
+    {
+      "id": "u02-ifnull-vs-coalesce",
+      "tema": "IFNULL y COALESCE",
+      "enunciado": "¿En qué se diferencian IFNULL y COALESCE en cuanto a sus argumentos?",
+      "opciones": [
+        { "id": "a", "texto": "IFNULL recibe dos argumentos; COALESCE puede recibir una lista de valores.", "explicacion": "Correcto: IFNULL(valor, reemplazo) tiene dos argumentos y COALESCE admite varios." },
+        { "id": "b", "texto": "IFNULL forma parte del estándar SQL; COALESCE es propio de MySQL.", "explicacion": "Está invertido: COALESCE es la función que forma parte del estándar SQL." },
+        { "id": "c", "texto": "COALESCE solo admite valores numéricos.", "explicacion": "Es falso: COALESCE recibe una lista de valores y el material no lo limita a números." },
+        { "id": "d", "texto": "IFNULL devuelve el último valor no nulo de la lista.", "explicacion": "IFNULL no trabaja con listas: recibe dos argumentos." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Para casos simples ambos pueden resolver una necesidad similar, pero COALESCE es más general porque admite más de dos valores.",
+      "resumen": "IFNULL recibe dos argumentos; COALESCE, una lista.",
+      "material": [
+        { "titulo": "Unidad 2 · IFNULL y COALESCE", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "funciones" }
+      ]
+    },
+    {
+      "id": "u02-concat-une",
+      "tema": "CONCAT",
+      "enunciado": "¿Qué hace la función CONCAT()?",
+      "opciones": [
+        { "id": "a", "texto": "Divide un texto en varias partes.", "explicacion": "Dividir texto no es la función de CONCAT; esta une valores." },
+        { "id": "b", "texto": "Convierte un texto a mayúsculas.", "explicacion": "Convertir a mayúsculas es la función UPPER()." },
+        { "id": "c", "texto": "Une varios textos en un solo valor.", "explicacion": "Correcto: CONCAT() une textos en un único valor." },
+        { "id": "d", "texto": "Cuenta la cantidad de caracteres de un texto.", "explicacion": "Contar caracteres no es lo que hace CONCAT(), que une valores." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "CONCAT() recibe varios valores y los une en un único texto de salida.",
+      "resumen": "CONCAT() une varios textos en un solo valor.",
+      "material": [
+        { "titulo": "Unidad 2 · Funciones de texto", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "funciones" }
+      ]
+    },
+    {
+      "id": "u02-datediff-dias",
+      "tema": "Funciones de fecha",
+      "enunciado": "¿Cuál de estas funciones de fecha calcula la cantidad de días entre dos fechas?",
+      "opciones": [
+        { "id": "a", "texto": "YEAR()", "explicacion": "YEAR() devuelve el año de una fecha." },
+        { "id": "b", "texto": "MONTH()", "explicacion": "MONTH() devuelve el mes de una fecha." },
+        { "id": "c", "texto": "DATEDIFF()", "explicacion": "Correcto: DATEDIFF() calcula la diferencia en días entre dos fechas." },
+        { "id": "d", "texto": "CURDATE()", "explicacion": "CURDATE() devuelve la fecha actual; por sí sola no calcula una diferencia." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Entre las funciones de fecha de la unidad: CURDATE() y NOW() obtienen el momento actual, DATE() extrae la parte de fecha, DATEDIFF() calcula días entre fechas, y YEAR() y MONTH() extraen partes de una fecha.",
+      "resumen": "DATEDIFF() calcula la cantidad de días entre dos fechas.",
+      "material": [
+        { "titulo": "Unidad 2 · Funciones de fecha", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "funciones" }
+      ]
+    },
+    {
+      "id": "u02-secuencia-aprendizaje",
+      "tema": "Forma gradual de aprender SELECT",
+      "enunciado": "¿Qué secuencia propone la unidad para aprender a recuperar información?",
+      "opciones": [
+        { "id": "a", "texto": "Presentar, filtrar, elegir y transformar.", "explicacion": "El recorrido propuesto empieza por elegir columnas, no por presentar el resultado." },
+        { "id": "b", "texto": "Filtrar, agregar, unir y presentar.", "explicacion": "La unidad no incluye JOIN ni agregaciones: esos temas corresponden a unidades posteriores." },
+        { "id": "c", "texto": "Transformar, elegir, presentar y filtrar.", "explicacion": "El recorrido propuesto empieza por elegir las columnas y termina presentando el resultado." },
+        { "id": "d", "texto": "Elegir columnas, filtrar filas, transformar valores y presentar el resultado.", "explicacion": "Correcto: se elige con SELECT, se filtra con WHERE, se transforma con alias y funciones, y se presenta con ORDER BY, LIMIT y OFFSET." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La unidad avanza de elegir columnas a filtrar filas, transformar valores y presentar el resultado, sin adelantar JOIN ni agregaciones.",
+      "resumen": "Elegir, filtrar, transformar y presentar.",
+      "material": [
+        { "titulo": "Unidad 2 · Consultar una tabla de forma gradual", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "inicio" }
+      ]
+    },
+    {
+      "id": "u02-alcance-una-tabla",
+      "tema": "Alcance de la unidad",
+      "enunciado": "¿Con cuántas tablas trabajan las consultas de esta unidad y cuándo aparecen los JOIN?",
+      "opciones": [
+        { "id": "a", "texto": "Con varias tablas desde la primera consulta, usando JOIN.", "explicacion": "Falso: la unidad trabaja sobre una sola tabla." },
+        { "id": "b", "texto": "Con una sola tabla, y las funciones de agregación se ven en esta unidad.", "explicacion": "Falso: las funciones de agregación corresponden a la Unidad 4." },
+        { "id": "c", "texto": "Con una sola tabla, y los JOIN se presentan en esta unidad.", "explicacion": "Falso: los JOIN aparecerán en la Unidad 3, no en esta." },
+        { "id": "d", "texto": "Con una sola tabla; los JOIN aparecerán en la Unidad 3.", "explicacion": "Correcto: la unidad se concentra en SELECT sobre una sola tabla, y combinar tablas corresponde a la Unidad 3." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La unidad se concentra en SELECT sobre una sola tabla; combinar tablas con JOIN corresponde a la Unidad 3.",
+      "resumen": "Esta unidad trabaja con una sola tabla; los JOIN llegan en la Unidad 3.",
+      "material": [
+        { "titulo": "Unidad 2 · Consulta integrada", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "integrar" }
+      ]
+    },
+    {
+      "id": "u02-error-null-igual",
+      "tema": "Errores frecuentes",
+      "enunciado": "¿Qué error frecuente debe evitarse al consultar valores NULL?",
+      "opciones": [
+        { "id": "a", "texto": "Escribir = NULL en lugar de IS NULL.", "explicacion": "Correcto: la unidad señala no confundir = con IS NULL." },
+        { "id": "b", "texto": "Escribir IS NULL en lugar de BETWEEN.", "explicacion": "IS NULL es la forma correcta de consultar ausencia de valor; el error es usar = NULL." },
+        { "id": "c", "texto": "Escribir ORDER BY al final de la consulta.", "explicacion": "Esa es la posición correcta de ORDER BY; no es un error relacionado con NULL." },
+        { "id": "d", "texto": "Usar LIMIT sin OFFSET.", "explicacion": "Usar LIMIT sin OFFSET es válido y no tiene relación con NULL." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Como NULL es ausencia de valor, no se compara con =; la consulta correcta usa IS NULL o IS NOT NULL.",
+      "resumen": "Con NULL, usá IS NULL, no = NULL.",
+      "material": [
+        { "titulo": "Unidad 2 · Errores frecuentes", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "errores" }
+      ]
+    },
+    {
+      "id": "u02-error-comillas",
+      "tema": "Errores frecuentes",
+      "enunciado": "Según las recomendaciones de la unidad, ¿qué conviene revisar sobre las comillas?",
+      "opciones": [
+        { "id": "a", "texto": "Quitar las comillas a los valores de texto para que la comparación sea más rápida.", "explicacion": "No: el material indica usar comillas para los valores de texto." },
+        { "id": "b", "texto": "Escribir los números siempre entre comillas.", "explicacion": "El material indica comillas para texto y fechas, no para números." },
+        { "id": "c", "texto": "No usar comillas en las fechas.", "explicacion": "Falso: el material indica usar comillas para fechas." },
+        { "id": "d", "texto": "Usar comillas para valores de texto y fechas.", "explicacion": "Correcto: los valores de texto y fechas se escriben entre comillas." }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Los valores de texto y fechas se escriben entre comillas; el material no indica comillas para números.",
+      "resumen": "Las comillas van en textos y fechas.",
+      "material": [
+        { "titulo": "Unidad 2 · Errores frecuentes", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "errores" }
+      ]
+    },
+    {
+      "id": "u02-sin-order-by",
+      "tema": "ORDER BY",
+      "enunciado": "Según las recomendaciones de la unidad, ¿cuándo no hace falta incluir ORDER BY?",
+      "opciones": [
+        { "id": "a", "texto": "Cuando el orden del resultado no importa.", "explicacion": "Correcto: si el orden no es relevante, no es necesario incluir ORDER BY." },
+        { "id": "b", "texto": "Siempre que la consulta utilice LIMIT.", "explicacion": "LIMIT no hace innecesario ORDER BY; la decisión depende de si el orden importa." },
+        { "id": "c", "texto": "Cuando la consulta tiene una cláusula WHERE.", "explicacion": "WHERE filtra filas; no determina si el orden importa." },
+        { "id": "d", "texto": "Cuando se utilizan alias en las columnas.", "explicacion": "Los alias cambian el encabezado; no tienen relación con el orden." }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "ORDER BY establece el orden del resultado; si ese orden no importa, no hace falta incluirlo.",
+      "resumen": "Sin ORDER BY no hay orden garantizado: usalo si el orden importa.",
+      "material": [
+        { "titulo": "Unidad 2 · Errores frecuentes", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "errores" }
+      ]
+    },
+    {
+      "id": "u02-secuencia-mental",
+      "tema": "Secuencia mental",
+      "enunciado": "En la secuencia mental que propone la unidad, ¿qué pregunta corresponde a elegir las filas?",
+      "opciones": [
+        { "id": "a", "texto": "¿Qué columnas necesito?", "explicacion": "Esa pregunta corresponde a elegir las columnas, con SELECT." },
+        { "id": "b", "texto": "¿De qué tabla?", "explicacion": "Esa pregunta corresponde a FROM." },
+        { "id": "c", "texto": "¿Qué filas cumplen la condición?", "explicacion": "Correcto: las filas se eligen con WHERE según la condición." },
+        { "id": "d", "texto": "¿Cómo quiero presentar el resultado?", "explicacion": "Esa pregunta corresponde a ORDER BY, LIMIT y OFFSET." }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "La secuencia recorre qué columnas, de qué tabla, qué filas cumplen la condición y cómo presentar el resultado.",
+      "resumen": "Para elegir filas, la pregunta es qué filas cumplen la condición.",
+      "material": [
+        { "titulo": "Unidad 2 · Síntesis", "ruta": "unidad-02-consultasBasicas/1 - Consultas Basicas (select - from - where).html", "seccion": "cierre" }
+      ]
+    }
+  ]
+}

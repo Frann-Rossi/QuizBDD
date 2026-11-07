@@ -1,0 +1,1449 @@
+{
+  "unidad": 4,
+  "titulo": "Funciones de agregación y GROUP BY",
+  "preguntas": [
+    {
+      "id": "u04-inicio-join-previo",
+      "tema": "Relación con la Unidad 3",
+      "enunciado": "¿Qué herramienta vista antes de esta unidad se combina con las funciones de agregación para resumir datos de tablas relacionadas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El JOIN, que relaciona filas de dos tablas según una condición antes de agrupar y calcular.",
+          "explicacion": "Correcta: primero se relacionan las tablas con el JOIN; después las filas resultantes se agrupan y se calculan las funciones."
+        },
+        {
+          "id": "b",
+          "texto": "Las subconsultas, que se estudian en la Unidad 5.",
+          "explicacion": "Incorrecta: el material indica que la Unidad 5 incorporará subconsultas y que esta unidad no las utiliza."
+        },
+        {
+          "id": "c",
+          "texto": "Las vistas, que guardan el resultado de una consulta como objeto permanente de la base.",
+          "explicacion": "Incorrecta: el material no vincula las funciones de agregación con las vistas; el recurso que se retoma es el JOIN."
+        },
+        {
+          "id": "d",
+          "texto": "Las transacciones, que agrupan varias sentencias en una sola unidad de trabajo.",
+          "explicacion": "Incorrecta: las transacciones no son el recurso que se retoma para combinar datos en esta unidad."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Las funciones de agregación pueden aplicarse sobre el resultado de un JOIN. La relación entre tablas se resuelve primero y el agrupamiento se hace sobre las filas ya combinadas.",
+      "resumen": "Con JOIN se relacionan las tablas y luego se agrupa y se calcula.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Relación con la Unidad 3",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "inicio"
+        }
+      ]
+    },
+    {
+      "id": "u04-inicio-pregunta-agregada",
+      "tema": "Preguntas que responde la agregación",
+      "enunciado": "¿Cuál de las siguientes preguntas corresponde a una consulta de agregación?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "¿Cuáles son los datos de contacto de un cliente?",
+          "explicacion": "Incorrecta: pide datos de una fila individual y no resume un conjunto de filas."
+        },
+        {
+          "id": "b",
+          "texto": "¿Cuántos pedidos hay?",
+          "explicacion": "Correcta: la respuesta es un valor que resume muchas filas, que es lo que calcula COUNT."
+        },
+        {
+          "id": "c",
+          "texto": "¿Qué columnas tiene una tabla?",
+          "explicacion": "Incorrecta: pide la estructura de la tabla y no un cálculo sobre sus filas."
+        },
+        {
+          "id": "d",
+          "texto": "¿Qué nombre tiene el cliente que corresponde a un código determinado?",
+          "explicacion": "Incorrecta: busca un valor de una fila concreta, sin resumir un conjunto."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Las funciones de agregación responden preguntas que se resuelven con un valor resumen calculado a partir de muchas filas, como una cantidad, una suma o un promedio.",
+      "resumen": "Una consulta de agregación convierte muchas filas en un valor resumen.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Preguntas que responde la agregación",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "inicio"
+        }
+      ]
+    },
+    {
+      "id": "u04-idea-filas-vs-conjunto",
+      "tema": "De filas a información resumida",
+      "enunciado": "¿Qué diferencia hay entre una consulta sobre filas y una consulta sobre el conjunto?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La consulta sobre filas no admite condiciones; la consulta sobre el conjunto sí.",
+          "explicacion": "Incorrecta: ambas pueden tener condiciones. La diferencia está en el tipo de resultado que devuelven."
+        },
+        {
+          "id": "b",
+          "texto": "La consulta sobre filas devuelve un único valor; la consulta sobre el conjunto devuelve todas las filas.",
+          "explicacion": "Incorrecta: la relación está invertida. La consulta sobre filas devuelve registros individuales."
+        },
+        {
+          "id": "c",
+          "texto": "La consulta sobre filas devuelve las filas que cumplen una condición; la consulta sobre el conjunto calcula un valor resumen a partir de muchas filas.",
+          "explicacion": "Correcta: una consulta sobre filas muestra registros individuales, mientras que una consulta agregada produce un valor resumen."
+        },
+        {
+          "id": "d",
+          "texto": "La consulta sobre filas necesita GROUP BY; la consulta sobre el conjunto no lo necesita nunca.",
+          "explicacion": "Incorrecta: GROUP BY sirve para calcular resúmenes por grupo. No es lo que distingue a la consulta sobre filas."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "La idea central es que las funciones de agregación toman muchas filas y producen un valor resumen. Una consulta sobre filas, en cambio, devuelve las filas que cumplen una condición.",
+      "resumen": "Filas: se muestran registros. Conjunto: se calcula un resumen.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · De filas a información resumida",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "idea"
+        }
+      ]
+    },
+    {
+      "id": "u04-idea-groupby-por-grupo",
+      "tema": "Resumen por grupo",
+      "enunciado": "¿Qué permite que una función de agregación se calcule por separado para cada grupo de filas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "ORDER BY, que ordena el resultado final.",
+          "explicacion": "Incorrecta: ORDER BY define el orden de presentación del resultado; no separa el cálculo por grupo."
+        },
+        {
+          "id": "b",
+          "texto": "LIMIT, que restringe la cantidad de filas devueltas.",
+          "explicacion": "Incorrecta: LIMIT se aplica al final y solo acota cuántas filas se muestran."
+        },
+        {
+          "id": "c",
+          "texto": "WHERE, que filtra filas antes de agrupar.",
+          "explicacion": "Incorrecta: WHERE filtra filas individuales, pero no crea grupos ni calcula resúmenes por grupo."
+        },
+        {
+          "id": "d",
+          "texto": "GROUP BY, que reúne las filas en grupos antes de calcular.",
+          "explicacion": "Correcta: con GROUP BY, el resumen puede calcularse una vez por cada grupo."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "GROUP BY reúne las filas que comparten valores y permite calcular funciones de agregación para cada uno de esos grupos.",
+      "resumen": "GROUP BY crea grupos; cada función de agregación se calcula dentro de cada grupo.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Resumen por grupo",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "groupby"
+        }
+      ]
+    },
+    {
+      "id": "u04-count-asterisco-vs-columna",
+      "tema": "COUNT(*) y COUNT(columna)",
+      "enunciado": "¿Qué diferencia hay entre COUNT(*) y COUNT(columna)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "COUNT(*) cuenta filas, mientras que COUNT(columna) cuenta solo las filas donde esa columna no es NULL.",
+          "explicacion": "Correcta: COUNT(*) cuenta todas las filas; COUNT(columna) excluye los valores NULL de esa columna."
+        },
+        {
+          "id": "b",
+          "texto": "COUNT(columna) cuenta todas las filas, y COUNT(*) cuenta solo las que tienen un valor no nulo en esa columna.",
+          "explicacion": "Incorrecta: las definiciones están invertidas. COUNT(*) es el que cuenta todas las filas."
+        },
+        {
+          "id": "c",
+          "texto": "Ambas funciones cuentan exactamente lo mismo; solo cambia la sintaxis.",
+          "explicacion": "Incorrecta: la diferencia está en los valores NULL, y el material la señala como importante."
+        },
+        {
+          "id": "d",
+          "texto": "COUNT(*) no puede usarse sin GROUP BY, pero COUNT(columna) sí.",
+          "explicacion": "Incorrecta: sin GROUP BY, toda la tabla (o las filas que superan el WHERE) se considera un único conjunto."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "COUNT(*) cuenta filas. COUNT(columna) cuenta solamente las filas en las que esa columna no tiene valor NULL.",
+      "resumen": "COUNT(*) cuenta filas; COUNT(columna) cuenta valores no nulos.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · COUNT, SUM, AVG, MIN y MAX",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "funciones"
+        }
+      ]
+    },
+    {
+      "id": "u04-count-distinct",
+      "tema": "COUNT(DISTINCT columna)",
+      "enunciado": "¿Qué calcula COUNT(DISTINCT columna)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La cantidad de filas, incluidas las que tienen NULL en esa columna.",
+          "explicacion": "Incorrecta: eso es lo que calcula COUNT(*), no COUNT(DISTINCT columna)."
+        },
+        {
+          "id": "b",
+          "texto": "La cantidad de valores diferentes y no nulos que aparecen en esa columna.",
+          "explicacion": "Correcta: el material indica que cuenta cuántos valores diferentes y no nulos aparecen en la columna."
+        },
+        {
+          "id": "c",
+          "texto": "La suma de los valores distintos de la columna.",
+          "explicacion": "Incorrecta: la suma la calcula SUM; COUNT(DISTINCT) cuenta valores y no los suma."
+        },
+        {
+          "id": "d",
+          "texto": "La cantidad de filas en las que la columna es NULL.",
+          "explicacion": "Incorrecta: ese conteo no describe a COUNT(DISTINCT); además, los NULL no se cuentan como valores."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "COUNT(DISTINCT columna) permite conocer cuántos valores diferentes y no nulos hay en esa columna, por ejemplo cuántos clientes diferentes realizaron pedidos.",
+      "resumen": "COUNT(DISTINCT col) cuenta valores diferentes no nulos.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · COUNT, SUM, AVG, MIN y MAX",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "funciones"
+        }
+      ]
+    },
+    {
+      "id": "u04-avg-que-calcula",
+      "tema": "Función para el promedio",
+      "enunciado": "¿Qué función devuelve el promedio de los valores de una columna?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "MIN, que devuelve el menor valor de la columna.",
+          "explicacion": "Incorrecta: MIN devuelve el valor más bajo, no un promedio."
+        },
+        {
+          "id": "b",
+          "texto": "COUNT, que cuenta las filas no nulas de la columna.",
+          "explicacion": "Incorrecta: COUNT cuenta valores o filas, no calcula un promedio."
+        },
+        {
+          "id": "c",
+          "texto": "AVG, que calcula el promedio de los valores.",
+          "explicacion": "Correcta: AVG() sirve para calcular un promedio."
+        },
+        {
+          "id": "d",
+          "texto": "MAX, que devuelve el mayor valor de la columna.",
+          "explicacion": "Incorrecta: MAX devuelve el valor más alto, no el promedio."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Las cinco funciones fundamentales son COUNT, SUM, AVG, MIN y MAX. Cada una cumple una tarea distinta: contar, sumar, promediar, obtener el menor valor u obtener el mayor.",
+      "resumen": "AVG calcula promedios; SUM suma; COUNT cuenta; MIN y MAX dan extremos.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · COUNT, SUM, AVG, MIN y MAX",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "funciones"
+        }
+      ]
+    },
+    {
+      "id": "u04-min-max",
+      "tema": "MIN y MAX",
+      "enunciado": "¿Qué devuelven MIN y MAX sobre una columna?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El primer y el último valor según el orden en que fueron insertadas las filas.",
+          "explicacion": "Incorrecta: MIN y MAX buscan el menor y el mayor valor; no dependen del orden de inserción."
+        },
+        {
+          "id": "b",
+          "texto": "La mediana y el promedio de los valores.",
+          "explicacion": "Incorrecta: el promedio lo calcula AVG, y la mediana no es una de las funciones de esta unidad."
+        },
+        {
+          "id": "c",
+          "texto": "La cantidad de valores distintos, sin contar los NULL.",
+          "explicacion": "Incorrecta: esa cantidad la obtiene COUNT(DISTINCT columna), no MIN ni MAX."
+        },
+        {
+          "id": "d",
+          "texto": "El menor valor (MIN) y el mayor valor (MAX) de la columna.",
+          "explicacion": "Correcta: MIN devuelve el menor valor y MAX devuelve el mayor."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "MIN() obtiene el menor valor de un conjunto y MAX() obtiene el mayor. Ambas funciones resumen una columna en un único valor.",
+      "resumen": "MIN da el menor valor; MAX da el mayor.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · COUNT, SUM, AVG, MIN y MAX",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "funciones"
+        }
+      ]
+    },
+    {
+      "id": "u04-sin-group-by-un-conjunto",
+      "tema": "Agregación sin GROUP BY",
+      "enunciado": "Si una consulta usa funciones de agregación y no tiene GROUP BY, ¿sobre qué conjunto se calcula el resultado?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sobre un único conjunto formado por todas las filas que superan el WHERE, si lo hay.",
+          "explicacion": "Correcta: sin GROUP BY, toda la tabla o las filas que superaron el WHERE se consideran un único conjunto."
+        },
+        {
+          "id": "b",
+          "texto": "Sobre un conjunto separado por cada valor distinto de la primera columna del SELECT.",
+          "explicacion": "Incorrecta: esa separación la produce GROUP BY, que en este caso no está presente."
+        },
+        {
+          "id": "c",
+          "texto": "Sobre un conjunto distinto por cada fila de la tabla.",
+          "explicacion": "Incorrecta: no se crea un conjunto por fila; todas las filas forman un único conjunto."
+        },
+        {
+          "id": "d",
+          "texto": "Sobre la primera fila de la tabla únicamente.",
+          "explicacion": "Incorrecta: la agregación considera el conjunto de filas, no solo la primera."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Cuando no hay GROUP BY, la función de agregación trabaja sobre todo el conjunto de filas disponible después del WHERE, si existe.",
+      "resumen": "Sin GROUP BY, todas las filas (filtradas por WHERE) forman un único grupo.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · COUNT, SUM, AVG, MIN y MAX",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "funciones"
+        }
+      ]
+    },
+    {
+      "id": "u04-null-ignoran",
+      "tema": "NULL en SUM, AVG, MIN y MAX",
+      "enunciado": "¿Cómo tratan SUM, AVG, MIN y MAX a los valores NULL?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Los consideran como cero dentro del cálculo.",
+          "explicacion": "Incorrecta: las funciones no tratan a NULL como cero."
+        },
+        {
+          "id": "b",
+          "texto": "En general los ignoran y calculan sobre los valores conocidos.",
+          "explicacion": "Correcta: el material indica que estas funciones ignoran los valores NULL."
+        },
+        {
+          "id": "c",
+          "texto": "Los consideran como cadena vacía dentro del cálculo.",
+          "explicacion": "Incorrecta: la unidad aclara que NULL no se trata como cadena vacía."
+        },
+        {
+          "id": "d",
+          "texto": "Generan un error y la consulta no se ejecuta.",
+          "explicacion": "Incorrecta: NULL no provoca un error en estas funciones; simplemente no se toma en cuenta."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Las funciones SUM, AVG, MIN y MAX ignoran los valores NULL. NULL representa ausencia de valor y no se interpreta como cero ni como texto vacío.",
+      "resumen": "SUM, AVG, MIN y MAX ignoran NULL.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Agregaciones y NULL",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "null"
+        }
+      ]
+    },
+    {
+      "id": "u04-null-ausencia-de-valor",
+      "tema": "Qué representa NULL",
+      "enunciado": "¿Qué afirmación sobre NULL es correcta según la unidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "NULL es equivalente a cero, así que las sumas no cambian al tenerlo.",
+          "explicacion": "Incorrecta: el material indica que las funciones no tratan a NULL como cero."
+        },
+        {
+          "id": "b",
+          "texto": "NULL es equivalente a una cadena vacía y se cuenta igual que ella.",
+          "explicacion": "Incorrecta: la cadena vacía es un valor y se cuenta; NULL representa ausencia de valor y no se cuenta."
+        },
+        {
+          "id": "c",
+          "texto": "NULL representa ausencia de valor, y no es lo mismo que cero ni que una cadena vacía.",
+          "explicacion": "Correcta: NULL indica que no hay valor, distinto de 0 o de un texto vacío."
+        },
+        {
+          "id": "d",
+          "texto": "NULL se trata como un valor más al calcular un promedio, dividiendo por la cantidad total de filas.",
+          "explicacion": "Incorrecta: AVG calcula el promedio sobre los valores conocidos, sin dividir por la cantidad total de filas."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "NULL representa ausencia de valor. Por eso no se confunde con cero ni con una cadena vacía, y las funciones de agregación no lo toman como si fuera un número o un texto.",
+      "resumen": "NULL = ausencia de valor; no es cero ni cadena vacía.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Agregaciones y NULL",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "null"
+        }
+      ]
+    },
+    {
+      "id": "u04-cadena-vacia-count",
+      "tema": "Cadena vacía frente a NULL",
+      "enunciado": "¿Por qué COUNT(columna) cuenta una cadena vacía pero no cuenta un NULL?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque la cadena vacía se almacena como cero y el NULL se almacena como texto.",
+          "explicacion": "Incorrecta: el material no plantea esa equivalencia; la cadena vacía es un texto sin caracteres."
+        },
+        {
+          "id": "b",
+          "texto": "Porque COUNT solo cuenta valores numéricos, y la cadena vacía se convierte en número.",
+          "explicacion": "Incorrecta: COUNT cuenta valores no nulos sin restringirse a números, y la cadena vacía no se convierte en número."
+        },
+        {
+          "id": "c",
+          "texto": "Porque NULL y la cadena vacía son ambos valores, pero el NULL tiene prioridad sobre el conteo.",
+          "explicacion": "Incorrecta: NULL no es un valor que se cuente; el criterio es que representa ausencia de valor."
+        },
+        {
+          "id": "d",
+          "texto": "Porque la cadena vacía sigue siendo un valor, mientras que NULL representa ausencia de valor.",
+          "explicacion": "Correcta: la cadena vacía es un valor y se cuenta; NULL no se cuenta en COUNT(columna)."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una cadena vacía sigue siendo un valor, por eso COUNT(columna) la cuenta. NULL indica ausencia de valor, por eso no se cuenta.",
+      "resumen": "Cadena vacía = valor (se cuenta); NULL = ausencia (no se cuenta).",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Agregaciones y NULL",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "null"
+        }
+      ]
+    },
+    {
+      "id": "u04-avg-con-nulls",
+      "tema": "Promedio con valores NULL",
+      "enunciado": "Si una columna tiene algunos valores NULL, ¿cómo calcula AVG el promedio?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Calcula el promedio sobre los valores conocidos, sin dividir por la cantidad total de filas.",
+          "explicacion": "Correcta: el promedio se calcula sobre los valores conocidos, no dividiendo por el total de filas."
+        },
+        {
+          "id": "b",
+          "texto": "Trata los NULL como cero y divide por la cantidad total de filas.",
+          "explicacion": "Incorrecta: AVG no trata los NULL como cero; los deja fuera del cálculo."
+        },
+        {
+          "id": "c",
+          "texto": "Calcula el promedio solo con las filas donde la columna es NULL.",
+          "explicacion": "Incorrecta: las filas con NULL no aportan valores al promedio."
+        },
+        {
+          "id": "d",
+          "texto": "Devuelve NULL siempre que la columna tenga al menos un valor nulo.",
+          "explicacion": "Incorrecta: la presencia de algún NULL no anula el cálculo; AVG usa los valores conocidos."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Al calcular un promedio, AVG usa solamente los valores conocidos. Si los NULL se contaran como cero, el promedio cambiaría.",
+      "resumen": "AVG promedia los valores conocidos, no el total de filas.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Agregaciones y NULL",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "null"
+        }
+      ]
+    },
+    {
+      "id": "u04-count-star-fila-nula",
+      "tema": "COUNT(*) y filas con NULL",
+      "enunciado": "Una fila tiene NULL en todas sus columnas. ¿Qué pasa con esa fila al usar COUNT(*)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "No se cuenta, porque no tiene valores.",
+          "explicacion": "Incorrecta: COUNT(*) cuenta filas, y esa fila existe aunque sus valores sean NULL."
+        },
+        {
+          "id": "b",
+          "texto": "Se cuenta, porque COUNT(*) cuenta filas y no valores.",
+          "explicacion": "Correcta: COUNT(*) cuenta todas las filas, incluidas las que tienen NULL."
+        },
+        {
+          "id": "c",
+          "texto": "Se cuenta como cero, porque es una fila vacía.",
+          "explicacion": "Incorrecta: cada fila aporta una unidad al conteo de COUNT(*), no cero."
+        },
+        {
+          "id": "d",
+          "texto": "Genera un error de ejecución en la consulta.",
+          "explicacion": "Incorrecta: la presencia de NULL no produce un error en COUNT(*)."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "COUNT(*) cuenta filas. Por eso una fila con todos sus valores NULL sigue contando, mientras que COUNT(columna) no contaría ese NULL.",
+      "resumen": "COUNT(*) cuenta filas aunque tengan NULL.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Agregaciones y NULL",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "null"
+        }
+      ]
+    },
+    {
+      "id": "u04-groupby-una-fila-por-grupo",
+      "tema": "Filas devueltas por GROUP BY",
+      "enunciado": "Cuando una consulta usa GROUP BY, ¿cuántas filas devuelve como regla general?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una fila por cada fila original de la tabla.",
+          "explicacion": "Incorrecta: justamente GROUP BY reduce muchas filas a un resumen por grupo."
+        },
+        {
+          "id": "b",
+          "texto": "Una sola fila, sin importar cuántos grupos existan.",
+          "explicacion": "Incorrecta: se devuelve una fila por grupo, no una única fila total."
+        },
+        {
+          "id": "c",
+          "texto": "Una fila por cada grupo que se forma.",
+          "explicacion": "Correcta: el resultado tiene una fila por cada grupo, no una fila por cada pedido o registro original."
+        },
+        {
+          "id": "d",
+          "texto": "Una fila por cada columna del SELECT.",
+          "explicacion": "Incorrecta: las columnas del SELECT forman parte de cada fila, no determinan la cantidad de filas."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "GROUP BY produce un resultado con una fila por cada grupo formado por los valores agrupados.",
+      "resumen": "GROUP BY: una fila por grupo.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · GROUP BY",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "groupby"
+        }
+      ]
+    },
+    {
+      "id": "u04-groupby-columna-select",
+      "tema": "Columnas del SELECT con GROUP BY",
+      "enunciado": "En una consulta agregada, una columna del SELECT no aparece dentro de una función de agregación. ¿Qué regla de trabajo indica la cátedra?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Quitarla del SELECT, porque nunca puede mostrarse junto con GROUP BY.",
+          "explicacion": "Incorrecta: la columna puede mostrarse si se incluye en GROUP BY; no hace falta quitarla."
+        },
+        {
+          "id": "b",
+          "texto": "Incluirla en una cláusula HAVING sin condición.",
+          "explicacion": "Incorrecta: HAVING filtra grupos y no es el lugar indicado para declarar columnas del SELECT."
+        },
+        {
+          "id": "c",
+          "texto": "Repetirla en el ORDER BY y omitir el GROUP BY.",
+          "explicacion": "Incorrecta: el ORDER BY no reemplaza al GROUP BY y no evita resultados ambiguos."
+        },
+        {
+          "id": "d",
+          "texto": "Incluirla explícitamente en GROUP BY.",
+          "explicacion": "Correcta: la regla de la cátedra es incluir explícitamente en GROUP BY toda columna del SELECT que no esté dentro de una función de agregación."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Si una columna aparece en SELECT y no está dentro de una función de agregación, debe incluirse en GROUP BY. Así se evitan resultados ambiguos y la consulta queda clara.",
+      "resumen": "Columna del SELECT sin agregar = también en GROUP BY.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · GROUP BY",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "groupby"
+        }
+      ]
+    },
+    {
+      "id": "u04-groupby-que-agrupa",
+      "tema": "Qué hace GROUP BY",
+      "enunciado": "¿Qué hace GROUP BY con las filas de la consulta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Reúne las filas que comparten uno o más valores para calcular agregaciones por cada grupo.",
+          "explicacion": "Correcta: GROUP BY reúne las filas con valores compartidos y permite calcular un resumen por grupo."
+        },
+        {
+          "id": "b",
+          "texto": "Ordena las filas de menor a mayor según la columna indicada.",
+          "explicacion": "Incorrecta: el ordenamiento lo define ORDER BY, no GROUP BY."
+        },
+        {
+          "id": "c",
+          "texto": "Elimina las filas que tienen NULL en la columna indicada.",
+          "explicacion": "Incorrecta: GROUP BY no elimina filas; su función es reunirlas en grupos."
+        },
+        {
+          "id": "d",
+          "texto": "Calcula la suma total de todas las filas, sin importar sus valores.",
+          "explicacion": "Incorrecta: calcular una suma es tarea de SUM; GROUP BY organiza las filas en grupos."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "GROUP BY divide el conjunto de filas en grupos según los valores de las columnas indicadas. Luego las funciones de agregación calculan un resultado para cada grupo.",
+      "resumen": "GROUP BY reúne filas con valores compartidos en grupos.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · GROUP BY",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "groupby"
+        }
+      ]
+    },
+    {
+      "id": "u04-groupby-menos-filas",
+      "tema": "Cantidad de filas al agrupar",
+      "enunciado": "¿Por qué una consulta agregada puede devolver menos filas que la tabla original?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque GROUP BY descarta siempre la mitad de las filas.",
+          "explicacion": "Incorrecta: la cantidad de filas depende de cuántos grupos se formen, no de una proporción fija."
+        },
+        {
+          "id": "b",
+          "texto": "Porque varias filas que comparten valores se reúnen en un mismo grupo y generan una única fila resumen.",
+          "explicacion": "Correcta: al agrupar, cada grupo produce una fila en el resultado."
+        },
+        {
+          "id": "c",
+          "texto": "Porque WHERE se aplica después de calcular los grupos.",
+          "explicacion": "Incorrecta: WHERE actúa antes de agrupar; es HAVING el que actúa después."
+        },
+        {
+          "id": "d",
+          "texto": "Porque las funciones de agregación no pueden calcularse sobre más de una fila.",
+          "explicacion": "Incorrecta: justamente las funciones de agregación trabajan sobre conjuntos de varias filas."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "GROUP BY reúne las filas que comparten valores. Cada grupo se resume en una sola fila del resultado, por eso hay menos filas que en la tabla original.",
+      "resumen": "Muchas filas por grupo = una fila resumen por grupo.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · GROUP BY",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "groupby"
+        }
+      ]
+    },
+    {
+      "id": "u04-groupby-combinacion",
+      "tema": "GROUP BY con dos columnas",
+      "enunciado": "Al agrupar por dos columnas, ¿qué forma un grupo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Todas las filas que comparten el valor de la primera columna, sin mirar la segunda.",
+          "explicacion": "Incorrecta: con dos columnas el grupo se define por la combinación de ambas, no solo por la primera."
+        },
+        {
+          "id": "b",
+          "texto": "Todas las combinaciones posibles de valores de ambas columnas, existan o no en los datos.",
+          "explicacion": "Incorrecta: no se crean combinaciones inventadas; solo aparecen las que existen en las filas consultadas."
+        },
+        {
+          "id": "c",
+          "texto": "Cada combinación de valores de ambas columnas que aparezca en las filas consultadas.",
+          "explicacion": "Correcta: cada combinación diferente de valores forma un grupo, siempre que exista en los datos."
+        },
+        {
+          "id": "d",
+          "texto": "Cada columna por separado, en dos resultados distintos.",
+          "explicacion": "Incorrecta: GROUP BY con varias columnas no produce resultados separados por columna."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Agrupar por dos columnas significa agrupar por la combinación de ambas. Se forma un grupo por cada combinación de valores que realmente exista en los datos.",
+      "resumen": "GROUP BY con varias columnas: un grupo por combinación existente.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Agrupar por más de una columna",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "varios"
+        }
+      ]
+    },
+    {
+      "id": "u04-groupby-mas-columnas-grupos",
+      "tema": "Agregar columnas al GROUP BY",
+      "enunciado": "¿Qué efecto suele tener agregar una columna más al GROUP BY?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Reduce la cantidad de grupos, porque junta más filas en cada uno.",
+          "explicacion": "Incorrecta: al sumar una columna, los grupos se separan más, no se unen."
+        },
+        {
+          "id": "b",
+          "texto": "No cambia los grupos, solo el orden en que se muestran.",
+          "explicacion": "Incorrecta: el orden lo define ORDER BY; agregar una columna al GROUP BY sí cambia los grupos."
+        },
+        {
+          "id": "c",
+          "texto": "Hace que los grupos se calculen a partir de la primera columna solamente.",
+          "explicacion": "Incorrecta: con varias columnas, el grupo se forma con la combinación de todas ellas."
+        },
+        {
+          "id": "d",
+          "texto": "Puede generar más grupos y más pequeños, porque cada combinación de valores forma uno.",
+          "explicacion": "Correcta: al separar por combinaciones, aumenta la cantidad de grupos y sus grupos suelen ser más pequeños."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Cada combinación diferente de valores forma un grupo. Agregar columnas al GROUP BY puede producir más grupos, y el riesgo es crear grupos excesivamente pequeños.",
+      "resumen": "Más columnas en GROUP BY = grupos más específicos y más numerosos.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Agrupar por más de una columna",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "varios"
+        }
+      ]
+    },
+    {
+      "id": "u04-groupby-una-columna-otras",
+      "tema": "Agrupar por una sola columna",
+      "enunciado": "Si se agrupa solamente por una columna, ¿qué sucede con las filas que tienen valores distintos en otra columna no agrupada?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Quedan dentro del mismo grupo, sin distinguirse por esa otra columna.",
+          "explicacion": "Correcta: si esa columna no forma parte del GROUP BY, no separa los grupos."
+        },
+        {
+          "id": "b",
+          "texto": "Se generan grupos separados para cada valor de esa otra columna.",
+          "explicacion": "Incorrecta: eso ocurriría si la columna se incluyera en el GROUP BY."
+        },
+        {
+          "id": "c",
+          "texto": "Se descartan del resultado.",
+          "explicacion": "Incorrecta: agrupar no elimina filas por una columna que no forma parte del GROUP BY."
+        },
+        {
+          "id": "d",
+          "texto": "Se suman sus valores dentro del grupo de forma automática.",
+          "explicacion": "Incorrecta: solo se suman valores si se usa SUM sobre esa columna."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Los grupos se forman con las columnas indicadas en GROUP BY. Las filas que difieren solo en otra columna no agrupada quedan juntas en el mismo grupo.",
+      "resumen": "Solo las columnas de GROUP BY separan los grupos.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Agrupar por más de una columna",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "varios"
+        }
+      ]
+    },
+    {
+      "id": "u04-where-filtra-filas",
+      "tema": "Qué filtra WHERE",
+      "enunciado": "¿Sobre qué actúa la cláusula WHERE en una consulta con GROUP BY?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sobre los grupos, después de calcular las agregaciones.",
+          "explicacion": "Incorrecta: eso lo hace HAVING, no WHERE."
+        },
+        {
+          "id": "b",
+          "texto": "Sobre las filas individuales, antes de que se formen los grupos.",
+          "explicacion": "Correcta: WHERE filtra filas antes del agrupamiento."
+        },
+        {
+          "id": "c",
+          "texto": "Sobre el resultado final, después de ORDER BY.",
+          "explicacion": "Incorrecta: WHERE se evalúa antes de agrupar, mucho antes de ORDER BY."
+        },
+        {
+          "id": "d",
+          "texto": "Sobre los alias definidos en el SELECT.",
+          "explicacion": "Incorrecta: WHERE no puede usar alias del SELECT, porque se evalúa antes de construir esas columnas."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "WHERE actúa sobre filas individuales antes de que se formen los grupos. Por eso decide qué filas llegan al agrupamiento.",
+      "resumen": "WHERE filtra filas antes de agrupar.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · WHERE y HAVING",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "wherehaving"
+        }
+      ]
+    },
+    {
+      "id": "u04-having-no-where-sum",
+      "tema": "Condiciones sobre agregados",
+      "enunciado": "¿Por qué una condición sobre SUM(total) no puede escribirse en WHERE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque SUM solo puede usarse en la lista del SELECT.",
+          "explicacion": "Incorrecta: la restricción no es esa; el problema es el momento en que se evalúa WHERE."
+        },
+        {
+          "id": "b",
+          "texto": "Porque WHERE solo acepta columnas de texto.",
+          "explicacion": "Incorrecta: WHERE trabaja con filas individuales de cualquier columna; el problema es el orden lógico."
+        },
+        {
+          "id": "c",
+          "texto": "Porque WHERE se evalúa antes de crear los grupos, y el total de cada grupo todavía no existe.",
+          "explicacion": "Correcta: una agregación sobre grupos se conoce recién después del GROUP BY, por eso corresponde a HAVING."
+        },
+        {
+          "id": "d",
+          "texto": "Porque WHERE siempre se ejecuta después de HAVING.",
+          "explicacion": "Incorrecta: en el orden lógico, WHERE se ejecuta antes que HAVING."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una condición sobre un resultado agregado debe ir en HAVING, porque HAVING actúa sobre los grupos ya calculados.",
+      "resumen": "Condición sobre un agregado = HAVING.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · WHERE y HAVING",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "wherehaving"
+        }
+      ]
+    },
+    {
+      "id": "u04-having-filas-antes",
+      "tema": "Cuándo usar HAVING",
+      "enunciado": "¿Por qué no conviene usar HAVING para una condición que podría aplicarse a filas individuales antes de agrupar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque HAVING no admite comparaciones con números.",
+          "explicacion": "Incorrecta: HAVING sí admite comparaciones; el problema es cuándo se evalúa."
+        },
+        {
+          "id": "b",
+          "texto": "Porque HAVING solo puede usarse sin GROUP BY.",
+          "explicacion": "Incorrecta: HAVING se usa junto con GROUP BY para filtrar grupos."
+        },
+        {
+          "id": "c",
+          "texto": "Porque HAVING elimina las columnas del SELECT.",
+          "explicacion": "Incorrecta: HAVING filtra grupos y no modifica las columnas del SELECT."
+        },
+        {
+          "id": "d",
+          "texto": "Porque HAVING actúa después del agrupamiento, así que conviene filtrar las filas antes con WHERE.",
+          "explicacion": "Correcta: WHERE filtra filas antes de agrupar; usar HAVING para eso procesa más filas de las necesarias."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "HAVING actúa sobre grupos ya calculados. Si una condición puede aplicarse a filas individuales, WHERE es el lugar adecuado porque filtra antes de agrupar.",
+      "resumen": "Condición sobre filas = WHERE; condición sobre grupos = HAVING.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · WHERE y HAVING",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "wherehaving"
+        }
+      ]
+    },
+    {
+      "id": "u04-where-count-error",
+      "tema": "WHERE con funciones de agregación",
+      "enunciado": "¿Por qué es incorrecto escribir WHERE COUNT(*) > 2 en una consulta agregada?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque en el momento de evaluar WHERE todavía no existen los grupos, así que no hay un COUNT por grupo que comparar.",
+          "explicacion": "Correcta: los grupos se crean después del WHERE; por eso el conteo por grupo debe filtrarse con HAVING."
+        },
+        {
+          "id": "b",
+          "texto": "Porque COUNT no puede compararse con números.",
+          "explicacion": "Incorrecta: COUNT devuelve un número y sí puede compararse; el problema es el momento de evaluación."
+        },
+        {
+          "id": "c",
+          "texto": "Porque COUNT solo se usa dentro del ORDER BY.",
+          "explicacion": "Incorrecta: COUNT puede usarse en el SELECT y en HAVING; no está restringido al ORDER BY."
+        },
+        {
+          "id": "d",
+          "texto": "Porque WHERE no admite el símbolo de mayor que.",
+          "explicacion": "Incorrecta: WHERE sí admite comparaciones con el signo mayor que."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El conteo por grupo recién existe después de GROUP BY. La forma correcta es agrupar y luego filtrar esos grupos con HAVING COUNT(*) > 2.",
+      "resumen": "WHERE no ve grupos; para filtrar por COUNT usar HAVING.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · WHERE y HAVING",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "wherehaving"
+        }
+      ]
+    },
+    {
+      "id": "u04-where-having-orden",
+      "tema": "WHERE, GROUP BY y HAVING juntos",
+      "enunciado": "En una consulta con WHERE, GROUP BY y HAVING, ¿qué ocurre primero conceptualmente?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "HAVING descarta grupos, y después WHERE descarta filas.",
+          "explicacion": "Incorrecta: el orden está invertido; WHERE descarta filas antes de agrupar y HAVING actúa después."
+        },
+        {
+          "id": "b",
+          "texto": "WHERE descarta las filas que no interesan, luego se agrupan las restantes, y HAVING conserva los grupos que cumplen la condición.",
+          "explicacion": "Correcta: es el orden lógico: filas, agrupamiento y grupos."
+        },
+        {
+          "id": "c",
+          "texto": "Se agrupan todas las filas y después WHERE elimina los grupos.",
+          "explicacion": "Incorrecta: WHERE no trabaja sobre grupos; los grupos los filtra HAVING."
+        },
+        {
+          "id": "d",
+          "texto": "Se calcula el SELECT, y recién después se filtran las filas con WHERE.",
+          "explicacion": "Incorrecta: en el orden lógico el SELECT se construye después de GROUP BY y HAVING, y WHERE filtra antes."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Primero WHERE decide qué filas llegan al agrupamiento, después GROUP BY forma los grupos y por último HAVING decide qué grupos sobreviven.",
+      "resumen": "WHERE (filas) → GROUP BY (grupos) → HAVING (filtro de grupos).",
+      "material": [
+        {
+          "titulo": "Unidad 4 · WHERE y HAVING",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "wherehaving"
+        }
+      ]
+    },
+    {
+      "id": "u04-orden-logico-secuencia",
+      "tema": "Orden lógico de procesamiento",
+      "enunciado": "¿Cuál es el orden lógico aproximado de procesamiento de las cláusulas de una consulta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "SELECT, FROM, WHERE, GROUP BY, HAVING, ORDER BY.",
+          "explicacion": "Incorrecta: es el orden de escritura, que no coincide con el orden lógico de procesamiento."
+        },
+        {
+          "id": "b",
+          "texto": "FROM, SELECT, WHERE, HAVING, GROUP BY, ORDER BY.",
+          "explicacion": "Incorrecta: SELECT no se procesa antes que WHERE, y HAVING va después de GROUP BY."
+        },
+        {
+          "id": "c",
+          "texto": "FROM/JOIN, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT/OFFSET.",
+          "explicacion": "Correcta: primero se determinan las filas, luego se filtran, se agrupan, se filtran los grupos, se construyen las columnas, se ordenan y se limitan."
+        },
+        {
+          "id": "d",
+          "texto": "WHERE, FROM, SELECT, GROUP BY, HAVING, LIMIT.",
+          "explicacion": "Incorrecta: WHERE necesita saber de dónde salen las filas, así que FROM/JOIN va primero."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "El orden lógico muestra qué información existe en cada etapa: de dónde salen las filas, cuáles se conservan, cómo se agrupan, qué grupos se conservan, qué columnas se construyen, cómo se ordenan y cuántas se devuelven.",
+      "resumen": "FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Escritura vs. orden lógico",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "orden"
+        }
+      ]
+    },
+    {
+      "id": "u04-orden-logico-aproximado",
+      "tema": "Orden lógico frente al plan físico",
+      "enunciado": "¿Qué significa que el orden lógico de procesamiento sea aproximado?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que el motor puede ignorar las cláusulas que no le interesen.",
+          "explicacion": "Incorrecta: el motor resuelve todas las cláusulas de la consulta; el orden no las omite."
+        },
+        {
+          "id": "b",
+          "texto": "Que la secuencia es solo una convención de estilo y no describe nada del proceso.",
+          "explicacion": "Incorrecta: la secuencia sirve para comprender qué información existe en cada etapa."
+        },
+        {
+          "id": "c",
+          "texto": "Que las cláusulas pueden escribirse en cualquier orden sin cambiar el resultado.",
+          "explicacion": "Incorrecta: el orden de escritura es fijo; lo que se aproxima es el modelo de procesamiento."
+        },
+        {
+          "id": "d",
+          "texto": "Que la secuencia es una forma de entender qué información existe en cada etapa, pero no es el plan físico exacto que usa el optimizador.",
+          "explicacion": "Correcta: el optimizador de MySQL puede elegir estrategias internas distintas, pero el orden lógico ayuda a razonar sobre la consulta."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "El orden lógico es un modelo para comprender la consulta. No describe la ejecución física exacta, que el optimizador puede resolver de otra manera.",
+      "resumen": "Orden lógico = modelo para razonar; no es el plan físico.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Escritura vs. orden lógico",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "orden"
+        }
+      ]
+    },
+    {
+      "id": "u04-alias-select-no-where",
+      "tema": "Alias del SELECT en WHERE",
+      "enunciado": "¿Por qué no puede usarse en WHERE un alias definido en el SELECT?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque el filtro de filas ocurre antes de que se construyan las columnas del SELECT.",
+          "explicacion": "Correcta: en el orden lógico, WHERE actúa antes de que existan las columnas del SELECT y sus alias."
+        },
+        {
+          "id": "b",
+          "texto": "Porque los alias solo existen dentro de funciones de agregación.",
+          "explicacion": "Incorrecta: los alias se definen en la lista del SELECT, no solo dentro de funciones de agregación."
+        },
+        {
+          "id": "c",
+          "texto": "Porque WHERE solo acepta nombres de tablas, nunca de columnas.",
+          "explicacion": "Incorrecta: WHERE trabaja con columnas; el problema es el momento en que el alias existe."
+        },
+        {
+          "id": "d",
+          "texto": "Porque el alias se interpreta como un número fijo.",
+          "explicacion": "Incorrecta: un alias es un nombre que se asigna a una expresión, no un número."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Como WHERE se evalúa antes de construir las columnas del SELECT, el alias definido allí todavía no existe en ese momento.",
+      "resumen": "Alias del SELECT no se usa en WHERE.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Escritura vs. orden lógico",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "orden"
+        }
+      ]
+    },
+    {
+      "id": "u04-alias-order-by",
+      "tema": "Alias en la práctica",
+      "enunciado": "Según el criterio práctico de la cátedra, ¿en qué cláusula es habitual y claro usar un alias definido en el SELECT?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "En WHERE.",
+          "explicacion": "Incorrecta: en WHERE el alias del SELECT no debe utilizarse."
+        },
+        {
+          "id": "b",
+          "texto": "En ORDER BY.",
+          "explicacion": "Correcta: el material indica que en ORDER BY su uso es habitual y claro."
+        },
+        {
+          "id": "c",
+          "texto": "En GROUP BY, para no repetir la expresión.",
+          "explicacion": "Incorrecta: aunque MySQL 8 lo acepta, la cátedra recomienda no depender de alias en GROUP BY y repetir la columna o expresión."
+        },
+        {
+          "id": "d",
+          "texto": "En HAVING, reemplazando la expresión agregada por el alias.",
+          "explicacion": "Incorrecta: aunque MySQL 8 lo acepta, la cátedra recomienda repetir la expresión agregada en HAVING."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "El criterio de la cátedra es evitar depender de alias en GROUP BY o HAVING por portabilidad. En WHERE no se usan, y en ORDER BY su uso es habitual.",
+      "resumen": "Alias del SELECT: sí en ORDER BY; no en WHERE; en GROUP BY y HAVING, mejor repetir la expresión.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Escritura vs. orden lógico",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "orden"
+        }
+      ]
+    },
+    {
+      "id": "u04-join-primero-luego-agrupa",
+      "tema": "JOIN y agregación",
+      "enunciado": "En una consulta que combina JOIN con funciones de agregación, ¿qué se resuelve primero?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Las funciones de agregación, y después la relación entre tablas.",
+          "explicacion": "Incorrecta: no se puede agregar sobre datos que todavía no se relacionaron."
+        },
+        {
+          "id": "b",
+          "texto": "El ORDER BY, que define el orden de las tablas.",
+          "explicacion": "Incorrecta: ORDER BY define el orden de presentación del resultado, no la relación entre tablas."
+        },
+        {
+          "id": "c",
+          "texto": "La relación entre tablas con el JOIN, y luego las filas resultantes se agrupan y se calculan las funciones.",
+          "explicacion": "Correcta: la relación se resuelve primero y el agrupamiento y los cálculos trabajan sobre esas filas."
+        },
+        {
+          "id": "d",
+          "texto": "El LIMIT, que decide cuántas tablas se usan.",
+          "explicacion": "Incorrecta: LIMIT se aplica al final y limita las filas devueltas, no elige tablas."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Primero se relacionan las tablas con el JOIN. Luego las filas resultantes se agrupan por la columna indicada y se calculan las funciones de agregación.",
+      "resumen": "JOIN primero; después GROUP BY y las funciones.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · JOIN y funciones de agregación",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "joins"
+        }
+      ]
+    },
+    {
+      "id": "u04-left-join-count-columna",
+      "tema": "LEFT JOIN y COUNT(columna)",
+      "enunciado": "Con un LEFT JOIN desde una tabla hacia otra, ¿por qué COUNT(columna_de_la_tabla_derecha) puede devolver 0 para una fila sin coincidencias?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque el LEFT JOIN elimina esa fila del resultado.",
+          "explicacion": "Incorrecta: el LEFT JOIN conserva las filas de la tabla izquierda aunque no tengan coincidencias."
+        },
+        {
+          "id": "b",
+          "texto": "Porque COUNT siempre devuelve cero en un LEFT JOIN.",
+          "explicacion": "Incorrecta: COUNT devuelve cantidades reales; el cero aparece porque no hay valores que contar."
+        },
+        {
+          "id": "c",
+          "texto": "Porque el LEFT JOIN convierte la fila en una cadena vacía.",
+          "explicacion": "Incorrecta: las columnas sin coincidencia quedan en NULL, no en cadena vacía."
+        },
+        {
+          "id": "d",
+          "texto": "Porque en esa fila la columna queda NULL y COUNT no cuenta los valores NULL.",
+          "explicacion": "Correcta: al no haber coincidencia, la columna de la tabla derecha queda NULL y COUNT(columna) no la cuenta."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Cuando la fila de la tabla izquierda no tiene coincidencias, las columnas de la derecha quedan NULL. COUNT(columna) no cuenta esos NULL, por eso el resultado puede ser 0.",
+      "resumen": "LEFT JOIN sin coincidencia: columna NULL, COUNT(columna) = 0.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · JOIN y funciones de agregación",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "joins"
+        }
+      ]
+    },
+    {
+      "id": "u04-left-join-para-conservar",
+      "tema": "Conservar registros sin coincidencias",
+      "enunciado": "Para conservar también los registros de una tabla que no tienen coincidencias en la otra al calcular cantidades por registro, ¿qué tipo de JOIN conviene usar desde esa tabla?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "LEFT JOIN desde la tabla principal.",
+          "explicacion": "Correcta: el LEFT JOIN conserva todas las filas de la tabla de la izquierda, aunque no tengan coincidencias."
+        },
+        {
+          "id": "b",
+          "texto": "INNER JOIN, porque conserva todas las filas de ambas tablas.",
+          "explicacion": "Incorrecta: INNER JOIN solo muestra las filas que tienen coincidencia en ambas tablas."
+        },
+        {
+          "id": "c",
+          "texto": "UNION, porque apila los resultados de dos consultas.",
+          "explicacion": "Incorrecta: UNION combina resultados apilados y no conserva registros de una tabla al relacionarla con otra."
+        },
+        {
+          "id": "d",
+          "texto": "WHERE con COUNT, porque filtra los registros sin coincidencias.",
+          "explicacion": "Incorrecta: WHERE filtra filas, pero no conserva registros sin coincidencias; además COUNT no se usa en WHERE."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Para incluir registros que todavía no tienen relación, se parte de la tabla principal con LEFT JOIN. Así el conteo puede dar 0 en lugar de desaparecer el registro.",
+      "resumen": "LEFT JOIN desde la tabla principal conserva registros sin coincidencias.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · JOIN y funciones de agregación",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "joins"
+        }
+      ]
+    },
+    {
+      "id": "u04-error-columna-sin-group",
+      "tema": "Columnas descriptivas sin GROUP BY",
+      "enunciado": "¿Qué problema puede producir seleccionar una columna descriptiva sin incluirla en GROUP BY ni en una función de agregación?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Un aumento automático de la cantidad de grupos.",
+          "explicacion": "Incorrecta: incluir una columna en GROUP BY es lo que aumenta grupos; omitirla no lo hace."
+        },
+        {
+          "id": "b",
+          "texto": "Resultados ambiguos, porque no queda claro qué valor representa cada grupo.",
+          "explicacion": "Correcta: por eso la cátedra pide incluir esas columnas en GROUP BY, para evitar resultados ambiguos."
+        },
+        {
+          "id": "c",
+          "texto": "Que las funciones de agregación dejen de ignorar los NULL.",
+          "explicacion": "Incorrecta: el tratamiento de NULL en las funciones no depende de esa columna descriptiva."
+        },
+        {
+          "id": "d",
+          "texto": "Que el WHERE se ejecute después del HAVING.",
+          "explicacion": "Incorrecta: el orden lógico no cambia por una columna del SELECT."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Una columna del SELECT que no está agregada ni en GROUP BY genera un resultado ambiguo. La regla de la cátedra la incluye explícitamente en GROUP BY.",
+      "resumen": "Columna descriptiva sin agregar: incluirla en GROUP BY.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Errores frecuentes",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "errores"
+        }
+      ]
+    },
+    {
+      "id": "u04-error-join-multiplica",
+      "tema": "JOIN que multiplica filas",
+      "enunciado": "¿Qué puede alterar una suma o un conteo al combinar tablas con JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Usar COUNT(*) en lugar de SUM.",
+          "explicacion": "Incorrecta: elegir una función distinta cambia el cálculo, pero no es el problema de fondo que señala la unidad."
+        },
+        {
+          "id": "b",
+          "texto": "Escribir los alias en mayúsculas.",
+          "explicacion": "Incorrecta: el uso de mayúsculas en los alias no altera los valores calculados."
+        },
+        {
+          "id": "c",
+          "texto": "Un JOIN que multiplica filas cuando la relación no se comprende correctamente.",
+          "explicacion": "Correcta: el material advierte que un JOIN puede multiplicar filas y así alterar sumas o conteos."
+        },
+        {
+          "id": "d",
+          "texto": "Ordenar el resultado con ORDER BY.",
+          "explicacion": "Incorrecta: ORDER BY cambia el orden de presentación, no los valores agregados."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Si la relación entre las tablas no se entiende bien, el JOIN puede repetir filas. Esas filas repetidas alteran luego las sumas y los conteos.",
+      "resumen": "JOIN mal entendido puede multiplicar filas y falsear sumas y conteos.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Errores frecuentes",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "errores"
+        }
+      ]
+    },
+    {
+      "id": "u04-error-muchos-grupos",
+      "tema": "Demasiadas columnas en GROUP BY",
+      "enunciado": "¿Qué riesgo tiene agrupar por demasiadas columnas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que el resultado tenga siempre una sola fila.",
+          "explicacion": "Incorrecta: agrupar por más columnas tiende a aumentar la cantidad de grupos, no a reducirla a una fila."
+        },
+        {
+          "id": "b",
+          "texto": "Que las funciones de agregación no puedan calcularse.",
+          "explicacion": "Incorrecta: las funciones siguen calculándose; el riesgo es la granularidad de los grupos."
+        },
+        {
+          "id": "c",
+          "texto": "Que se ignoren los NULL en todas las columnas.",
+          "explicacion": "Incorrecta: el tratamiento de NULL no depende de la cantidad de columnas del GROUP BY."
+        },
+        {
+          "id": "d",
+          "texto": "Que se generen grupos excesivamente pequeños.",
+          "explicacion": "Correcta: el material advierte que agrupar por demasiadas columnas puede producir grupos excesivamente pequeños."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Cada columna adicional separa más los datos. Si se agrupa por demasiadas columnas, los grupos quedan tan específicos que el resumen pierde utilidad.",
+      "resumen": "Muchas columnas en GROUP BY = grupos demasiado chicos.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Errores frecuentes",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "errores"
+        }
+      ]
+    },
+    {
+      "id": "u04-limit-orden",
+      "tema": "LIMIT en el orden lógico",
+      "enunciado": "En el orden lógico de una consulta, ¿qué hace LIMIT?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se aplica al final, después de ORDER BY, y limita la cantidad de filas que se devuelven.",
+          "explicacion": "Correcta: LIMIT / OFFSET es la última etapa del orden lógico y acota el resultado ya ordenado."
+        },
+        {
+          "id": "b",
+          "texto": "Se aplica antes del FROM, y elige las tablas que se van a usar.",
+          "explicacion": "Incorrecta: FROM es la primera etapa y LIMIT no selecciona tablas."
+        },
+        {
+          "id": "c",
+          "texto": "Se aplica antes del WHERE, y elimina las columnas que no se usan.",
+          "explicacion": "Incorrecta: LIMIT no elimina columnas y no se ejecuta antes del WHERE."
+        },
+        {
+          "id": "d",
+          "texto": "Se aplica después del WHERE, y cuenta las filas agrupadas.",
+          "explicacion": "Incorrecta: contar filas agrupadas es tarea de funciones como COUNT; LIMIT solo acota la salida."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "En el orden lógico, LIMIT y OFFSET aparecen al final del procesamiento, después de ORDER BY, y determinan cuántas filas se devuelven.",
+      "resumen": "LIMIT es lo último: acota las filas ya ordenadas.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Escritura vs. orden lógico",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "integrar"
+        }
+      ]
+    },
+    {
+      "id": "u04-cierre-secuencia",
+      "tema": "Secuencia mental para leer una consulta",
+      "enunciado": "¿Qué secuencia de preguntas propone la síntesis para leer una consulta agregada?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "¿Qué cálculo hago? → ¿De dónde salen las filas? → ¿Cómo las agrupo? → ¿Cuáles necesito? → ¿Qué grupos conservo?",
+          "explicacion": "Incorrecta: primero hay que saber de dónde salen las filas y cuáles se necesitan; el cálculo viene después de agrupar."
+        },
+        {
+          "id": "b",
+          "texto": "¿De dónde salen las filas? → ¿Cuáles necesito? → ¿Cómo las agrupo? → ¿Qué cálculo hago? → ¿Qué grupos quiero conservar?",
+          "explicacion": "Correcta: es la secuencia mental que propone la síntesis."
+        },
+        {
+          "id": "c",
+          "texto": "¿Qué grupos quiero conservar? → ¿Cómo las agrupo? → ¿De dónde salen las filas? → ¿Qué cálculo hago?",
+          "explicacion": "Incorrecta: se empieza por el resultado final y no por las filas de origen, lo que no sigue el orden lógico."
+        },
+        {
+          "id": "d",
+          "texto": "¿Cómo las agrupo? → ¿Qué cálculo hago? → ¿De dónde salen las filas? → ¿Cuáles necesito?",
+          "explicacion": "Incorrecta: el cálculo y el agrupamiento no pueden preceder a determinar de dónde salen las filas."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "La síntesis propone preguntarse de dónde salen las filas, cuáles se necesitan, cómo se agrupan, qué cálculo se hace y qué grupos se quieren conservar. Así se sigue el orden lógico de la consulta.",
+      "resumen": "Origen → filas necesarias → agrupamiento → cálculo → filtro de grupos.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Síntesis",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "cierre"
+        }
+      ]
+    },
+    {
+      "id": "u04-cierre-where-having",
+      "tema": "Decidir entre WHERE y HAVING",
+      "enunciado": "Al decidir si una condición va en WHERE o en HAVING, ¿qué pregunta conviene hacerse?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "¿Cuántas columnas tiene el SELECT?",
+          "explicacion": "Incorrecta: la cantidad de columnas del SELECT no determina dónde va una condición."
+        },
+        {
+          "id": "b",
+          "texto": "¿Qué alias quiero usar en el ORDER BY?",
+          "explicacion": "Incorrecta: el uso de alias en ORDER BY no decide entre WHERE y HAVING."
+        },
+        {
+          "id": "c",
+          "texto": "¿La condición se evalúa sobre filas individuales o sobre grupos ya calculados?",
+          "explicacion": "Correcta: si se evalúa sobre filas individuales va en WHERE; si se evalúa sobre grupos ya calculados va en HAVING."
+        },
+        {
+          "id": "d",
+          "texto": "¿La consulta usa subconsultas o CTE?",
+          "explicacion": "Incorrecta: esta unidad no utiliza subconsultas ni CTE, así que esa pregunta no resuelve la decisión."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "WHERE filtra filas antes de agrupar y HAVING filtra grupos después del cálculo de las agregaciones. La pregunta clave es sobre qué se evalúa la condición.",
+      "resumen": "Filas → WHERE; grupos calculados → HAVING.",
+      "material": [
+        {
+          "titulo": "Unidad 4 · Síntesis",
+          "ruta": "unidad-04-funcionesDeAgrupacionAgregacion/1 - Funciones de Agrupacion y Group By.html",
+          "seccion": "cierre"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2115 @@
+{
+  "unidad": 1,
+  "titulo": "Introducción a las bases de datos",
+  "preguntas": [
+    {
+      "id": "u01-inconsistencia-copias",
+      "tema": "Problemas de los archivos separados",
+      "enunciado": "Un mismo dato figura en varios archivos independientes y solo se actualiza en uno de ellos. ¿Qué problema aparece?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Inconsistencia: las copias del dato dejan de coincidir entre sí.",
+          "explicacion": "Correcto: al actualizar solo una copia, los archivos afirman valores contradictorios sobre el mismo hecho."
+        },
+        {
+          "id": "b",
+          "texto": "Aislamiento: la información no puede combinarse porque cada aplicación usa un formato distinto.",
+          "explicacion": "Incorrecto: el aislamiento describe la dificultad para combinar datos con formatos diferentes. Aquí el problema es que las copias dejan de coincidir."
+        },
+        {
+          "id": "c",
+          "texto": "Duplicación: el mismo dato existe en más de un lugar.",
+          "explicacion": "Incorrecto: la duplicación describe la existencia de copias, pero el problema planteado es que esas copias quedan con valores distintos."
+        },
+        {
+          "id": "d",
+          "texto": "Concurrencia: dos usuarios intentan modificar el mismo dato al mismo tiempo.",
+          "explicacion": "Incorrecto: la concurrencia implica accesos simultáneos. En este caso no hay simultaneidad, sino una actualización incompleta."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Con archivos separados, un mismo dato puede repetirse (duplicación). Si una modificación no se propaga a todas las copias, aparece la inconsistencia: distintos archivos contienen valores contradictorios.",
+      "resumen": "La inconsistencia aparece cuando copias de un mismo dato no coinciden entre sí.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 1 · Introducción a las bases de datos",
+          "ruta": "unidad-01-introduccion/1 - Introduccion a las Bases de Datos.html",
+          "seccion": "antes"
+        }
+      ]
+    },
+    {
+      "id": "u01-dato-vs-informacion",
+      "tema": "Dato e información",
+      "enunciado": "¿Qué distingue a un dato de la información?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Son sinónimos: ambos términos describen el mismo tipo de valor almacenado.",
+          "explicacion": "Incorrecto: el material los distingue. La información surge de interpretar datos dentro de un contexto."
+        },
+        {
+          "id": "b",
+          "texto": "El dato es una representación elemental de un hecho; la información son datos interpretados dentro de un contexto.",
+          "explicacion": "Correcto: 'Ana' es un dato; 'Ana está inscripta en Base de Datos I' es información porque el dato se interpreta en un contexto."
+        },
+        {
+          "id": "c",
+          "texto": "La información es un valor suelto y el dato es el conjunto organizado de registros de una base.",
+          "explicacion": "Incorrecto: los términos están invertidos. El conjunto organizado de datos relacionados es la base de datos."
+        },
+        {
+          "id": "d",
+          "texto": "El dato solo existe dentro de una base de datos, mientras que la información existe fuera de ella.",
+          "explicacion": "Incorrecto: un dato puede existir fuera de una base; por ejemplo, 1254 o 2026-03-12 son datos por sí mismos."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Un dato es una representación elemental de un hecho. La información aparece cuando ese dato se interpreta dentro de un contexto. Una base de datos es un conjunto organizado de datos relacionados.",
+      "resumen": "Dato es un valor elemental; información es ese valor interpretado en un contexto.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 1 · Introducción a las bases de datos",
+          "ruta": "unidad-01-introduccion/1 - Introduccion a las Bases de Datos.html",
+          "seccion": "conceptos"
+        }
+      ]
+    },
+    {
+      "id": "u01-que-es-sgbd",
+      "tema": "SGBD",
+      "enunciado": "¿Cuál de las siguientes descripciones corresponde a un SGBD?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Un lenguaje para definir estructuras, manipular datos y realizar consultas.",
+          "explicacion": "Incorrecto: esa es la descripción de SQL. El SGBD es el software que administra la base, no el lenguaje."
+        },
+        {
+          "id": "b",
+          "texto": "Un conjunto organizado de datos relacionados, diseñado para un propósito determinado.",
+          "explicacion": "Incorrecto: esa es la definición de base de datos, no la del software que la administra."
+        },
+        {
+          "id": "c",
+          "texto": "Un software que permite crear, organizar, consultar, modificar, proteger y recuperar bases de datos.",
+          "explicacion": "Correcto: el SGBD (DBMS) recibe solicitudes, valida permisos, controla reglas y devuelve resultados."
+        },
+        {
+          "id": "d",
+          "texto": "Una interfaz gráfica que se conecta a una base y muestra sus tablas.",
+          "explicacion": "Incorrecto: una interfaz es un cliente, como Workbench. No administra por sí misma los datos ni valida permisos."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Un Sistema de Gestión de Bases de Datos es el software que administra las bases: crea, organiza, consulta, modifica, protege y recupera la información. Las interfaces y el lenguaje SQL son piezas distintas del ecosistema.",
+      "resumen": "Un SGBD es el software que crea, consulta, protege y recupera bases de datos.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 1 · Introducción a las bases de datos",
+          "ruta": "unidad-01-introduccion/1 - Introduccion a las Bases de Datos.html",
+          "seccion": "sgbd"
+        }
+      ]
+    },
+    {
+      "id": "u01-sql-vs-mysql",
+      "tema": "SQL y dialectos",
+      "enunciado": "¿Qué relación existe entre SQL y MySQL?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Son lo mismo: SQL es el nombre comercial del servidor y MySQL es el nombre del lenguaje.",
+          "explicacion": "Incorrecto: los términos están invertidos. SQL es el lenguaje y MySQL es un gestor que lo implementa."
+        },
+        {
+          "id": "b",
+          "texto": "MySQL es un lenguaje estándar y SQL es la sintaxis exclusiva de MySQL.",
+          "explicacion": "Incorrecto: SQL es el lenguaje general que implementan distintos gestores, no una sintaxis propia de MySQL."
+        },
+        {
+          "id": "c",
+          "texto": "SQL es el dialecto propio de Microsoft y MySQL lo usa solo para consultas.",
+          "explicacion": "Incorrecto: el dialecto de Microsoft es T-SQL, no SQL en sí. Además, MySQL usa SQL también para definir estructuras y modificar datos."
+        },
+        {
+          "id": "d",
+          "texto": "SQL es un lenguaje; MySQL es un gestor que lo implementa y le agrega sintaxis y funcionalidades propias.",
+          "explicacion": "Correcto: otros gestores, como SQL Server o PostgreSQL, también implementan SQL con sus propias características."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "SQL es un lenguaje utilizado para definir estructuras, manipular datos y consultar. MySQL, SQL Server y otros productos lo implementan con dialectos que agregan rasgos propios.",
+      "resumen": "SQL es el lenguaje; MySQL es un gestor que lo implementa con extensiones propias.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 1 · Introducción a las bases de datos",
+          "ruta": "unidad-01-introduccion/1 - Introduccion a las Bases de Datos.html",
+          "seccion": "sql"
+        }
+      ]
+    },
+    {
+      "id": "u01-innodb-funciones",
+      "tema": "Motor de almacenamiento",
+      "enunciado": "¿Qué componente de MySQL organiza tablas e índices y aporta transacciones, concurrencia y recuperación?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El motor de almacenamiento InnoDB.",
+          "explicacion": "Correcto: InnoDB es el motor predeterminado habitual en MySQL 8 y aporta transacciones, concurrencia y recuperación."
+        },
+        {
+          "id": "b",
+          "texto": "MySQL Workbench, porque administra los archivos de la base.",
+          "explicacion": "Incorrecto: Workbench es una aplicación cliente; no administra por sí misma los archivos de la base."
+        },
+        {
+          "id": "c",
+          "texto": "El directorio de datos, que es la carpeta del disco donde se guardan los archivos.",
+          "explicacion": "Incorrecto: el directorio de datos guarda archivos y estructuras, pero no es el componente que organiza tablas e índices con esas funciones."
+        },
+        {
+          "id": "d",
+          "texto": "La consola de comandos, que envía las consultas SQL al servidor.",
+          "explicacion": "Incorrecto: la consola es un cliente que permite ejecutar SQL; no organiza el almacenamiento."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El motor de almacenamiento gestiona la organización física y el acceso a tablas e índices. En MySQL 8, InnoDB es el motor predeterminado habitual y ofrece transacciones, concurrencia y recuperación.",
+      "resumen": "InnoDB es el motor de almacenamiento que organiza tablas e índices y aporta transacciones.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 1 · Introducción a las bases de datos",
+          "ruta": "unidad-01-introduccion/1 - Introduccion a las Bases de Datos.html",
+          "seccion": "ecosistema"
+        }
+      ]
+    },
+    {
+      "id": "u01-rol-workbench",
+      "tema": "Cliente y servidor",
+      "enunciado": "En la arquitectura cliente-servidor del material, ¿qué papel cumple MySQL Workbench?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Es el software servidor que atiende conexiones, interpreta SQL y controla usuarios.",
+          "explicacion": "Incorrecto: ese rol corresponde a MySQL Server (mysqld), no a Workbench."
+        },
+        {
+          "id": "b",
+          "texto": "Es una aplicación cliente que escribe las consultas, las envía al servidor y muestra los resultados.",
+          "explicacion": "Correcto: Workbench permite escribir instrucciones y visualizar resultados, pero necesita un servidor para ejecutarlas."
+        },
+        {
+          "id": "c",
+          "texto": "Ejecuta las consultas y accede directamente a los archivos de la base.",
+          "explicacion": "Incorrecto: la ejecución y el acceso a los datos los realiza el servidor. Workbench no administra por sí mismo los archivos."
+        },
+        {
+          "id": "d",
+          "texto": "Es el equipo físico donde se ejecuta el servidor de bases de datos.",
+          "explicacion": "Incorrecto: ese sentido de 'servidor' se refiere a la computadora. Workbench es un programa cliente."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "En la arquitectura cliente-servidor, el cliente (Workbench) envía solicitudes y presenta resultados; el servidor (MySQL Server) recibe la consulta, verifica permisos, accede a los datos y devuelve las filas.",
+      "resumen": "Workbench es un cliente: envía consultas a un servidor y muestra sus resultados.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 1 · Introducción a las bases de datos",
+          "ruta": "unidad-01-introduccion/1 - Introduccion a las Bases de Datos.html",
+          "seccion": "servidor"
+        }
+      ]
+    },
+    {
+      "id": "u01-xampp-mariadb",
+      "tema": "XAMPP",
+      "enunciado": "Según el material, ¿qué servidor de bases de datos incluyen actualmente las versiones de XAMPP?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "MySQL Server, por eso XAMPP es obligatorio para usar MySQL.",
+          "explicacion": "Incorrecto: XAMPP no es obligatorio para MySQL, y sus versiones actuales incluyen MariaDB."
+        },
+        {
+          "id": "b",
+          "texto": "SQL Server, el gestor de Microsoft que usa el dialecto T-SQL.",
+          "explicacion": "Incorrecto: SQL Server es un gestor distinto y no es el que incluye XAMPP."
+        },
+        {
+          "id": "c",
+          "texto": "MariaDB, aunque algunos botones o carpetas todavía digan 'MySQL'.",
+          "explicacion": "Correcto: MariaDB comparte gran parte del origen y de la sintaxis básica de MySQL, pero es otro producto."
+        },
+        {
+          "id": "d",
+          "texto": "phpMyAdmin, que es el motor de almacenamiento InnoDB.",
+          "explicacion": "Incorrecto: phpMyAdmin es una interfaz web para administrar MySQL o MariaDB; no es un motor de almacenamiento."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "XAMPP es un paquete orientado al desarrollo web. Sus versiones actuales incluyen MariaDB como servidor de bases de datos, que no debe confundirse con MySQL Server aunque comparten origen y sintaxis básica.",
+      "resumen": "XAMPP incluye MariaDB, que es otro producto aunque comparta origen con MySQL.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 1 · Introducción a las bases de datos",
+          "ruta": "unidad-01-introduccion/1 - Introduccion a las Bases de Datos.html",
+          "seccion": "xampp"
+        }
+      ]
+    },
+    {
+      "id": "u01-desinstalar-workbench",
+      "tema": "Interfaces y servidor",
+      "enunciado": "Si se desinstala MySQL Workbench pero MySQL Server y sus datos permanecen, ¿qué ocurre con la base de datos?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La base desaparece, porque Workbench es el programa que guarda los datos.",
+          "explicacion": "Incorrecto: Workbench es una interfaz cliente y no almacena la base."
+        },
+        {
+          "id": "b",
+          "texto": "La base sigue existiendo, pero solo puede consultarse desde Workbench instalado de nuevo.",
+          "explicacion": "Incorrecto: la base no depende de una única interfaz; el material señala que pueden usarse varios clientes."
+        },
+        {
+          "id": "c",
+          "texto": "La base queda inaccesible hasta que se instale XAMPP.",
+          "explicacion": "Incorrecto: XAMPP no es necesario para MySQL Server ni para acceder a sus datos."
+        },
+        {
+          "id": "d",
+          "texto": "La base sigue existiendo y puede accederse desde otra interfaz, como la consola o DBeaver.",
+          "explicacion": "Correcto: el mismo servidor puede recibir conexiones desde distintas herramientas; la base permanece bajo control de MySQL Server."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La base de datos vive en el servidor, no en la interfaz. Workbench es solo una de las puertas de entrada: se puede acceder a la misma base con la consola, DBeaver, HeidiSQL u otra aplicación propia.",
+      "resumen": "Las bases pertenecen al servidor: quitar una interfaz cliente no las elimina.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 1 · Introducción a las bases de datos",
+          "ruta": "unidad-01-introduccion/1 - Introduccion a las Bases de Datos.html",
+          "seccion": "interfaces"
+        }
+      ]
+    },
+    {
+      "id": "u01-modelo-relacional",
+      "tema": "Modelos de bases de datos",
+      "enunciado": "¿Qué modelo de bases de datos organiza la información en tablas vinculadas mediante claves y es el eje de la materia?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Relacional, porque organiza la información en tablas vinculadas mediante claves.",
+          "explicacion": "Correcto: en el modelo relacional trabajaremos con tablas, filas, columnas, dominios, claves y restricciones."
+        },
+        {
+          "id": "b",
+          "texto": "Jerárquico, porque organiza los datos con una estructura similar a un árbol.",
+          "explicacion": "Incorrecto: el modelo jerárquico usa una estructura de árbol. Es otro enfoque, no el eje de la cursada."
+        },
+        {
+          "id": "c",
+          "texto": "Documental, porque almacena documentos con estructuras flexibles como JSON.",
+          "explicacion": "Incorrecto: el modelo documental es un enfoque distinto que el material menciona como panorama."
+        },
+        {
+          "id": "d",
+          "texto": "En red, porque permite conexiones más flexibles entre registros.",
+          "explicacion": "Incorrecto: el modelo en red permite conexiones flexibles entre registros, pero no es el enfoque central de la materia."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Existen varios modelos de bases de datos (jerárquico, en red, relacional y documental). La materia se concentra en el modelo relacional, que vincula tablas mediante claves.",
+      "resumen": "El modelo relacional organiza los datos en tablas vinculadas por claves.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 1 · Introducción a las bases de datos",
+          "ruta": "unidad-01-introduccion/1 - Introduccion a las Bases de Datos.html",
+          "seccion": "modelos"
+        }
+      ]
+    },
+    {
+      "id": "u01-modelo-representacion",
+      "tema": "Qué es un modelo",
+      "enunciado": "Según el material, ¿qué es un modelo de datos?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una copia completa de la realidad que debe representar todos sus detalles.",
+          "explicacion": "Incorrecto: un modelo nunca es la realidad completa; es una representación simplificada."
+        },
+        {
+          "id": "b",
+          "texto": "Una representación simplificada y ordenada de los elementos importantes de un problema, construida para un propósito.",
+          "explicacion": "Correcto: se seleccionan los elementos relevantes para resolver necesidades concretas, sin representar todo."
+        },
+        {
+          "id": "c",
+          "texto": "La tabla física que el servidor crea en el disco para guardar los datos.",
+          "explicacion": "Incorrecto: esa es la implementación física; el modelo es una representación previa a la implementación."
+        },
+        {
+          "id": "d",
+          "texto": "Un listado de sentencias SQL que se ejecutan para crear la base.",
+          "explicacion": "Incorrecto: las sentencias SQL son la implementación; el modelo es la representación conceptual que se diseña antes."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Modelar consiste en seleccionar los elementos importantes de un problema y representarlos de forma simplificada. El modelo se construye para un conjunto de necesidades y se implementa después en una base.",
+      "resumen": "Un modelo es una representación simplificada de la realidad, pensada para un propósito.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 2 · Modelo Entidad-Relación",
+          "ruta": "unidad-01-introduccion/2 - Modelo Entidad Relacion.html",
+          "seccion": "modelar"
+        }
+      ]
+    },
+    {
+      "id": "u01-niveles-logico",
+      "tema": "Niveles de modelado",
+      "enunciado": "¿Qué nivel de modelado responde a la pregunta '¿cómo se organizará esta información en el modelo relacional?'",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Nivel conceptual, porque describe entidades, atributos y relaciones.",
+          "explicacion": "Incorrecto: el nivel conceptual responde qué información necesita el negocio, sin detallar tablas ni claves."
+        },
+        {
+          "id": "b",
+          "texto": "Nivel físico, porque define tipos de datos, índices y opciones de almacenamiento.",
+          "explicacion": "Incorrecto: el nivel físico responde cómo se implementa en un gestor concreto, como MySQL."
+        },
+        {
+          "id": "c",
+          "texto": "Nivel lógico, porque define tablas, columnas, claves primarias, claves foráneas y restricciones.",
+          "explicacion": "Correcto: el nivel lógico traduce el modelo conceptual a la estructura del modelo relacional."
+        },
+        {
+          "id": "d",
+          "texto": "Nivel de negocio, porque define las reglas de uso de la aplicación.",
+          "explicacion": "Incorrecto: el material no usa esa clasificación; los tres niveles son conceptual, lógico y físico."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Los tres niveles no deben mezclarse: el conceptual describe la información y sus relaciones, el lógico la organiza en tablas y claves relacionales, y el físico la implementa en un gestor concreto con sus tipos y opciones.",
+      "resumen": "El nivel lógico organiza el modelo en tablas, columnas, PK y FK.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 2 · Modelo Entidad-Relación",
+          "ruta": "unidad-01-introduccion/2 - Modelo Entidad Relacion.html",
+          "seccion": "modelar"
+        }
+      ]
+    },
+    {
+      "id": "u01-criterio-entidad",
+      "tema": "Entidades",
+      "enunciado": "¿Cuál de los siguientes criterios ayuda a decidir si algo debe modelarse como entidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que sea una palabra que aparece con frecuencia en la narrativa del problema.",
+          "explicacion": "Incorrecto: la frecuencia de una palabra no define una entidad. Hay que evaluar identidad, información propia y relevancia."
+        },
+        {
+          "id": "b",
+          "texto": "Que pueda describirse con un único valor, como un apellido o un estado.",
+          "explicacion": "Incorrecto: un dato de un solo valor suele ser un atributo de otra entidad, no una entidad propia."
+        },
+        {
+          "id": "c",
+          "texto": "Que se pueda calcular a partir de otros datos ya registrados.",
+          "explicacion": "Incorrecto: un dato calculable suele ser un atributo derivado, que normalmente no se almacena como entidad."
+        },
+        {
+          "id": "d",
+          "texto": "Que tenga identidad propia, se necesiten guardar varios datos sobre ella y sea relevante para el sistema.",
+          "explicacion": "Correcto: una entidad necesita distinguir cada ocurrencia, tener información propia y ser útil para responder preguntas del sistema."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una entidad representa una clase de objetos, personas, lugares, hechos o conceptos relevantes. Para decidirlo se analiza si cada ocurrencia es distinguible, si tiene información propia, si persiste en el tiempo, si se relaciona con otras entidades y si es necesaria para el sistema.",
+      "resumen": "Algo es entidad si tiene identidad propia, información propia y relevancia para el sistema.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 2 · Modelo Entidad-Relación",
+          "ruta": "unidad-01-introduccion/2 - Modelo Entidad Relacion.html",
+          "seccion": "entidades"
+        }
+      ]
+    },
+    {
+      "id": "u01-atributo-derivado",
+      "tema": "Atributos",
+      "enunciado": "¿Qué tipo de atributo es aquel que puede calcularse a partir de otros datos, como la edad a partir de la fecha de nacimiento?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Atributo derivado, porque se calcula desde otros datos.",
+          "explicacion": "Correcto: por eso normalmente no se almacena, ya que la fecha de nacimiento es el dato estable a guardar."
+        },
+        {
+          "id": "b",
+          "texto": "Atributo simple, porque tiene un único valor significativo.",
+          "explicacion": "Incorrecto: un atributo simple es un valor único que no se calcula a partir de otros; la edad sí se calcula."
+        },
+        {
+          "id": "c",
+          "texto": "Atributo compuesto, porque puede dividirse en partes como calle, número y ciudad.",
+          "explicacion": "Incorrecto: el atributo compuesto se descompone en componentes; aquí el valor se obtiene de otro dato."
+        },
+        {
+          "id": "d",
+          "texto": "Atributo multivaluado, porque puede tener varios valores para una misma entidad.",
+          "explicacion": "Incorrecto: un atributo multivaluado admite varios valores, como varios teléfonos; no se trata de un cálculo."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Un atributo derivado se obtiene a partir de otros datos. En el modelo suele no almacenarse, porque cambia con el tiempo o puede calcularse cuando se necesita.",
+      "resumen": "Un atributo derivado se calcula a partir de otros datos y normalmente no se almacena.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 2 · Modelo Entidad-Relación",
+          "ruta": "unidad-01-introduccion/2 - Modelo Entidad Relacion.html",
+          "seccion": "atributos"
+        }
+      ]
+    },
+    {
+      "id": "u01-identificador-nombre",
+      "tema": "Identificadores",
+      "enunciado": "¿Por qué el nombre de una persona generalmente no sirve como identificador en el modelo conceptual?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque los nombres solo pueden registrarse en mayúsculas y eso impide compararlos.",
+          "explicacion": "Incorrecto: ese motivo no aparece en el material. El problema es que el nombre puede repetirse y cambiar."
+        },
+        {
+          "id": "b",
+          "texto": "Porque puede repetirse y, además, puede cambiar con el tiempo.",
+          "explicacion": "Correcto: un buen identificador debe ser único, estable y no depender de una descripción ambigua."
+        },
+        {
+          "id": "c",
+          "texto": "Porque un nombre es un atributo compuesto y no puede almacenarse en una entidad.",
+          "explicacion": "Incorrecto: un nombre puede ser un atributo simple o compuesto, pero el motivo para no usarlo como identificador es otro."
+        },
+        {
+          "id": "d",
+          "texto": "Porque los identificadores solo pueden ser números enteros.",
+          "explicacion": "Incorrecto: un identificador puede ser un atributo o conjunto de atributos; no tiene que ser numérico. El problema es la falta de unicidad y estabilidad."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Un identificador debe distinguir de manera única cada ocurrencia de una entidad. El nombre no cumple esa condición porque puede coincidir entre personas y puede modificarse, por lo que no es estable.",
+      "resumen": "Un identificador debe ser único y estable; el nombre no siempre cumple ambas condiciones.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 2 · Modelo Entidad-Relación",
+          "ruta": "unidad-01-introduccion/2 - Modelo Entidad Relacion.html",
+          "seccion": "atributos"
+        }
+      ]
+    },
+    {
+      "id": "u01-cardinalidad-preguntas",
+      "tema": "Cardinalidad y opcionalidad",
+      "enunciado": "¿Qué dos preguntas permiten determinar la cardinalidad de una relación en el modelo conceptual?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "¿Quién crea la relación? y ¿en qué fecha se registró?",
+          "explicacion": "Incorrecto: esas preguntas no determinan la cardinalidad; esta se define por la cantidad de ocurrencias que pueden participar."
+        },
+        {
+          "id": "b",
+          "texto": "¿Cuál es el nombre del verbo? y ¿cuántos atributos tiene la entidad?",
+          "explicacion": "Incorrecto: el verbo describe la relación y la cantidad de atributos describe a la entidad; ninguna de las dos define la cardinalidad."
+        },
+        {
+          "id": "c",
+          "texto": "¿Es obligatoria o puede no existir? y ¿puede relacionarse con una sola ocurrencia o con varias?",
+          "explicacion": "Correcto: la primera pregunta define el mínimo (opcionalidad) y la segunda el máximo."
+        },
+        {
+          "id": "d",
+          "texto": "¿Se implementa como tabla propia? y ¿tiene clave primaria compuesta?",
+          "explicacion": "Incorrecto: esas decisiones corresponden al modelo lógico y físico, no a la cardinalidad conceptual."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "La cardinalidad combina un mínimo y un máximo. El mínimo indica si la participación es obligatoria o puede no existir; el máximo indica si cada ocurrencia se relaciona con una o con muchas.",
+      "resumen": "El mínimo indica si la participación es opcional; el máximo indica si son una o muchas.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 2 · Modelo Entidad-Relación",
+          "ruta": "unidad-01-introduccion/2 - Modelo Entidad Relacion.html",
+          "seccion": "cardinalidad"
+        }
+      ]
+    },
+    {
+      "id": "u01-asociativa-reconocer",
+      "tema": "Entidad asociativa",
+      "enunciado": "¿Cómo se reconoce que una relación N:N necesita una entidad asociativa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Cuando una de las entidades tiene más de cinco atributos.",
+          "explicacion": "Incorrecto: la cantidad de atributos de una entidad no indica por sí misma que haga falta una asociativa."
+        },
+        {
+          "id": "b",
+          "texto": "Cuando la relación se lee en un solo sentido.",
+          "explicacion": "Incorrecto: toda relación debe leerse en ambos sentidos; la lectura no determina la necesidad de una asociativa."
+        },
+        {
+          "id": "c",
+          "texto": "Cuando una de las entidades tiene identificador numérico.",
+          "explicacion": "Incorrecto: el tipo del identificador no determina la existencia de una entidad asociativa."
+        },
+        {
+          "id": "d",
+          "texto": "Cuando la relación tiene datos propios del vínculo, como una fecha, un estado o una cantidad.",
+          "explicacion": "Correcto: esos datos pertenecen al hecho de relacionarse, por lo que la relación se representa como entidad."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una relación muchos a muchos se resuelve con una entidad asociativa que representa el hecho del vínculo. Si la relación tiene atributos propios (fecha, estado, precio, rol), probablemente corresponda una entidad asociativa.",
+      "resumen": "Una N:N con atributos propios se modela como entidad asociativa.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 2 · Modelo Entidad-Relación",
+          "ruta": "unidad-01-introduccion/2 - Modelo Entidad Relacion.html",
+          "seccion": "asociativa"
+        }
+      ]
+    },
+    {
+      "id": "u01-recursiva-roles",
+      "tema": "Relación recursiva",
+      "enunciado": "¿Qué caracteriza a una relación recursiva?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que ocurrencias de una misma entidad cumplen roles diferentes dentro de la relación.",
+          "explicacion": "Correcto: por ejemplo, un empleado puede cumplir el rol de supervisor y otro el de supervisado."
+        },
+        {
+          "id": "b",
+          "texto": "Que dos entidades distintas comparten el mismo nombre de atributo.",
+          "explicacion": "Incorrecto: una relación recursiva no depende de nombres de atributos compartidos."
+        },
+        {
+          "id": "c",
+          "texto": "Que una relación se representa con dos rombos en la notación de Chen.",
+          "explicacion": "Incorrecto: la notación no define la recursividad; el concepto se refiere a cómo participa una entidad."
+        },
+        {
+          "id": "d",
+          "texto": "Que la relación no tiene cardinalidad mínima.",
+          "explicacion": "Incorrecto: toda relación debe expresar su cardinalidad mínima y máxima; la recursividad no elimina esa regla."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "En una relación recursiva, una misma entidad participa dos veces con roles distintos. Por eso conviene nombrar los roles para evitar ambigüedad, como supervisa y es supervisado por.",
+      "resumen": "Una relación recursiva conecta ocurrencias de la misma entidad con roles distintos.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 2 · Modelo Entidad-Relación",
+          "ruta": "unidad-01-introduccion/2 - Modelo Entidad Relacion.html",
+          "seccion": "recursiva"
+        }
+      ]
+    },
+    {
+      "id": "u01-chen-rombo",
+      "tema": "Notaciones",
+      "enunciado": "En la notación de Chen, ¿qué representa el rombo?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una entidad, con sus atributos dentro del rectángulo.",
+          "explicacion": "Incorrecto: en Chen la entidad se representa con un rectángulo; el rombo es otro elemento."
+        },
+        {
+          "id": "b",
+          "texto": "Una relación entre entidades.",
+          "explicacion": "Correcto: el rombo conecta las entidades que participan en la relación, como cursa entre alumno y materia."
+        },
+        {
+          "id": "c",
+          "texto": "Un atributo, que se dibuja unido a la entidad.",
+          "explicacion": "Incorrecto: los atributos se representan con elipses en la notación de Chen."
+        },
+        {
+          "id": "d",
+          "texto": "La cardinalidad máxima de la relación.",
+          "explicacion": "Incorrecto: la cardinalidad se expresa con símbolos o números en los extremos, no con el rombo."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "La notación de Chen usa rectángulos para entidades, elipses para atributos y rombos para relaciones. La notación Crow's Foot, que es la principal de la materia, usa cajas y símbolos en los extremos.",
+      "resumen": "En Chen: rectángulo para entidad, elipse para atributo y rombo para relación.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 2 · Modelo Entidad-Relación",
+          "ruta": "unidad-01-introduccion/2 - Modelo Entidad Relacion.html",
+          "seccion": "notaciones"
+        }
+      ]
+    },
+    {
+      "id": "u01-esquema-instancia",
+      "tema": "Esquema e instancia",
+      "enunciado": "¿Qué diferencia hay entre el esquema y la instancia de una base de datos relacional?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El esquema son las filas almacenadas; la instancia es la definición de las columnas.",
+          "explicacion": "Incorrecto: los términos están invertidos. El esquema define la estructura y la instancia contiene los datos."
+        },
+        {
+          "id": "b",
+          "texto": "Son sinónimos: ambos describen la estructura de una tabla en el disco.",
+          "explicacion": "Incorrecto: el esquema describe la estructura y la instancia describe el contenido en un momento determinado."
+        },
+        {
+          "id": "c",
+          "texto": "El esquema es la definición de tablas, columnas, claves y restricciones; la instancia son las filas almacenadas en un momento dado.",
+          "explicacion": "Correcto: el esquema cambia poco, mientras que la instancia cambia constantemente con las inserciones, modificaciones y eliminaciones."
+        },
+        {
+          "id": "d",
+          "texto": "El esquema existe solo en Workbench; la instancia existe solo en el servidor.",
+          "explicacion": "Incorrecto: ambos conceptos son independientes de la herramienta; el esquema define estructura y la instancia, los datos."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "El esquema es la definición estructural de la base: tablas, columnas, claves y restricciones. La instancia es el conjunto de filas que contiene en un momento determinado.",
+      "resumen": "Esquema es la estructura; instancia son las filas almacenadas en un momento dado.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 3 · Del DER al modelo relacional",
+          "ruta": "unidad-01-introduccion/3 - del DER al Modelo Relacional .html",
+          "seccion": "relacional"
+        }
+      ]
+    },
+    {
+      "id": "u01-clave-candidata",
+      "tema": "Claves",
+      "enunciado": "¿Qué es una clave candidata en el modelo relacional?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Cualquier columna que contenga valores numéricos.",
+          "explicacion": "Incorrecto: una clave candidata debe identificar filas de forma única; el tipo de dato no la define."
+        },
+        {
+          "id": "b",
+          "texto": "La columna que referencia la clave primaria de otra tabla.",
+          "explicacion": "Incorrecto: esa es la clave foránea, no la clave candidata."
+        },
+        {
+          "id": "c",
+          "texto": "La clave que el servidor genera automáticamente con AUTO_INCREMENT.",
+          "explicacion": "Incorrecto: AUTO_INCREMENT es una forma de generar valores; una clave candidata es un concepto de identificación de filas."
+        },
+        {
+          "id": "d",
+          "texto": "Un conjunto mínimo de columnas capaz de identificar una fila sin repetirse.",
+          "explicacion": "Correcto: una tabla puede tener varias claves candidatas, y de ellas se elige una como clave primaria."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una clave candidata es un atributo o conjunto mínimo de atributos que identifica cada fila sin repetir valores. Una de ellas se elige como clave primaria; las demás quedan como claves alternativas.",
+      "resumen": "Una clave candidata es un conjunto mínimo que identifica cada fila sin repetirse.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 3 · Del DER al modelo relacional",
+          "ruta": "unidad-01-introduccion/3 - del DER al Modelo Relacional .html",
+          "seccion": "claves"
+        }
+      ]
+    },
+    {
+      "id": "u01-pk-sustituta",
+      "tema": "Claves",
+      "enunciado": "Un identificador como id_alumno se crea solo para identificar internamente cada fila y no proviene de un dato del negocio. ¿Qué tipo de clave es?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Clave sustituta, porque se crea para identificar internamente.",
+          "explicacion": "Correcto: suele ser numérica y estable, y no depende de un dato que podría cambiar."
+        },
+        {
+          "id": "b",
+          "texto": "Clave natural, porque ya existe en el dominio del problema.",
+          "explicacion": "Incorrecto: una clave natural existe en el dominio real, como un legajo o un DNI; id_alumno se crea para identificar."
+        },
+        {
+          "id": "c",
+          "texto": "Clave compuesta, porque combina dos o más columnas.",
+          "explicacion": "Incorrecto: la clave compuesta necesita más de una columna; un identificador interno suele ser una sola."
+        },
+        {
+          "id": "d",
+          "texto": "Clave foránea, porque referencia a otra tabla.",
+          "explicacion": "Incorrecto: una clave foránea referencia una clave de otra tabla; aquí el identificador pertenece a su propia tabla."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Una clave sustituta se agrega para identificar filas. La materia la usa como convención (id_<tabla>), aunque las claves naturales o compuestas no son incorrectas y pueden protegerse con UNIQUE.",
+      "resumen": "Una clave sustituta se crea para identificar internamente, sin depender de datos del negocio.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 3 · Del DER al modelo relacional",
+          "ruta": "unidad-01-introduccion/3 - del DER al Modelo Relacional .html",
+          "seccion": "claves"
+        }
+      ]
+    },
+    {
+      "id": "u01-multivaluado-transformar",
+      "tema": "Reglas de transformación",
+      "enunciado": "Al pasar un DER al modelo relacional, ¿cómo se transforma un atributo multivaluado, como los teléfonos de una persona?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se crea una columna por cada valor posible, por ejemplo telefono_1, telefono_2 y telefono_3.",
+          "explicacion": "Incorrecto: repetir grupos de columnas es justamente lo que la 1FN busca evitar."
+        },
+        {
+          "id": "b",
+          "texto": "Se transforma en una tabla relacionada, con una fila por valor y una clave foránea hacia la entidad original.",
+          "explicacion": "Correcto: por ejemplo, los teléfonos de un alumno pueden guardarse en una tabla propia vinculada al alumno."
+        },
+        {
+          "id": "c",
+          "texto": "Se guarda la lista completa dentro de una sola columna separada por comas.",
+          "explicacion": "Incorrecto: una columna con listas no permite validar ni consultar cada valor por separado."
+        },
+        {
+          "id": "d",
+          "texto": "Se omite en el modelo relacional, porque solo se admiten atributos de un único valor.",
+          "explicacion": "Incorrecto: el atributo no se descarta; se representa mediante una estructura separada."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Un atributo multivaluado no puede repetirse en columnas ni guardarse como lista. Se modela con una tabla relacionada que contiene una fila por cada valor y la clave de la entidad original como FK.",
+      "resumen": "Un atributo multivaluado se transforma en una tabla relacionada, no en varias columnas.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 3 · Del DER al modelo relacional",
+          "ruta": "unidad-01-introduccion/3 - del DER al Modelo Relacional .html",
+          "seccion": "reglas"
+        }
+      ]
+    },
+    {
+      "id": "u01-fk-uno-muchos",
+      "tema": "Relación 1:N",
+      "enunciado": "En una relación 1:N entre dos tablas, ¿dónde se ubica la clave foránea?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "En la tabla del lado 1, copiando la clave primaria de la tabla del lado N.",
+          "explicacion": "Incorrecto: si la FK estuviera en el lado 1, una fila del lado 1 no podría representar varias ocurrencias del lado N."
+        },
+        {
+          "id": "b",
+          "texto": "En una tabla asociativa independiente, que siempre es necesaria.",
+          "explicacion": "Incorrecto: la tabla asociativa se usa para resolver relaciones N:N, no para una 1:N."
+        },
+        {
+          "id": "c",
+          "texto": "En la tabla del lado N, copiando la clave primaria de la tabla del lado 1.",
+          "explicacion": "Correcto: la clave del lado 1 viaja hacia el lado N, donde varias filas pueden repetir el mismo valor."
+        },
+        {
+          "id": "d",
+          "texto": "En ambas tablas a la vez, para que la relación sea bidireccional.",
+          "explicacion": "Incorrecto: basta con una FK en el lado N; duplicarla en las dos tablas no es el diseño que se propone."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "En una relación 1:N, la clave primaria de la tabla del lado 1 se copia como clave foránea en la tabla del lado N. Por eso varias filas del lado N pueden repetir el mismo valor de FK.",
+      "resumen": "En una 1:N, la PK del lado 1 se copia como FK en el lado N.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 3 · Del DER al modelo relacional",
+          "ruta": "unidad-01-introduccion/3 - del DER al Modelo Relacional .html",
+          "seccion": "uno-muchos"
+        }
+      ]
+    },
+    {
+      "id": "u01-fk-uno-uno",
+      "tema": "Relación 1:1",
+      "enunciado": "En una relación 1:1, ¿dónde suele ubicarse la clave foránea y qué propiedad debe tener?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "En ambas tablas, siempre como clave primaria compartida.",
+          "explicacion": "Incorrecto: no siempre se duplica; la decisión depende del significado, la obligatoriedad y el uso de los datos."
+        },
+        {
+          "id": "b",
+          "texto": "En la tabla principal, para que la tabla dependiente no tenga referencias.",
+          "explicacion": "Incorrecto: la FK suele ubicarse en la tabla más dependiente, opcional o específica."
+        },
+        {
+          "id": "c",
+          "texto": "En una tabla asociativa con dos claves foráneas, como en toda relación 1:1.",
+          "explicacion": "Incorrecto: la tabla asociativa corresponde a relaciones N:N; en una 1:1 no es el mecanismo habitual."
+        },
+        {
+          "id": "d",
+          "texto": "En la tabla más dependiente, opcional o específica, y debe ser única.",
+          "explicacion": "Correcto: la unicidad impide que una misma fila de la tabla principal se asocie con dos registros de la dependiente."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "En una relación 1:1 se decide qué tabla depende de la otra. La FK suele ubicarse en la tabla dependiente y debe ser única, para que cada registro de la tabla principal se relacione como máximo con un registro de la dependiente.",
+      "resumen": "En una 1:1, la FK suele ir en la tabla dependiente y debe ser única.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 3 · Del DER al modelo relacional",
+          "ruta": "unidad-01-introduccion/3 - del DER al Modelo Relacional .html",
+          "seccion": "uno-uno"
+        }
+      ]
+    },
+    {
+      "id": "u01-nn-tabla-asociativa",
+      "tema": "Relación N:N",
+      "enunciado": "¿Qué estructura se utiliza para implementar una relación N:N en el modelo relacional?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una tabla asociativa que contiene las claves foráneas de ambos lados.",
+          "explicacion": "Correcto: la tabla intermedia registra cada pareja relacionada y puede tener atributos propios del vínculo."
+        },
+        {
+          "id": "b",
+          "texto": "Una columna que guarda una lista de identificadores separados por comas.",
+          "explicacion": "Incorrecto: el material indica que una N:N no se implementa con listas dentro de una columna."
+        },
+        {
+          "id": "c",
+          "texto": "Una clave foránea agregada en una de las dos tablas, con valores repetidos.",
+          "explicacion": "Incorrecto: una sola FK no alcanza para representar muchas ocurrencias en ambos lados."
+        },
+        {
+          "id": "d",
+          "texto": "Una vista que combina ambas tablas sin guardar datos.",
+          "explicacion": "Incorrecto: una vista no implementa la relación como estructura almacenada; el material propone una tabla asociativa."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Una relación N:N se resuelve con una tabla asociativa (también llamada intermedia o pivot). Cada fila de esa tabla representa una combinación entre una fila de cada lado y puede guardar atributos propios del vínculo.",
+      "resumen": "Una N:N se implementa con una tabla asociativa que contiene las dos claves foráneas.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 3 · Del DER al modelo relacional",
+          "ruta": "unidad-01-introduccion/3 - del DER al Modelo Relacional .html",
+          "seccion": "muchos-muchos"
+        }
+      ]
+    },
+    {
+      "id": "u01-fk-opcional-null",
+      "tema": "Opcionalidad y NULL",
+      "enunciado": "Si una relación es opcional, es decir, la cardinalidad mínima permite que no exista vínculo, ¿qué suele implicar para la clave foránea en el modelo físico?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que la FK debe declararse NOT NULL para garantizar la relación.",
+          "explicacion": "Incorrecto: si la relación es obligatoria, la FK suele ser NOT NULL; en una opcional no es lo habitual."
+        },
+        {
+          "id": "b",
+          "texto": "Que la FK puede admitir NULL, porque la relación puede no existir.",
+          "explicacion": "Correcto: NULL indica que no existe un valor conocido o aplicable para esa columna."
+        },
+        {
+          "id": "c",
+          "texto": "Que la FK no puede existir y debe eliminarse de la tabla.",
+          "explicacion": "Incorrecto: la FK puede existir en la tabla; lo que cambia es si admite valores vacíos."
+        },
+        {
+          "id": "d",
+          "texto": "Que la FK debe ser siempre igual a cero cuando no hay relación.",
+          "explicacion": "Incorrecto: NULL no equivale a cero; el material aclara que son situaciones distintas."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "La cardinalidad mínima influye en la nulabilidad de la FK. Si la participación es obligatoria, la FK normalmente no admite NULL; si es opcional, puede admitirlo. NULL no significa cero ni cadena vacía.",
+      "resumen": "Una relación opcional suele permitir que la FK sea NULL.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 3 · Del DER al modelo relacional",
+          "ruta": "unidad-01-introduccion/3 - del DER al Modelo Relacional .html",
+          "seccion": "opcionalidad"
+        }
+      ]
+    },
+    {
+      "id": "u01-error-fk-lado-1",
+      "tema": "Errores frecuentes",
+      "enunciado": "Al transformar una relación 1:N, ¿qué error es colocar la clave foránea en la tabla del lado 1?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Genera una tabla asociativa innecesaria, aunque el diseño sea correcto.",
+          "explicacion": "Incorrecto: el error no es crear una tabla adicional, sino ubicar la FK en el lado equivocado."
+        },
+        {
+          "id": "b",
+          "texto": "Obliga a usar tipos de dato distintos en la clave primaria.",
+          "explicacion": "Incorrecto: el tipo de dato no es el problema; el problema es la ubicación de la FK."
+        },
+        {
+          "id": "c",
+          "texto": "No permite representar correctamente que una ocurrencia del lado 1 se relacione con muchas del lado N.",
+          "explicacion": "Correcto: la FK en el lado 1 solo podría apuntar a una ocurrencia del lado N, perdiendo la multiplicidad."
+        },
+        {
+          "id": "d",
+          "texto": "Impide crear la clave primaria de la tabla del lado 1.",
+          "explicacion": "Incorrecto: la PK de la tabla del lado 1 se crea igual; el error está en la FK."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "En una relación 1:N, la clave viaja hacia el lado N. Si se coloca en el lado 1, el modelo no puede representar que una ocurrencia del lado 1 se vincule con varias del lado N.",
+      "resumen": "La FK de una 1:N va en el lado N; en el lado 1 no representa la multiplicidad.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 3 · Del DER al modelo relacional",
+          "ruta": "unidad-01-introduccion/3 - del DER al Modelo Relacional .html",
+          "seccion": "errores"
+        }
+      ]
+    },
+    {
+      "id": "u01-anomalia-actualizacion",
+      "tema": "Anomalías",
+      "enunciado": "Un dato repetido en varias filas de una tabla se modifica solo en algunas de ellas, y quedan valores contradictorios. ¿Qué tipo de anomalía es?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Anomalía de inserción, porque no se puede registrar un hecho sin inventar otro no relacionado.",
+          "explicacion": "Incorrecto: la anomalía de inserción aparece al intentar cargar datos nuevos, no al modificar valores repetidos."
+        },
+        {
+          "id": "b",
+          "texto": "Anomalía de eliminación, porque al borrar una fila se pierden datos que no tenían relación con ella.",
+          "explicacion": "Incorrecto: la anomalía de eliminación ocurre cuando borrar un registro destruye información independiente de él."
+        },
+        {
+          "id": "c",
+          "texto": "Anomalía de concurrencia, porque dos usuarios modifican la misma fila al mismo tiempo.",
+          "explicacion": "Incorrecto: la concurrencia es un problema de acceso simultáneo; no es una de las anomalías de diseño que describe el material."
+        },
+        {
+          "id": "d",
+          "texto": "Anomalía de actualización, porque el mismo hecho queda registrado con valores distintos según la fila.",
+          "explicacion": "Correcto: como el dato está repetido, una modificación incompleta produce datos contradictorios."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Una tabla mal diseñada presenta anomalías de inserción, de actualización y de eliminación. La de actualización aparece cuando un hecho repetido se corrige en algunas filas pero no en todas.",
+      "resumen": "La anomalía de actualización aparece cuando un dato repetido queda con valores distintos.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 4 · Normalización hasta 3FN",
+          "ruta": "unidad-01-introduccion/4 - Normalizacion de Bases de Datos (hasta 3FN).html",
+          "seccion": "anomalias"
+        }
+      ]
+    },
+    {
+      "id": "u01-dependencia-funcional",
+      "tema": "Dependencias funcionales",
+      "enunciado": "¿Qué significa la notación A → B en el contexto de una dependencia funcional?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "A determina funcionalmente a B: a cada valor de A le corresponde un único valor de B.",
+          "explicacion": "Correcto: la dependencia debe surgir de una regla del negocio, no de una coincidencia en los datos actuales."
+        },
+        {
+          "id": "b",
+          "texto": "A y B son dos tablas relacionadas mediante una clave foránea.",
+          "explicacion": "Incorrecto: la notación no describe tablas ni claves foráneas; expresa una regla entre atributos."
+        },
+        {
+          "id": "c",
+          "texto": "B determina funcionalmente a A, por lo que ambas dependencias son siempre equivalentes.",
+          "explicacion": "Incorrecto: una dependencia no es reversible automáticamente; B → A debe justificarse por separado."
+        },
+        {
+          "id": "d",
+          "texto": "A y B son valores que siempre se repiten en las mismas filas.",
+          "explicacion": "Incorrecto: la repetición no define la dependencia; lo que importa es que A determine un único valor de B."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "La flecha A → B se lee 'A determina funcionalmente a B'. Indica que el valor de A determina un único valor de B según las reglas del negocio. No es reversible automáticamente.",
+      "resumen": "A → B significa que A determina un único valor de B según una regla del negocio.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 4 · Normalización hasta 3FN",
+          "ruta": "unidad-01-introduccion/4 - Normalizacion de Bases de Datos (hasta 3FN).html",
+          "seccion": "dependencias"
+        }
+      ]
+    },
+    {
+      "id": "u01-primera-forma-normal",
+      "tema": "Primera Forma Normal",
+      "enunciado": "Una tabla guarda en una sola columna 'telefonos' una lista como '2235551000; 2235552000'. ¿Qué condición de la 1FN no cumple?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que todas las filas puedan identificarse mediante una clave candidata.",
+          "explicacion": "Incorrecto: esa condición puede cumplirse aunque la columna tenga una lista; el problema es el valor de la celda."
+        },
+        {
+          "id": "b",
+          "texto": "Que cada columna contenga un valor único por fila y no una lista de valores.",
+          "explicacion": "Correcto: la 1FN exige valores simples; una lista en una celda es difícil de validar, consultar y mantener."
+        },
+        {
+          "id": "c",
+          "texto": "Que los valores de una misma columna pertenezcan al mismo dominio.",
+          "explicacion": "Incorrecto: la lista de teléfonos pertenece al dominio de teléfonos; el problema no es el dominio."
+        },
+        {
+          "id": "d",
+          "texto": "Que no existan dependencias parciales respecto de una clave compuesta.",
+          "explicacion": "Incorrecto: esa condición corresponde a la 2FN, no a la 1FN."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "La 1FN exige que cada columna contenga un valor único por fila, que no existan grupos repetitivos y que las filas sean identificables. Una lista dentro de una celda la incumple; la solución es crear una tabla con una fila por teléfono.",
+      "resumen": "La 1FN exige valores simples por celda, sin listas ni grupos repetitivos.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 4 · Normalización hasta 3FN",
+          "ruta": "unidad-01-introduccion/4 - Normalizacion de Bases de Datos (hasta 3FN).html",
+          "seccion": "primera"
+        }
+      ]
+    },
+    {
+      "id": "u01-segunda-forma-normal",
+      "tema": "Segunda Forma Normal",
+      "enunciado": "En una tabla con clave candidata compuesta, un atributo no clave depende solo de una parte de esa clave. ¿Qué forma normal se incumple y cómo se corrige?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se incumple la 1FN, y se corrige dividiendo cada celda en varias columnas.",
+          "explicacion": "Incorrecto: la 1FN trata de valores simples y grupos repetitivos; la situación descripta es una dependencia parcial."
+        },
+        {
+          "id": "b",
+          "texto": "Se incumple la 3FN, porque hay una dependencia transitiva, y se corrige creando una vista.",
+          "explicacion": "Incorrecto: la dependencia transitiva corresponde a la 3FN, pero la situación descripta es una dependencia parcial; una vista no normaliza el diseño."
+        },
+        {
+          "id": "c",
+          "texto": "Se incumple la 2FN, porque hay una dependencia parcial, y se corrige separando el atributo en una tabla que depende de esa parte de la clave.",
+          "explicacion": "Correcto: por ejemplo, los datos del alumno dependen solo de id_alumno y deben trasladarse a una tabla propia."
+        },
+        {
+          "id": "d",
+          "texto": "No se incumple ninguna forma normal, porque las claves compuestas siempre son válidas.",
+          "explicacion": "Incorrecto: las claves compuestas pueden ser válidas, pero la dependencia parcial sí incumple la 2FN."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "La 2FN exige estar en 1FN y que ningún atributo no clave dependa solo de una parte de una clave candidata compuesta. Cuando eso ocurre, el atributo se separa en una tabla cuya clave sea esa parte.",
+      "resumen": "La 2FN elimina dependencias parciales de atributos no clave respecto de claves compuestas.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 4 · Normalización hasta 3FN",
+          "ruta": "unidad-01-introduccion/4 - Normalizacion de Bases de Datos (hasta 3FN).html",
+          "seccion": "segunda"
+        }
+      ]
+    },
+    {
+      "id": "u01-tercera-forma-normal",
+      "tema": "Tercera Forma Normal",
+      "enunciado": "En una comisión se almacena el nombre de su materia, y la regla es id_comision → id_materia → nombre_materia. ¿Qué conviene hacer según la 3FN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Dejar el nombre en la comisión, porque la materia y la comisión siempre se consultan juntas.",
+          "explicacion": "Incorrecto: la consulta conjunta no justifica repetir un hecho que pertenece a otra entidad."
+        },
+        {
+          "id": "b",
+          "texto": "Quitar el id_materia de la comisión y guardar el nombre en cada inscripción.",
+          "explicacion": "Incorrecto: el nombre de la materia describe a la materia, no a la inscripción; esa solución traslada la redundancia."
+        },
+        {
+          "id": "c",
+          "texto": "Crear una nueva clave primaria artificial en la tabla de comisiones.",
+          "explicacion": "Incorrecto: una PK artificial no elimina la dependencia transitiva ni la redundancia."
+        },
+        {
+          "id": "d",
+          "texto": "Guardar el nombre de la materia en una tabla propia, y dejar en la comisión solo la clave foránea id_materia.",
+          "explicacion": "Correcto: el nombre se almacena una única vez y la comisión conserva solo la FK necesaria."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Hay una dependencia transitiva cuando un atributo no clave determina otro atributo no clave. La 3FN exige separar esos hechos en tablas propias, dejando en la tabla original solo la FK que los referencia.",
+      "resumen": "La 3FN separa atributos que dependen de otro atributo no clave, como el nombre de la materia.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 4 · Normalización hasta 3FN",
+          "ruta": "unidad-01-introduccion/4 - Normalizacion de Bases de Datos (hasta 3FN).html",
+          "seccion": "tercera"
+        }
+      ]
+    },
+    {
+      "id": "u01-descomposicion-sin-perdida",
+      "tema": "Verificar la descomposición",
+      "enunciado": "Al dividir una tabla en varias, ¿qué debe garantizar la descomposición?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que se pueda reconstruir la información original mediante las PK y FK, sin perder datos.",
+          "explicacion": "Correcto: al relacionar las tablas por sus claves debe poder recuperarse cada hecho original, sin filas espurias."
+        },
+        {
+          "id": "b",
+          "texto": "Que cada tabla tenga la misma cantidad de filas que la original.",
+          "explicacion": "Incorrecto: la cantidad de filas no es el criterio; las tablas resultantes pueden tener distinta cantidad de registros."
+        },
+        {
+          "id": "c",
+          "texto": "Que se elimine toda repetición de valores, incluidas las claves foráneas.",
+          "explicacion": "Incorrecto: las FK se repiten naturalmente en relaciones 1:N; lo problemático es repetir descripciones."
+        },
+        {
+          "id": "d",
+          "texto": "Que la tabla original deje de existir en el modelo, para evitar confusiones.",
+          "explicacion": "Incorrecto: no hay un requisito de eliminar la tabla original; lo importante es conservar información, claves y reglas."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Normalizar no consiste en cortar tablas al azar. La descomposición debe ser sin pérdida de información: las tablas, unidas por sus claves, deben permitir reconstruir los datos originales sin generar combinaciones que nunca existieron.",
+      "resumen": "Una descomposición válida conserva la información y permite reconstruirla con claves y FK.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 4 · Normalización hasta 3FN",
+          "ruta": "unidad-01-introduccion/4 - Normalizacion de Bases de Datos (hasta 3FN).html",
+          "seccion": "verificar"
+        }
+      ]
+    },
+    {
+      "id": "u01-fk-repetida",
+      "tema": "Alcance de la normalización",
+      "enunciado": "Según el material, ¿por qué repetir una clave foránea en varias filas no implica necesariamente una redundancia problemática?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque el motor de MySQL elimina automáticamente los valores repetidos de las claves foráneas.",
+          "explicacion": "Incorrecto: el material no dice que el motor elimine repeticiones; la explicación está en el significado de la relación."
+        },
+        {
+          "id": "b",
+          "texto": "Porque la repetición de una FK representa relaciones válidas, mientras que la redundancia problemática es copiar descripciones que deberían vivir en la tabla referenciada.",
+          "explicacion": "Correcto: por ejemplo, muchas comisiones pueden tener el mismo id_materia sin repetir el nombre de la materia."
+        },
+        {
+          "id": "c",
+          "texto": "Porque las claves foráneas no se consideran datos y no se incluyen en el análisis.",
+          "explicacion": "Incorrecto: las FK forman parte del diseño y se analizan al verificar claves y relaciones."
+        },
+        {
+          "id": "d",
+          "texto": "Porque la 3FN exige que todas las claves foráneas se repitan en cada tabla.",
+          "explicacion": "Incorrecto: la 3FN no exige repetir FK; trata de eliminar dependencias transitivas entre atributos no clave."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "La normalización no prohíbe toda repetición. Las FK se repiten para representar vínculos, y el problema aparece cuando se copian en cada fila hechos descriptivos (como el nombre de la materia) que deberían guardarse una sola vez.",
+      "resumen": "Repetir una FK es normal; copiar descripciones en cada fila es la redundancia problemática.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 4 · Normalización hasta 3FN",
+          "ruta": "unidad-01-introduccion/4 - Normalizacion de Bases de Datos (hasta 3FN).html",
+          "seccion": "criterios"
+        }
+      ]
+    },
+    {
+      "id": "u01-dependencia-no-supuesta",
+      "tema": "Errores frecuentes",
+      "enunciado": "Hoy una tabla no tiene nombres repetidos. ¿Qué permite concluir eso sobre la dependencia nombre → id_alumno?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que la dependencia nombre → id_alumno es válida, porque no hay repeticiones en los datos actuales.",
+          "explicacion": "Incorrecto: una dependencia funcional debe garantizar un único resultado para todos los casos válidos, no solo para los datos presentes."
+        },
+        {
+          "id": "b",
+          "texto": "Que la dependencia no puede existir, porque los identificadores siempre dependen de los datos personales.",
+          "explicacion": "Incorrecto: la existencia de una dependencia depende de la regla del negocio, no de una afirmación general sobre identificadores."
+        },
+        {
+          "id": "c",
+          "texto": "Nada concreto: una dependencia funcional debe basarse en una regla del negocio, y no en lo que casualmente aparece en los datos.",
+          "explicacion": "Correcto: aunque hoy no haya repetidos, dos personas podrían compartir el mismo nombre y apellido."
+        },
+        {
+          "id": "d",
+          "texto": "Que la tabla está en 3FN, porque no hay valores repetidos.",
+          "explicacion": "Incorrecto: la ausencia de repeticiones no alcanza para afirmar una forma normal; hay que analizar dependencias y claves."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Las dependencias funcionales se deducen de reglas del negocio. Que hoy no haya nombres repetidos no prueba que nombre determine al identificador, porque podrían existir personas con el mismo nombre.",
+      "resumen": "Una dependencia se justifica con una regla del negocio, no con los datos actuales.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 4 · Normalización hasta 3FN",
+          "ruta": "unidad-01-introduccion/4 - Normalizacion de Bases de Datos (hasta 3FN).html",
+          "seccion": "errores"
+        }
+      ]
+    },
+    {
+      "id": "u01-ddl-familia",
+      "tema": "Familias de sentencias SQL",
+      "enunciado": "¿Cuál de las siguientes sentencias pertenece al DDL (Data Definition Language)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "INSERT, porque agrega filas a una tabla.",
+          "explicacion": "Incorrecto: INSERT es DML, porque modifica el contenido de las tablas, no su estructura."
+        },
+        {
+          "id": "b",
+          "texto": "SELECT, porque consulta los datos almacenados.",
+          "explicacion": "Incorrecto: la consulta de datos corresponde a DQL; DDL define o modifica estructuras."
+        },
+        {
+          "id": "c",
+          "texto": "GRANT, porque asigna permisos a los usuarios.",
+          "explicacion": "Incorrecto: GRANT pertenece a DCL, la familia dedicada a permisos."
+        },
+        {
+          "id": "d",
+          "texto": "ALTER TABLE, porque modifica la estructura de una tabla existente.",
+          "explicacion": "Correcto: DDL reúne las sentencias que crean, modifican o eliminan la estructura, como CREATE, ALTER y DROP."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "DDL define la estructura de la base: CREATE crea objetos, ALTER los modifica y DROP los elimina. DML modifica filas (INSERT, UPDATE, DELETE), DQL consulta (SELECT) y DCL administra permisos (GRANT).",
+      "resumen": "DDL define estructuras (CREATE, ALTER, DROP); DML modifica filas.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 5 · DDL, tipos de datos y restricciones",
+          "ruta": "unidad-01-introduccion/5 - DDL, Tipos de Datos y Restricciones.html",
+          "seccion": "ddl"
+        }
+      ]
+    },
+    {
+      "id": "u01-decimal-precios",
+      "tema": "Tipos de datos",
+      "enunciado": "¿Qué tipo de dato conviene elegir para guardar precios que requieren precisión exacta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "DECIMAL(p,s), porque permite precisión exacta con una cantidad fija de dígitos decimales.",
+          "explicacion": "Correcto: por ejemplo DECIMAL(10,2) es adecuado para importes y precios."
+        },
+        {
+          "id": "b",
+          "texto": "FLOAT, porque ocupa menos espacio y permite guardar decimales.",
+          "explicacion": "Incorrecto: el material recomienda evitar FLOAT para dinero, porque no garantiza precisión exacta."
+        },
+        {
+          "id": "c",
+          "texto": "VARCHAR(20), porque el precio se almacena como texto y se convierte al consultar.",
+          "explicacion": "Incorrecto: un precio no es un texto; se usa para cálculos y necesita un tipo numérico."
+        },
+        {
+          "id": "d",
+          "texto": "TEXT, porque admite valores de longitud muy grande.",
+          "explicacion": "Incorrecto: TEXT es para observaciones o descripciones extensas, no para valores numéricos con precisión."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "DECIMAL(p,s) se usa cuando se necesita precisión exacta, como en precios, importes o porcentajes. El material advierte que FLOAT no es adecuado para dinero.",
+      "resumen": "Para dinero se usa DECIMAL(p,s), no FLOAT, porque la precisión es exacta.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 5 · DDL, tipos de datos y restricciones",
+          "ruta": "unidad-01-introduccion/5 - DDL, Tipos de Datos y Restricciones.html",
+          "seccion": "tipos"
+        }
+      ]
+    },
+    {
+      "id": "u01-char-varchar",
+      "tema": "Tipos de datos",
+      "enunciado": "¿Cuál es la diferencia entre CHAR(n) y VARCHAR(n)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "CHAR guarda texto solo en mayúsculas; VARCHAR admite minúsculas.",
+          "explicacion": "Incorrecto: la diferencia no está en las mayúsculas, sino en la longitud de almacenamiento."
+        },
+        {
+          "id": "b",
+          "texto": "CHAR tiene longitud fija y VARCHAR tiene longitud variable.",
+          "explicacion": "Correcto: CHAR siempre ocupa n caracteres, mientras que VARCHAR ocupa solo lo necesario hasta el máximo n."
+        },
+        {
+          "id": "c",
+          "texto": "CHAR es para números y VARCHAR es para fechas.",
+          "explicacion": "Incorrecto: ambos son tipos de texto breve; las fechas tienen tipos propios, como DATE."
+        },
+        {
+          "id": "d",
+          "texto": "VARCHAR no admite restricciones como NOT NULL o UNIQUE.",
+          "explicacion": "Incorrecto: VARCHAR admite restricciones; por ejemplo, un legajo puede definirse como VARCHAR(20) NOT NULL y UNIQUE."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "CHAR(n) tiene longitud fija y VARCHAR(n) tiene longitud variable, hasta un máximo n. Ambos son tipos de texto breve; para texto extenso se usa TEXT.",
+      "resumen": "CHAR tiene longitud fija; VARCHAR tiene longitud variable hasta un máximo.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 5 · DDL, tipos de datos y restricciones",
+          "ruta": "unidad-01-introduccion/5 - DDL, Tipos de Datos y Restricciones.html",
+          "seccion": "tipos"
+        }
+      ]
+    },
+    {
+      "id": "u01-clave-alternativa",
+      "tema": "Claves e identificadores",
+      "enunciado": "¿Qué es una clave alternativa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Una clave foránea que referencia a una tabla distinta de la original.",
+          "explicacion": "Incorrecto: esa descripción corresponde a una clave foránea."
+        },
+        {
+          "id": "b",
+          "texto": "Una clave sustituta que se genera automáticamente con AUTO_INCREMENT.",
+          "explicacion": "Incorrecto: la clave sustituta es la que se crea para identificar internamente; no es necesariamente alternativa."
+        },
+        {
+          "id": "c",
+          "texto": "Una clave candidata que no fue elegida como primaria y que suele protegerse con UNIQUE.",
+          "explicacion": "Correcto: sigue siendo única, por eso se protege con una restricción UNIQUE."
+        },
+        {
+          "id": "d",
+          "texto": "Un atributo que puede repetirse y, por eso, no puede identificar filas.",
+          "explicacion": "Incorrecto: una clave alternativa identifica filas, por lo que nunca se repite."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Las claves candidatas son identificadores mínimos. Una se elige como primaria; las demás son alternativas y, para mantener su unicidad, se protegen con UNIQUE. Por ejemplo, legajo o DNI podrían ser alternativas de id_alumno.",
+      "resumen": "Una clave alternativa es una candidata no elegida como primaria, protegida con UNIQUE.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 5 · DDL, tipos de datos y restricciones",
+          "ruta": "unidad-01-introduccion/5 - DDL, Tipos de Datos y Restricciones.html",
+          "seccion": "claves"
+        }
+      ]
+    },
+    {
+      "id": "u01-check-restriccion",
+      "tema": "Restricciones de integridad",
+      "enunciado": "¿Qué restricción permite validar que un valor cumpla una condición lógica, como que una duración esté entre 1 y 8 años?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "UNIQUE, porque impide valores repetidos en la columna.",
+          "explicacion": "Incorrecto: UNIQUE controla repeticiones, no condiciones sobre el valor."
+        },
+        {
+          "id": "b",
+          "texto": "NOT NULL, porque exige que la columna tenga un valor.",
+          "explicacion": "Incorrecto: NOT NULL solo indica que el dato es obligatorio, no que cumpla un rango."
+        },
+        {
+          "id": "c",
+          "texto": "DEFAULT, porque asigna un valor cuando no se informa uno.",
+          "explicacion": "Incorrecto: DEFAULT asigna un valor inicial, pero no valida que los datos cumplan una regla."
+        },
+        {
+          "id": "d",
+          "texto": "CHECK, porque valida una condición lógica sobre el valor.",
+          "explicacion": "Correcto: el servidor rechaza los valores que no cumplen la condición definida."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "CHECK permite definir una condición lógica que los valores deben cumplir. Las restricciones protegen las reglas que se definen correctamente; no reemplazan el análisis del problema.",
+      "resumen": "CHECK valida que un valor cumpla una condición lógica definida.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 5 · DDL, tipos de datos y restricciones",
+          "ruta": "unidad-01-introduccion/5 - DDL, Tipos de Datos y Restricciones.html",
+          "seccion": "restricciones"
+        }
+      ]
+    },
+    {
+      "id": "u01-on-delete-restrict",
+      "tema": "Acciones referenciales",
+      "enunciado": "Una clave foránea está definida con ON DELETE RESTRICT. ¿Qué ocurre si se intenta borrar una fila padre que todavía tiene filas hijas que la referencian?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La operación se rechaza y la fila padre no se elimina.",
+          "explicacion": "Correcto: RESTRICT protege la relación mientras existan filas que dependen de esa fila padre."
+        },
+        {
+          "id": "b",
+          "texto": "Se borran también todas las filas hijas automáticamente.",
+          "explicacion": "Incorrecto: esa conducta corresponde a ON DELETE CASCADE."
+        },
+        {
+          "id": "c",
+          "texto": "La FK de las filas hijas se pone en NULL automáticamente.",
+          "explicacion": "Incorrecto: esa conducta corresponde a ON DELETE SET NULL."
+        },
+        {
+          "id": "d",
+          "texto": "La operación se ejecuta, pero las filas hijas quedan con una FK inválida.",
+          "explicacion": "Incorrecto: la integridad referencial impide dejar una FK apuntando a una fila inexistente."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Las acciones referenciales indican qué ocurre con las filas hijas al modificar o eliminar la fila padre. RESTRICT rechaza la operación, CASCADE la propaga y SET NULL deja la FK en NULL, si la columna lo admite.",
+      "resumen": "ON DELETE RESTRICT impide borrar una fila padre mientras tenga hijos que la referencian.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 5 · DDL, tipos de datos y restricciones",
+          "ruta": "unidad-01-introduccion/5 - DDL, Tipos de Datos y Restricciones.html",
+          "seccion": "foraneas"
+        }
+      ]
+    },
+    {
+      "id": "u01-drop-index-unique",
+      "tema": "Modificar estructuras",
+      "enunciado": "Según el material, ¿por qué para quitar una restricción UNIQUE en MySQL se utiliza DROP INDEX?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque UNIQUE es una columna oculta que se elimina junto con el índice de la tabla.",
+          "explicacion": "Incorrecto: UNIQUE no es una columna; es una restricción que se implementa de otra manera."
+        },
+        {
+          "id": "b",
+          "texto": "Porque en MySQL una restricción UNIQUE se implementa mediante un índice único.",
+          "explicacion": "Correcto: al quitar la restricción se elimina el índice que la sostiene."
+        },
+        {
+          "id": "c",
+          "texto": "Porque DROP INDEX es la única sentencia que puede eliminar cualquier restricción.",
+          "explicacion": "Incorrecto: cada tipo de restricción tiene su propia sintaxis; por ejemplo, las FK se quitan con DROP FOREIGN KEY."
+        },
+        {
+          "id": "d",
+          "texto": "Porque UNIQUE solo puede eliminarse borrando la tabla completa.",
+          "explicacion": "Incorrecto: UNIQUE puede quitarse con ALTER TABLE sin borrar la tabla ni sus datos."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "En MySQL, la restricción UNIQUE se implementa con un índice único. Por eso, para quitarla se elimina ese índice con DROP INDEX. Cada tipo de restricción tiene su propia forma de eliminarse.",
+      "resumen": "En MySQL, UNIQUE se implementa como índice único, por eso se quita con DROP INDEX.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 5 · DDL, tipos de datos y restricciones",
+          "ruta": "unidad-01-introduccion/5 - DDL, Tipos de Datos y Restricciones.html",
+          "seccion": "alter"
+        }
+      ]
+    },
+    {
+      "id": "u01-modify-column",
+      "tema": "Modificar estructuras",
+      "enunciado": "Si se quiere cambiar el tipo o la obligatoriedad de una columna sin cambiar su nombre, ¿qué operación de ALTER TABLE corresponde?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "RENAME COLUMN, porque permite redefinir el tipo al mismo tiempo que cambia el nombre.",
+          "explicacion": "Incorrecto: RENAME COLUMN solo cambia el nombre; no redefine el tipo."
+        },
+        {
+          "id": "b",
+          "texto": "DROP COLUMN, porque elimina la columna y la vuelve a crear con la nueva definición.",
+          "explicacion": "Incorrecto: DROP COLUMN borra la columna con sus datos; no es la forma adecuada de redefinirla."
+        },
+        {
+          "id": "c",
+          "texto": "MODIFY COLUMN, porque redefine la columna sin cambiar su nombre.",
+          "explicacion": "Correcto: conviene escribir la definición completa que debe conservar la columna."
+        },
+        {
+          "id": "d",
+          "texto": "ADD COLUMN, porque agrega una nueva columna con el tipo deseado.",
+          "explicacion": "Incorrecto: ADD COLUMN crea una columna adicional y no modifica la existente."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "MODIFY COLUMN redefine tipo, tamaño, obligatoriedad o valor por defecto sin cambiar el nombre. Si ya existen datos incompatibles con la nueva definición, la modificación puede fallar.",
+      "resumen": "MODIFY COLUMN redefine una columna manteniendo su nombre.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 5 · DDL, tipos de datos y restricciones",
+          "ruta": "unidad-01-introduccion/5 - DDL, Tipos de Datos y Restricciones.html",
+          "seccion": "alter"
+        }
+      ]
+    },
+    {
+      "id": "u01-json-buen-uso",
+      "tema": "Tipo JSON",
+      "enunciado": "Según el material, ¿cuál es un buen uso inicial del tipo JSON en MySQL?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Guardar carreras, materias e inscripciones completas para evitar diseñar relaciones.",
+          "explicacion": "Incorrecto: ese es el mal uso que el material advierte explícitamente."
+        },
+        {
+          "id": "b",
+          "texto": "Reemplazar las claves foráneas por un documento que contenga todas las relaciones.",
+          "explicacion": "Incorrecto: JSON no reemplaza el modelo relacional ni las FK que validan relaciones."
+        },
+        {
+          "id": "c",
+          "texto": "Guardar el identificador principal de cada fila para no usar PRIMARY KEY.",
+          "explicacion": "Incorrecto: la clave primaria sigue siendo una restricción del modelo relacional, no un documento JSON."
+        },
+        {
+          "id": "d",
+          "texto": "Guardar preferencias opcionales o configuraciones con una estructura flexible.",
+          "explicacion": "Correcto: son datos complementarios que pueden variar sin justificar nuevas columnas o tablas."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "JSON sirve para datos flexibles y complementarios, como preferencias o configuraciones. No reemplaza el modelo relacional: los datos centrales, las claves y las relaciones deben seguir en tablas.",
+      "resumen": "JSON conviene para datos flexibles y complementarios, no para reemplazar relaciones.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 5 · DDL, tipos de datos y restricciones",
+          "ruta": "unidad-01-introduccion/5 - DDL, Tipos de Datos y Restricciones.html",
+          "seccion": "json"
+        }
+      ]
+    },
+    {
+      "id": "u01-insert-columnas",
+      "tema": "INSERT",
+      "enunciado": "¿Por qué conviene nombrar explícitamente las columnas en una sentencia INSERT?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque la inserción deja de depender del orden físico de todas las columnas de la tabla.",
+          "explicacion": "Correcto: si la estructura cambia, una sentencia con columnas nombradas sigue siendo legible y menos propensa a errores."
+        },
+        {
+          "id": "b",
+          "texto": "Porque sin nombrar las columnas el servidor rechaza cualquier inserción.",
+          "explicacion": "Incorrecto: MySQL puede aceptar INSERT sin lista de columnas; el problema es la fragilidad, no un rechazo automático."
+        },
+        {
+          "id": "c",
+          "texto": "Porque nombrar columnas permite insertar filas sin respetar las restricciones.",
+          "explicacion": "Incorrecto: las restricciones se aplican igual, con o sin lista de columnas."
+        },
+        {
+          "id": "d",
+          "texto": "Porque así MySQL genera automáticamente los valores de todas las columnas.",
+          "explicacion": "Incorrecto: nombrar columnas no genera valores; los valores que no se informan dependen de DEFAULT, AUTO_INCREMENT o NULL según la definición."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Escribir la lista de columnas hace explícita la correspondencia entre columnas y valores. Una sentencia INSERT sin nombres depende del orden total de la tabla y se vuelve frágil si la estructura cambia.",
+      "resumen": "Nombrar las columnas en INSERT evita depender del orden físico de la tabla.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 6 · DML e integridad referencial",
+          "ruta": "unidad-01-introduccion/6 - DML e Integridad Referencial.html",
+          "seccion": "insert"
+        }
+      ]
+    },
+    {
+      "id": "u01-null-significado",
+      "tema": "Valores NULL",
+      "enunciado": "¿Qué significa asignar NULL a una columna en una inserción?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que el valor es una cadena vacía, es decir, un texto de longitud cero.",
+          "explicacion": "Incorrecto: la cadena vacía es un texto conocido de longitud cero; NULL representa la ausencia de valor."
+        },
+        {
+          "id": "b",
+          "texto": "Que el valor no está disponible, y solo es válido si la columna admite NULL.",
+          "explicacion": "Correcto: si la columna es NOT NULL, la inserción falla, porque la columna exige un valor."
+        },
+        {
+          "id": "c",
+          "texto": "Que el valor es cero, porque NULL es una forma de indicar un número.",
+          "explicacion": "Incorrecto: el valor 0 es un número real; NULL no equivale a cero."
+        },
+        {
+          "id": "d",
+          "texto": "Que MySQL reemplaza el valor por el DEFAULT de la columna.",
+          "explicacion": "Incorrecto: el DEFAULT se aplica al omitir la columna, no al escribir NULL explícitamente."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "NULL indica que el valor no está disponible o no aplica. Solo funciona si la columna lo admite. No equivale a cero ni a texto vacío, y omitir una columna no es lo mismo que escribir NULL.",
+      "resumen": "NULL significa valor no disponible y solo se acepta en columnas que lo admiten.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 6 · DML e integridad referencial",
+          "ruta": "unidad-01-introduccion/6 - DML e Integridad Referencial.html",
+          "seccion": "insertmultiple"
+        }
+      ]
+    },
+    {
+      "id": "u01-orden-carga-asociativa",
+      "tema": "Orden de carga",
+      "enunciado": "En un esquema con una relación N:N resuelta mediante una tabla asociativa, ¿por qué esa tabla se carga al final?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque las tablas asociativas no pueden contener fechas ni estados.",
+          "explicacion": "Incorrecto: la tabla asociativa puede tener atributos propios del vínculo, como fecha o estado."
+        },
+        {
+          "id": "b",
+          "texto": "Porque el motor InnoDB solo acepta tablas asociativas después de un COMMIT manual.",
+          "explicacion": "Incorrecto: esa no es la razón; el orden responde a la existencia de las filas referenciadas."
+        },
+        {
+          "id": "c",
+          "texto": "Porque sus claves foráneas solo pueden apuntar a filas que ya existan en las tablas que relaciona.",
+          "explicacion": "Correcto: primero deben existir las filas de ambos lados para poder registrar el vínculo."
+        },
+        {
+          "id": "d",
+          "texto": "Porque las tablas asociativas deben crearse después de borrar las tablas padre.",
+          "explicacion": "Incorrecto: el orden de carga no implica borrar tablas; las padres deben existir antes que las hijas."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una clave foránea solo puede guardar un valor que ya exista en la tabla referenciada. Por eso se cargan primero las tablas independientes, luego las dependientes y por último la tabla asociativa.",
+      "resumen": "La tabla asociativa se carga al final, porque sus FK apuntan a filas ya existentes.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 6 · DML e integridad referencial",
+          "ruta": "unidad-01-introduccion/6 - DML e Integridad Referencial.html",
+          "seccion": "orden"
+        }
+      ]
+    },
+    {
+      "id": "u01-fk-rechaza-padre-inexistente",
+      "tema": "Restricciones que protegen los datos",
+      "enunciado": "Al insertar una fila hija cuya clave foránea apunta a una fila padre inexistente, ¿qué restricción la rechaza?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "UNIQUE, porque impide repetir el valor de la clave foránea.",
+          "explicacion": "Incorrecto: UNIQUE evita repeticiones; no verifica que exista una fila en otra tabla."
+        },
+        {
+          "id": "b",
+          "texto": "CHECK, porque valida que el valor esté dentro de un rango.",
+          "explicacion": "Incorrecto: CHECK valida condiciones sobre el valor, pero no busca filas en la tabla padre."
+        },
+        {
+          "id": "c",
+          "texto": "NOT NULL, porque exige que la columna tenga un dato.",
+          "explicacion": "Incorrecto: la columna puede tener un valor, aunque no exista la fila padre; NOT NULL no controla esa referencia."
+        },
+        {
+          "id": "d",
+          "texto": "FOREIGN KEY, porque la fila hija no puede apuntar a un padre inexistente.",
+          "explicacion": "Correcto: la integridad referencial impide que una FK referencie un valor que no existe en la tabla padre."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La clave foránea garantiza integridad referencial: cada valor no nulo de la FK debe existir como clave en la tabla referenciada. Si no existe, el servidor rechaza la operación.",
+      "resumen": "La FOREIGN KEY impide que una fila hija apunte a un padre inexistente.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 6 · DML e integridad referencial",
+          "ruta": "unidad-01-introduccion/6 - DML e Integridad Referencial.html",
+          "seccion": "restricciones"
+        }
+      ]
+    },
+    {
+      "id": "u01-update-sin-where",
+      "tema": "UPDATE",
+      "enunciado": "¿Qué ocurre si una sentencia UPDATE no incluye la cláusula WHERE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Se modifican todas las filas de la tabla con los valores indicados en SET.",
+          "explicacion": "Correcto: por eso el material advierte que nunca debe ocurrir por olvido."
+        },
+        {
+          "id": "b",
+          "texto": "MySQL la rechaza siempre, porque toda actualización requiere una condición.",
+          "explicacion": "Incorrecto: MySQL puede ejecutar UPDATE sin WHERE, aunque el modo seguro de Workbench podría bloquearla."
+        },
+        {
+          "id": "c",
+          "texto": "Se modifica solamente la primera fila de la tabla.",
+          "explicacion": "Incorrecto: sin WHERE, la asignación alcanza a todas las filas de la tabla."
+        },
+        {
+          "id": "d",
+          "texto": "Se modifican solo las filas que tengan el mismo valor de clave primaria.",
+          "explicacion": "Incorrecto: esa selección se logra con WHERE; sin esa condición no hay filtro."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "UPDATE asigna nuevos valores con SET a las filas que cumplen la condición de WHERE. Sin WHERE, la asignación se aplica a todas las filas de la tabla.",
+      "resumen": "UPDATE sin WHERE modifica todas las filas de la tabla.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 6 · DML e integridad referencial",
+          "ruta": "unidad-01-introduccion/6 - DML e Integridad Referencial.html",
+          "seccion": "update"
+        }
+      ]
+    },
+    {
+      "id": "u01-set-null",
+      "tema": "Acciones referenciales",
+      "enunciado": "¿Qué acción referencial conserva la fila hija y coloca su clave foránea en NULL cuando se elimina la fila padre?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "RESTRICT, porque rechaza la operación mientras existan filas hijas.",
+          "explicacion": "Incorrecto: RESTRICT impide la eliminación; no modifica la fila hija."
+        },
+        {
+          "id": "b",
+          "texto": "SET NULL, porque deja la FK en NULL, aunque la columna debe admitirlo.",
+          "explicacion": "Correcto: si la columna es NOT NULL, esta acción no puede aplicarse."
+        },
+        {
+          "id": "c",
+          "texto": "CASCADE, porque elimina también las filas hijas relacionadas.",
+          "explicacion": "Incorrecto: CASCADE propaga la eliminación y borra las filas hijas."
+        },
+        {
+          "id": "d",
+          "texto": "DEFAULT, porque asigna automáticamente el valor de otra columna de la fila hija.",
+          "explicacion": "Incorrecto: esa no es una acción referencial de MySQL; el DEFAULT es un valor por omisión de la columna."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Las acciones ON DELETE y ON UPDATE definen qué ocurre con las hijas: RESTRICT rechaza, CASCADE propaga y SET NULL conserva la fila hija con su FK en NULL. Esta última exige que la columna acepte NULL.",
+      "resumen": "SET NULL conserva la fila hija y pone su FK en NULL, si la columna lo admite.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 6 · DML e integridad referencial",
+          "ruta": "unidad-01-introduccion/6 - DML e Integridad Referencial.html",
+          "seccion": "referencial"
+        }
+      ]
+    },
+    {
+      "id": "u01-rollback-transaccion",
+      "tema": "Transacciones",
+      "enunciado": "En una tabla InnoDB, después de ejecutar un UPDATE dentro de una transacción iniciada con START TRANSACTION y sin COMMIT, ¿qué puede hacerse con ese cambio?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Nada: el cambio queda confirmado de forma permanente en cuanto se ejecuta.",
+          "explicacion": "Incorrecto: dentro de una transacción explícita, el cambio no queda confirmado hasta ejecutar COMMIT."
+        },
+        {
+          "id": "b",
+          "texto": "Deshacerlo solo si se reinicia el servidor de MySQL.",
+          "explicacion": "Incorrecto: la reversión se realiza con ROLLBACK; reiniciar el servidor no es el mecanismo previsto."
+        },
+        {
+          "id": "c",
+          "texto": "Deshacerlo con ROLLBACK, porque los cambios DML aún no confirmados pueden revertirse.",
+          "explicacion": "Correcto: ROLLBACK revierte las operaciones DML de la transacción que no fueron confirmadas."
+        },
+        {
+          "id": "d",
+          "texto": "Deshacerlo con TRUNCATE, porque esa sentencia revierte los cambios anteriores.",
+          "explicacion": "Incorrecto: TRUNCATE es DDL, vacía la tabla y produce un commit implícito; no sirve para revertir cambios."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Una transacción agrupa operaciones. Mientras no se ejecute COMMIT, los cambios DML de InnoDB pueden deshacerse con ROLLBACK. Las sentencias DDL no se comportan como DML reversible y pueden producir commits implícitos.",
+      "resumen": "En InnoDB, los cambios DML sin COMMIT pueden revertirse con ROLLBACK.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 6 · DML e integridad referencial",
+          "ruta": "unidad-01-introduccion/6 - DML e Integridad Referencial.html",
+          "seccion": "transacciones"
+        }
+      ]
+    },
+    {
+      "id": "u01-truncate-vs-delete",
+      "tema": "DELETE, TRUNCATE y DROP",
+      "enunciado": "¿Cuál es una característica de TRUNCATE TABLE que lo diferencia de DELETE?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Permite filtrar filas con WHERE, igual que DELETE.",
+          "explicacion": "Incorrecto: TRUNCATE no admite WHERE; vacía la tabla completa."
+        },
+        {
+          "id": "b",
+          "texto": "Es una sentencia DML que puede revertirse siempre con ROLLBACK.",
+          "explicacion": "Incorrecto: TRUNCATE es DDL y produce un commit implícito, por lo que no puede revertirse como DML."
+        },
+        {
+          "id": "c",
+          "texto": "Elimina la tabla completa, incluida su estructura.",
+          "explicacion": "Incorrecto: esa es la función de DROP TABLE; TRUNCATE conserva la tabla."
+        },
+        {
+          "id": "d",
+          "texto": "Vacía todas las filas de la tabla, es DDL y produce un commit implícito.",
+          "explicacion": "Correcto: además, TRUNCATE recrea la tabla vacía y suele reiniciar el AUTO_INCREMENT."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "DELETE es DML: elimina filas seleccionadas o todas, admite WHERE y puede revertirse en una transacción. TRUNCATE vacía toda la tabla conservando su estructura; es DDL, no admite WHERE y produce un commit implícito. DROP elimina la tabla por completo.",
+      "resumen": "TRUNCATE vacía toda la tabla, es DDL, no admite WHERE y hace commit implícito.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 6 · DML e integridad referencial",
+          "ruta": "unidad-01-introduccion/6 - DML e Integridad Referencial.html",
+          "seccion": "comparacion"
+        }
+      ]
+    },
+    {
+      "id": "u01-que-es-json",
+      "tema": "Qué es JSON",
+      "enunciado": "¿Cómo se representa la información en JSON, según el material?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Como pares de nombre y valor, dentro de una estructura legible tanto para personas como para programas.",
+          "explicacion": "Correcto: por ejemplo, una clave 'ubicacion' con el valor 'Mar del Plata'."
+        },
+        {
+          "id": "b",
+          "texto": "Como tablas con filas y columnas definidas por un esquema fijo.",
+          "explicacion": "Incorrecto: esa es la forma del modelo relacional. JSON organiza los datos mediante nombres y valores."
+        },
+        {
+          "id": "c",
+          "texto": "Como claves primarias y foráneas que vinculan distintos documentos.",
+          "explicacion": "Incorrecto: las claves primarias y foráneas son propias del modelo relacional; JSON no las usa para representar la información."
+        },
+        {
+          "id": "d",
+          "texto": "Como un conjunto de sentencias SQL que se ejecutan en orden.",
+          "explicacion": "Incorrecto: JSON es un formato de representación de datos, no un conjunto de sentencias."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "JSON representa datos mediante nombres y valores, de forma fácil de leer y de intercambiar entre sistemas. Para esta materia alcanza con esa idea general, sin estudiar todas sus reglas.",
+      "resumen": "JSON organiza los datos en pares nombre-valor, legibles y flexibles.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 7 · JSON en MySQL",
+          "ruta": "unidad-01-introduccion/7 - JSON y las Bases de Datos.html",
+          "seccion": "que-es"
+        }
+      ]
+    },
+    {
+      "id": "u01-json-flexible",
+      "tema": "Por qué se usa JSON",
+      "enunciado": "¿Qué característica de JSON explica que sea útil para datos cuya estructura puede variar?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que todos los documentos deben tener exactamente las mismas propiedades.",
+          "explicacion": "Incorrecto: esa exigencia sería rígida; la ventaja de JSON es justamente que no todos los documentos deben coincidir."
+        },
+        {
+          "id": "b",
+          "texto": "Que no todos los documentos tienen que contener las mismas propiedades.",
+          "explicacion": "Correcto: esa flexibilidad permite agregar datos complementarios sin modificar la estructura de una tabla."
+        },
+        {
+          "id": "c",
+          "texto": "Que no puede almacenarse en bases de datos, por lo que se usa solo en comunicaciones.",
+          "explicacion": "Incorrecto: el material indica que MySQL permite declarar una columna de tipo JSON."
+        },
+        {
+          "id": "d",
+          "texto": "Que sus documentos no necesitan ningún tipo de validación.",
+          "explicacion": "Incorrecto: el tipo JSON valida documentos, aunque su estructura sea flexible."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "JSON es flexible: distintos documentos pueden tener propiedades diferentes. Además es independiente del lenguaje de programación, por lo que se usa mucho en aplicaciones e intercambio de datos entre servicios.",
+      "resumen": "JSON es flexible porque los documentos no necesitan tener las mismas propiedades.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 7 · JSON en MySQL",
+          "ruta": "unidad-01-introduccion/7 - JSON y las Bases de Datos.html",
+          "seccion": "por-que"
+        }
+      ]
+    },
+    {
+      "id": "u01-problema-columnas",
+      "tema": "Un caso cercano",
+      "enunciado": "En una red social, las publicaciones tienen datos adicionales que cambian según el tipo. ¿Cuál es el principal inconveniente de resolver todo con columnas normales?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que las columnas normales no permiten guardar texto ni fechas.",
+          "explicacion": "Incorrecto: las columnas normales sí guardan texto y fechas; el problema es la cantidad de columnas y su variabilidad."
+        },
+        {
+          "id": "b",
+          "texto": "Que el servidor no puede consultar columnas que tengan valores diferentes según el registro.",
+          "explicacion": "Incorrecto: el material no plantea esa limitación; el problema es la estructura y el mantenimiento de la tabla."
+        },
+        {
+          "id": "c",
+          "texto": "Que se necesitan demasiadas columnas, muchas quedan vacías para varios registros y cada nueva característica puede obligar a modificar la estructura.",
+          "explicacion": "Correcto: por eso una columna JSON puede resultar útil para datos complementarios y variables."
+        },
+        {
+          "id": "d",
+          "texto": "Que no se puede diseñar una base de datos sin usar JSON.",
+          "explicacion": "Incorrecto: el material aclara que sin JSON también es posible diseñar otras tablas y relaciones."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Si todas las características fueran columnas normales, la tabla crecería con muchas columnas casi vacías y cada novedad exigiría cambiar la estructura. JSON permite concentrar esos datos variables en una sola columna, sin reemplazar la modelización relacional.",
+      "resumen": "Muchas columnas casi vacías y cambios frecuentes de estructura son el problema que JSON ayuda a aliviar.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 7 · JSON en MySQL",
+          "ruta": "unidad-01-introduccion/7 - JSON y las Bases de Datos.html",
+          "seccion": "problema"
+        }
+      ]
+    },
+    {
+      "id": "u01-json-columna-mysql",
+      "tema": "La ventaja en MySQL",
+      "enunciado": "¿Cuál es la idea central de combinar columnas normales con una columna JSON en MySQL?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Reemplazar todas las columnas por un único documento JSON que contenga cada dato.",
+          "explicacion": "Incorrecto: los datos centrales y estables siguen siendo columnas normales."
+        },
+        {
+          "id": "b",
+          "texto": "Guardar en JSON la clave primaria, para que las relaciones sean más flexibles.",
+          "explicacion": "Incorrecto: las claves primarias y las relaciones importantes siguen perteneciendo al modelo relacional."
+        },
+        {
+          "id": "c",
+          "texto": "Eliminar la necesidad de definir el tipo de cada columna.",
+          "explicacion": "Incorrecto: MySQL permite declarar una columna con tipo JSON, pero el resto de las columnas sigue teniendo tipos definidos."
+        },
+        {
+          "id": "d",
+          "texto": "Conservar como columnas normales los datos centrales y estables, y usar la columna JSON para datos adicionales que pueden variar.",
+          "explicacion": "Correcto: la columna sigue siendo la misma, pero su contenido puede adaptarse a cada registro."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La estrategia combina ambos mundos: la parte estable y central se modela con columnas, claves y relaciones, y la parte variable y complementaria se guarda en una columna JSON sin agregar nuevas columnas por cada característica posible.",
+      "resumen": "En MySQL, una columna JSON complementa las columnas normales para datos variables.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 7 · JSON en MySQL",
+          "ruta": "unidad-01-introduccion/7 - JSON y las Bases de Datos.html",
+          "seccion": "mysql"
+        }
+      ]
+    },
+    {
+      "id": "u01-criterio-json",
+      "tema": "Usarlo con criterio",
+      "enunciado": "Según el material, ¿en qué situación puede tener sentido usar JSON en lugar de columnas y tablas normales?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Cuando se trata de datos opcionales o variables, como preferencias o características que no aparecen en todos los registros.",
+          "explicacion": "Correcto: en esos casos la flexibilidad aporta una ventaja real sin abandonar el modelo relacional."
+        },
+        {
+          "id": "b",
+          "texto": "Cuando los datos centrales del negocio necesitan claves primarias, claves foráneas y validaciones fuertes.",
+          "explicacion": "Incorrecto: esos datos conviene mantenerlos en tablas y columnas normales, con PK, FK y restricciones."
+        },
+        {
+          "id": "c",
+          "texto": "Cuando se quiere evitar diseñar tablas y relaciones, aunque la información tenga una estructura clara.",
+          "explicacion": "Incorrecto: el material advierte que JSON no debe usarse para evitar diseñar tablas o relaciones."
+        },
+        {
+          "id": "d",
+          "texto": "Cuando la información proviene de otro sistema y debe normalizarse hasta la 3FN.",
+          "explicacion": "Incorrecto: los datos normalizados se modelan con tablas; JSON es una herramienta complementaria para datos flexibles."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "JSON es una herramienta adicional para datos opcionales, variables o de configuración. No reemplaza la normalización: los datos centrales, con estructura estable y relaciones fuertes, siguen en el modelo relacional.",
+      "resumen": "JSON sirve para datos opcionales o variables; los datos centrales siguen siendo relacionales.",
+      "material": [
+        {
+          "titulo": "Unidad 1 · Parte 7 · JSON en MySQL",
+          "ruta": "unidad-01-introduccion/7 - JSON y las Bases de Datos.html",
+          "seccion": "criterio"
+        }
+      ]
+    }
+  ]
+}

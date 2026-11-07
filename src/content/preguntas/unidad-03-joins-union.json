@@ -1,0 +1,1412 @@
+{
+  "unidad": 3,
+  "titulo": "Joins y unión",
+  "preguntas": [
+    {
+      "id": "u03-inicio-objetivo",
+      "tema": "Para qué sirven los JOIN",
+      "enunciado": "Según la presentación de la unidad, ¿para qué sirven los JOIN en una base relacional?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Para guardar todos los datos en una única tabla y evitar que se distribuyan.",
+          "explicacion": "Es lo contrario: la base distribuye la información para evitar repeticiones, y los JOIN la reúnen al consultar."
+        },
+        {
+          "id": "b",
+          "texto": "Para volver a reunir, al consultar, datos que el diseño separó en varias tablas.",
+          "explicacion": "Correcto: los JOIN permiten recuperar juntos datos que el diseño relacional separó correctamente."
+        },
+        {
+          "id": "c",
+          "texto": "Para reemplazar las claves foráneas por índices que aceleren las consultas.",
+          "explicacion": "El material no presenta los JOIN como sustitutos de las claves foráneas; las claves foráneas expresan las relaciones entre tablas."
+        },
+        {
+          "id": "d",
+          "texto": "Para crear vistas permanentes que combinen tablas en el esquema.",
+          "explicacion": "Un JOIN es parte de una consulta; no crea vistas ni objetos permanentes en el esquema."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Un diseño relacional separa los datos para no repetirlos. Un JOIN los vuelve a reunir cuando una consulta necesita verlos juntos.",
+      "resumen": "Un JOIN reúne al consultar datos que el diseño relacional separó en varias tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Para qué sirven los JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "inicio"
+        }
+      ]
+    },
+    {
+      "id": "u03-inicio-tres-tipos",
+      "tema": "Tipos de JOIN de la unidad",
+      "enunciado": "¿Cuáles son los tres tipos de JOIN que se estudian en esta unidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "INNER JOIN, LEFT JOIN y FULL JOIN.",
+          "explicacion": "FULL JOIN no es uno de los tipos que la unidad estudia; los tres son INNER, LEFT y RIGHT."
+        },
+        {
+          "id": "b",
+          "texto": "LEFT JOIN, RIGHT JOIN y UNION.",
+          "explicacion": "UNION no es un tipo de JOIN: combina filas de resultados compatibles y no relaciona tablas."
+        },
+        {
+          "id": "c",
+          "texto": "INNER JOIN, OUTER JOIN y CROSS JOIN.",
+          "explicacion": "OUTER JOIN y CROSS JOIN no son los tipos que la unidad presenta; los tipos estudiados son INNER, LEFT y RIGHT."
+        },
+        {
+          "id": "d",
+          "texto": "INNER JOIN, LEFT JOIN y RIGHT JOIN.",
+          "explicacion": "Correcto: son los tres tipos que la unidad presenta y compara en su síntesis."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La unidad estudia INNER JOIN, LEFT JOIN y RIGHT JOIN, y los diferencia según qué filas conservan en el resultado.",
+      "resumen": "Los tres tipos de JOIN de la unidad son INNER, LEFT y RIGHT.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Tipos de JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "inicio"
+        }
+      ]
+    },
+    {
+      "id": "u03-necesidad-separacion",
+      "tema": "Separación de datos en tablas",
+      "enunciado": "¿Por qué un diseño relacional separa la información en varias tablas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Para evitar repeticiones de datos, guardando cada dato una sola vez.",
+          "explicacion": "Correcto: en un diseño normalizado cada dato se guarda en la tabla que le corresponde, sin repetirlo."
+        },
+        {
+          "id": "b",
+          "texto": "Para que cada tabla pueda consultarse por separado, sin relación con las demás.",
+          "explicacion": "Las tablas se relacionan mediante claves; separar la información no elimina esa relación."
+        },
+        {
+          "id": "c",
+          "texto": "Para que las consultas lean más rápido, copiando los datos en cada tabla.",
+          "explicacion": "Copiar datos en varias tablas genera repeticiones, que es justamente lo que el diseño evita."
+        },
+        {
+          "id": "d",
+          "texto": "Para que MySQL guarde cada tabla en un archivo físico distinto.",
+          "explicacion": "El material explica la separación por la necesidad de evitar repeticiones, no por el almacenamiento físico."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "En un diseño normalizado, cada dato se guarda una vez y las tablas se relacionan mediante claves foráneas.",
+      "resumen": "El diseño separa los datos para no repetirlos; los JOIN los reúnen cuando hace falta.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Necesidad de JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "necesidad"
+        }
+      ]
+    },
+    {
+      "id": "u03-necesidad-join-no-guarda",
+      "tema": "Qué hace un JOIN con los datos",
+      "enunciado": "¿Qué hace un JOIN con los datos de las tablas que combina?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Modifica las tablas para que sus filas queden guardadas juntas.",
+          "explicacion": "Un JOIN no cambia el almacenamiento: no vuelve a guardar los datos juntos."
+        },
+        {
+          "id": "b",
+          "texto": "Crea una tabla nueva y permanente con el resultado de la combinación.",
+          "explicacion": "El resultado existe como resultado de la consulta; el JOIN no crea una tabla permanente."
+        },
+        {
+          "id": "c",
+          "texto": "Los combina solamente para producir el resultado de una consulta.",
+          "explicacion": "Correcto: la combinación ocurre al consultar y no modifica cómo se guardan los datos."
+        },
+        {
+          "id": "d",
+          "texto": "Elimina la separación entre tablas definida en el diseño.",
+          "explicacion": "El diseño se mantiene; el JOIN solo reúne los datos al momento de consultar."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Un JOIN no vuelve a guardar los datos juntos; los combina únicamente para producir el resultado de una consulta.",
+      "resumen": "Un JOIN combina datos solo para una consulta; no los reorganiza en la base.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Necesidad de JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "necesidad"
+        }
+      ]
+    },
+    {
+      "id": "u03-necesidad-fk",
+      "tema": "Relación entre tablas",
+      "enunciado": "En un diseño normalizado, ¿cómo se vincula una fila de una tabla con la fila de otra tabla a la que pertenece?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Repitiendo en la primera tabla todos los datos de la segunda.",
+          "explicacion": "Repetir los datos es justamente lo que el diseño normalizado evita."
+        },
+        {
+          "id": "b",
+          "texto": "Mediante una clave foránea que referencia la clave primaria de la otra tabla.",
+          "explicacion": "Correcto: la clave foránea apunta a la clave primaria de la tabla relacionada, y esa relación es la que luego se usa en ON."
+        },
+        {
+          "id": "c",
+          "texto": "Mediante un índice que se crea sin relación con ninguna clave.",
+          "explicacion": "Los índices ayudan al motor a buscar datos, pero no expresan la relación entre tablas."
+        },
+        {
+          "id": "d",
+          "texto": "Mediante una columna que guarda la lista completa de filas de la otra tabla.",
+          "explicacion": "Guardar listas de filas dentro de una columna no es el mecanismo que describe el material."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "La clave foránea de una tabla referencia la clave primaria de la tabla relacionada, y esa correspondencia se usa como criterio de unión.",
+      "resumen": "La relación entre tablas se expresa con una clave foránea que apunta a una clave primaria.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Necesidad de JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "necesidad"
+        }
+      ]
+    },
+    {
+      "id": "u03-anatomia-on",
+      "tema": "Anatomía de un JOIN",
+      "enunciado": "¿Qué expresa la cláusula ON de un JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La tabla que se usa como origen de los datos del resultado.",
+          "explicacion": "Las tablas se indican después de FROM y de JOIN, no en ON."
+        },
+        {
+          "id": "b",
+          "texto": "El orden en que se muestran las filas del resultado.",
+          "explicacion": "El orden de las filas se controla con ORDER BY, no con ON."
+        },
+        {
+          "id": "c",
+          "texto": "El nombre con el que se identifica una tabla dentro de la consulta.",
+          "explicacion": "Ese nombre corresponde al alias, que se define con AS; ON no lo determina."
+        },
+        {
+          "id": "d",
+          "texto": "El criterio que relaciona las filas de ambas tablas.",
+          "explicacion": "Correcto: ON expresa el criterio que relaciona las filas de las tablas que se unen."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "ON indica la condición que determina qué filas de una tabla se relacionan con filas de la otra.",
+      "resumen": "ON define el criterio por el que se relacionan las filas de las tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Anatomía de un JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "anatomia"
+        }
+      ]
+    },
+    {
+      "id": "u03-anatomia-alias",
+      "tema": "Alias de tabla",
+      "enunciado": "¿Para qué sirven los alias de tabla (por ejemplo, AS p) en un JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Para escribir la consulta de forma más corta y indicar sin ambigüedad de qué tabla sale cada columna.",
+          "explicacion": "Correcto: el alias es un nombre corto para la tabla dentro de la consulta y permite calificar columnas sin ambigüedad."
+        },
+        {
+          "id": "b",
+          "texto": "Para cambiar el nombre real de la tabla en la base de datos.",
+          "explicacion": "Un alias solo existe dentro de la consulta; no renombra la tabla almacenada."
+        },
+        {
+          "id": "c",
+          "texto": "Para indicar qué tipo de JOIN se utiliza.",
+          "explicacion": "El tipo de JOIN se indica con INNER, LEFT o RIGHT; el alias no lo determina."
+        },
+        {
+          "id": "d",
+          "texto": "Para crear una tabla temporal con los datos combinados.",
+          "explicacion": "El alias no crea ninguna tabla; solo nombra una tabla dentro de la consulta."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Los alias acortan la escritura de la consulta y evitan ambigüedades cuando varias tablas se combinan.",
+      "resumen": "Los alias acortan la consulta y evitan ambigüedades al calificar columnas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Anatomía de un JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "anatomia"
+        }
+      ]
+    },
+    {
+      "id": "u03-anatomia-tabla-izquierda",
+      "tema": "Tabla de la izquierda",
+      "enunciado": "En una consulta con FROM tabla_A INNER JOIN tabla_B ON ..., ¿cuál es la tabla de la izquierda?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "tabla_B, porque es la que aparece en la condición ON.",
+          "explicacion": "ON no determina la posición de las tablas; la izquierda es la que se escribe antes de JOIN."
+        },
+        {
+          "id": "b",
+          "texto": "La que aparece después de SELECT.",
+          "explicacion": "Después de SELECT se escriben columnas, no tablas."
+        },
+        {
+          "id": "c",
+          "texto": "tabla_A, la que se escribe antes de la palabra JOIN.",
+          "explicacion": "Correcto: la tabla de la izquierda es la escrita antes de JOIN; la de la derecha es la que sigue a JOIN."
+        },
+        {
+          "id": "d",
+          "texto": "La que tenga menos filas.",
+          "explicacion": "La posición izquierda o derecha depende de cómo se escribe la consulta, no del tamaño de las tablas."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "En una unión, la tabla izquierda es la que aparece primero en la sentencia, antes de la palabra JOIN.",
+      "resumen": "En FROM A JOIN B, A es la tabla de la izquierda y B la de la derecha.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Anatomía de un JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "anatomia"
+        }
+      ]
+    },
+    {
+      "id": "u03-anatomia-join-sin-tipo",
+      "tema": "JOIN sin tipo explícito",
+      "enunciado": "En MySQL, si se escribe solamente JOIN sin indicar el tipo, ¿qué operación equivale?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "LEFT JOIN",
+          "explicacion": "LEFT JOIN conserva todas las filas de la izquierda, y no es la forma abreviada de JOIN sin tipo."
+        },
+        {
+          "id": "b",
+          "texto": "INNER JOIN",
+          "explicacion": "Correcto: en MySQL, JOIN sin tipo equivale a INNER JOIN."
+        },
+        {
+          "id": "c",
+          "texto": "RIGHT JOIN",
+          "explicacion": "RIGHT JOIN conserva todas las filas de la derecha; no es la equivalencia de JOIN sin tipo."
+        },
+        {
+          "id": "d",
+          "texto": "UNION",
+          "explicacion": "UNION apila resultados compatibles y no es una forma abreviada de JOIN."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "En MySQL, JOIN a secas es lo mismo que INNER JOIN. El material usa el nombre completo para dejar clara la operación.",
+      "resumen": "JOIN sin tipo equivale a INNER JOIN en MySQL.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Anatomía de un JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "anatomia"
+        }
+      ]
+    },
+    {
+      "id": "u03-inner-conserva",
+      "tema": "INNER JOIN",
+      "enunciado": "¿Qué filas conserva un INNER JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo las filas para las que existe coincidencia según la condición de ON.",
+          "explicacion": "Correcto: INNER JOIN exige coincidencia entre ambas tablas según ON."
+        },
+        {
+          "id": "b",
+          "texto": "Todas las filas de la tabla de la izquierda, tengan o no coincidencia.",
+          "explicacion": "Eso lo hace LEFT JOIN, no INNER JOIN."
+        },
+        {
+          "id": "c",
+          "texto": "Todas las filas de ambas tablas, tengan o no coincidencia.",
+          "explicacion": "Conservar todas las filas de ambos lados no es lo que hace INNER JOIN; el material no lo presenta como uno de sus comportamientos."
+        },
+        {
+          "id": "d",
+          "texto": "Solo las filas de la tabla de la derecha que no tengan coincidencia.",
+          "explicacion": "Eso describe lo contrario de INNER JOIN, que es justamente excluir las filas sin coincidencia."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "INNER JOIN exige que exista coincidencia entre las tablas según ON; las filas sin coincidencia quedan fuera del resultado.",
+      "resumen": "INNER JOIN devuelve solo las filas que tienen coincidencia en ambas tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · INNER JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "inner"
+        }
+      ]
+    },
+    {
+      "id": "u03-inner-sin-coincidencia",
+      "tema": "INNER JOIN",
+      "enunciado": "Con INNER JOIN, ¿qué ocurre con una fila de la tabla de la izquierda que no tiene coincidencia en la tabla de la derecha?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Aparece igual, con NULL en las columnas de la derecha.",
+          "explicacion": "Ese comportamiento es propio de LEFT JOIN, no de INNER JOIN."
+        },
+        {
+          "id": "b",
+          "texto": "Aparece igual, con el valor 0 en las columnas de la derecha.",
+          "explicacion": "INNER JOIN no completa columnas con 0; el material no describe ese comportamiento en ningún tipo de JOIN."
+        },
+        {
+          "id": "c",
+          "texto": "Provoca un error en la consulta.",
+          "explicacion": "La falta de coincidencia no es un error: simplemente la fila no se incluye en el resultado."
+        },
+        {
+          "id": "d",
+          "texto": "No aparece en el resultado.",
+          "explicacion": "Correcto: INNER JOIN conserva solo las filas con coincidencia, así que esa fila queda excluida."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Con INNER JOIN, las filas que no encuentran coincidencia quedan excluidas del resultado.",
+      "resumen": "Con INNER JOIN, las filas sin coincidencia quedan excluidas del resultado.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · INNER JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "inner"
+        }
+      ]
+    },
+    {
+      "id": "u03-criterio-inner",
+      "tema": "Elegir el tipo de JOIN",
+      "enunciado": "¿Cuándo conviene elegir INNER JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Cuando se necesita conservar todas las filas de una de las tablas, tengan o no relación.",
+          "explicacion": "Para conservar todas las filas de una tabla se usan LEFT o RIGHT JOIN."
+        },
+        {
+          "id": "b",
+          "texto": "Siempre, porque es el tipo más rápido de los tres.",
+          "explicacion": "El material indica elegir el tipo según las filas que deban conservarse, no por costumbre, y no afirma que sea el más rápido."
+        },
+        {
+          "id": "c",
+          "texto": "Cuando solo interesan los registros que tienen relación en ambas tablas.",
+          "explicacion": "Correcto: INNER JOIN es adecuado cuando el resultado debe contener solo las coincidencias."
+        },
+        {
+          "id": "d",
+          "texto": "Cuando se quiere ver las filas de la derecha que no tienen relación con la izquierda.",
+          "explicacion": "Ver filas sin relación requiere un JOIN externo, porque INNER JOIN excluye justamente esas filas."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "La elección del tipo de JOIN depende de qué filas deban conservarse en el resultado.",
+      "resumen": "INNER JOIN sirve cuando solo interesan las coincidencias entre tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Criterios prácticos",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u03-left-conserva",
+      "tema": "LEFT JOIN",
+      "enunciado": "¿Qué filas conserva un LEFT JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo las filas que tienen coincidencia en la tabla de la derecha.",
+          "explicacion": "Eso describe INNER JOIN."
+        },
+        {
+          "id": "b",
+          "texto": "Todas las filas de la tabla escrita a la izquierda; si no hay coincidencia, las columnas de la derecha quedan en NULL.",
+          "explicacion": "Correcto: LEFT JOIN conserva toda la tabla de la izquierda y completa con NULL cuando no hay coincidencia."
+        },
+        {
+          "id": "c",
+          "texto": "Todas las filas de la tabla escrita a la derecha.",
+          "explicacion": "Eso describe RIGHT JOIN."
+        },
+        {
+          "id": "d",
+          "texto": "Todas las filas de la tabla izquierda, pero eliminando las que tienen coincidencia.",
+          "explicacion": "Las filas con coincidencia se conservan y se les agregan los datos de la derecha; no se eliminan."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "LEFT JOIN conserva todas las filas de la izquierda y agrega datos de la derecha cuando hay coincidencia.",
+      "resumen": "LEFT JOIN conserva todas las filas de la tabla izquierda.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · LEFT JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "left"
+        }
+      ]
+    },
+    {
+      "id": "u03-left-intencion",
+      "tema": "LEFT JOIN",
+      "enunciado": "¿Qué pregunta responde mejor un LEFT JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "¿Cuáles son todos los elementos de la tabla izquierda, tengan o no relación con la derecha?",
+          "explicacion": "Correcto: LEFT JOIN se elige cuando la tabla de la izquierda debe aparecer completa."
+        },
+        {
+          "id": "b",
+          "texto": "¿Qué elementos de la izquierda tienen relación con la derecha?",
+          "explicacion": "Esa pregunta corresponde a INNER JOIN, que solo devuelve coincidencias."
+        },
+        {
+          "id": "c",
+          "texto": "¿Qué filas de ambas tablas son idénticas entre sí?",
+          "explicacion": "LEFT JOIN no busca filas idénticas; relaciona filas según ON y conserva las de la izquierda."
+        },
+        {
+          "id": "d",
+          "texto": "¿Cuáles son los elementos de la derecha que no tienen ninguna relación?",
+          "explicacion": "Esa intención corresponde a RIGHT JOIN, que conserva la tabla de la derecha."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "LEFT JOIN responde a la pregunta de qué elementos de la tabla izquierda deben aparecer, tengan o no correspondencia.",
+      "resumen": "Usar LEFT JOIN cuando la tabla izquierda debe conservarse completa.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · LEFT JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "left"
+        }
+      ]
+    },
+    {
+      "id": "u03-left-orden",
+      "tema": "LEFT JOIN",
+      "enunciado": "En un LEFT JOIN, ¿qué determina cuál tabla se conserva completa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La que tiene más filas.",
+          "explicacion": "El tamaño de las tablas no define el tipo de JOIN."
+        },
+        {
+          "id": "b",
+          "texto": "La que tiene la clave primaria.",
+          "explicacion": "La clave primaria no decide qué tabla se conserva; eso depende del tipo de JOIN y del orden en que se escriben las tablas."
+        },
+        {
+          "id": "c",
+          "texto": "La que aparece primero en ORDER BY.",
+          "explicacion": "ORDER BY ordena el resultado; no determina qué tabla se conserva en el JOIN."
+        },
+        {
+          "id": "d",
+          "texto": "La que se escribe a la izquierda de la palabra JOIN.",
+          "explicacion": "Correcto: en LEFT JOIN se conserva la tabla escrita a la izquierda; en RIGHT JOIN, la escrita a la derecha."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La tabla que se conserva completa en LEFT JOIN es la que se escribe antes de la palabra JOIN.",
+      "resumen": "LEFT JOIN conserva la tabla escrita antes de JOIN.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · LEFT JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "left"
+        }
+      ]
+    },
+    {
+      "id": "u03-right-conserva",
+      "tema": "RIGHT JOIN",
+      "enunciado": "Si una consulta usa RIGHT JOIN, ¿qué tabla se conserva completa?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "La tabla escrita a la izquierda de JOIN.",
+          "explicacion": "Eso corresponde a LEFT JOIN; con RIGHT JOIN se conserva la tabla de la derecha."
+        },
+        {
+          "id": "b",
+          "texto": "Solo las filas que tienen coincidencia en ambas tablas.",
+          "explicacion": "Eso describe INNER JOIN."
+        },
+        {
+          "id": "c",
+          "texto": "La tabla escrita a la derecha de JOIN, aunque no haya coincidencia en la izquierda.",
+          "explicacion": "Correcto: RIGHT JOIN conserva todas las filas de la derecha; las columnas de la izquierda quedan en NULL si no hay coincidencia."
+        },
+        {
+          "id": "d",
+          "texto": "Ninguna; RIGHT JOIN solo muestra la intersección entre las tablas.",
+          "explicacion": "Mostrar solo la intersección es INNER JOIN; RIGHT JOIN conserva todas las filas de la derecha."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "RIGHT JOIN conserva todas las filas de la tabla escrita a la derecha, con NULL en la izquierda cuando no hay coincidencia.",
+      "resumen": "RIGHT JOIN conserva completa la tabla escrita a la derecha.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · RIGHT JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "right"
+        }
+      ]
+    },
+    {
+      "id": "u03-right-reescribir",
+      "tema": "RIGHT JOIN",
+      "enunciado": "Una consulta con RIGHT JOIN puede reescribirse de forma equivalente como:",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "LEFT JOIN, invirtiendo el orden de las tablas.",
+          "explicacion": "Correcto: al invertir el orden, la tabla que RIGHT JOIN conservaba queda a la izquierda y se conserva con LEFT JOIN."
+        },
+        {
+          "id": "b",
+          "texto": "INNER JOIN con la misma condición ON.",
+          "explicacion": "INNER JOIN excluye las filas sin coincidencia, por lo que no es equivalente a RIGHT JOIN."
+        },
+        {
+          "id": "c",
+          "texto": "LEFT JOIN sin cambiar el orden de las tablas.",
+          "explicacion": "Mantener el orden hace que se conserve la otra tabla, por lo que el resultado cambia."
+        },
+        {
+          "id": "d",
+          "texto": "UNION de las dos tablas.",
+          "explicacion": "UNION apila filas de resultados compatibles y no reproduce la relación definida en ON."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "Invirtiendo el orden de las tablas, una consulta con RIGHT JOIN puede expresarse con LEFT JOIN conservando el mismo resultado.",
+      "resumen": "RIGHT JOIN equivale a LEFT JOIN cambiando el orden de las tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · RIGHT JOIN",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "right"
+        }
+      ]
+    },
+    {
+      "id": "u03-using-condicion",
+      "tema": "USING",
+      "enunciado": "¿Cuándo puede usarse USING (columna) en lugar de ON?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Cuando las tablas no tienen ninguna columna en común.",
+          "explicacion": "USING necesita una columna con el mismo nombre en ambas tablas, así que requiere que sí tengan una en común."
+        },
+        {
+          "id": "b",
+          "texto": "Cuando las dos tablas se relacionan mediante una columna que tiene el mismo nombre en ambas.",
+          "explicacion": "Correcto: en ese caso USING es una forma abreviada de ON."
+        },
+        {
+          "id": "c",
+          "texto": "Cuando la condición de unión tiene varias comparaciones complejas.",
+          "explicacion": "Para condiciones más complejas debe usarse ON, que es más general y flexible."
+        },
+        {
+          "id": "d",
+          "texto": "Siempre que se use LEFT JOIN.",
+          "explicacion": "USING puede usarse con LEFT JOIN, pero solo si la columna tiene el mismo nombre en ambas tablas; el tipo de JOIN no es la condición."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "USING es una abreviatura de ON cuando la columna de relación tiene el mismo nombre en las dos tablas.",
+      "resumen": "USING (columna) sirve como abreviatura de ON si la columna se llama igual en ambas tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · USING como alternativa",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "using"
+        }
+      ]
+    },
+    {
+      "id": "u03-using-no-reemplaza",
+      "tema": "USING",
+      "enunciado": "¿Por qué USING no reemplaza a ON en todos los casos?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque USING no puede usarse con INNER JOIN.",
+          "explicacion": "USING puede usarse con INNER JOIN; la limitación está en el nombre de la columna y en la complejidad de la condición."
+        },
+        {
+          "id": "b",
+          "texto": "Porque USING solo funciona con tablas que tienen la misma cantidad de columnas.",
+          "explicacion": "Esa no es la limitación descrita; lo que importa es que la columna de relación tenga el mismo nombre en ambas tablas."
+        },
+        {
+          "id": "c",
+          "texto": "Porque USING no puede usarse con LEFT JOIN.",
+          "explicacion": "USING también puede usarse con LEFT JOIN, siempre que la columna exista con el mismo nombre en ambas tablas."
+        },
+        {
+          "id": "d",
+          "texto": "Porque si las columnas tienen nombres diferentes o la condición es más compleja, debe usarse ON.",
+          "explicacion": "Correcto: cuando las columnas no se llaman igual o la condición es más compleja, USING no alcanza y se usa ON."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "ON es más general y flexible; USING solo sirve en el caso simple de una columna con el mismo nombre en ambas tablas.",
+      "resumen": "ON es necesario cuando las columnas de relación tienen nombres distintos o la condición es más compleja.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · USING como alternativa",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "using"
+        }
+      ]
+    },
+    {
+      "id": "u03-using-criterio-catedra",
+      "tema": "USING",
+      "enunciado": "¿Qué criterio propone la cátedra para aprender ON y USING?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Usar USING siempre, porque es más corto.",
+          "explicacion": "USING es una abreviatura cómoda solo cuando el caso es simple y claro; no se usa siempre."
+        },
+        {
+          "id": "b",
+          "texto": "No usar USING nunca durante la materia.",
+          "explicacion": "El material lo presenta como una abreviatura útil en casos simples."
+        },
+        {
+          "id": "c",
+          "texto": "Aprender primero ON y luego usar USING como abreviatura cuando el caso sea simple y claro.",
+          "explicacion": "Correcto: primero se comprende explícitamente qué columnas se relacionan con ON; después se usa USING cuando es cómodo."
+        },
+        {
+          "id": "d",
+          "texto": "Usar ON solo con LEFT JOIN y USING solo con INNER JOIN.",
+          "explicacion": "El material no asocia ON o USING a un tipo de JOIN concreto; la diferencia es la forma de expresar la relación."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Aprender ON primero permite entender qué columnas se relacionan; USING queda como atajo para casos simples.",
+      "resumen": "Aprender ON primero y usar USING como abreviatura en casos simples.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · USING como alternativa",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "using"
+        }
+      ]
+    },
+    {
+      "id": "u03-using-left",
+      "tema": "USING",
+      "enunciado": "¿Puede usarse USING con LEFT JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Sí, siempre que la columna indicada exista con el mismo nombre en ambas tablas.",
+          "explicacion": "Correcto: el material indica que USING también puede usarse con otros tipos de JOIN, como LEFT JOIN, en esa condición."
+        },
+        {
+          "id": "b",
+          "texto": "No, USING solo se permite con INNER JOIN.",
+          "explicacion": "El material indica que USING también puede usarse con otros tipos de JOIN, como LEFT JOIN."
+        },
+        {
+          "id": "c",
+          "texto": "No, porque LEFT JOIN exige siempre una condición ON.",
+          "explicacion": "USING reemplaza la condición ON en los casos simples y puede usarse con LEFT JOIN."
+        },
+        {
+          "id": "d",
+          "texto": "Sí, aunque la columna tenga nombres distintos en cada tabla.",
+          "explicacion": "USING requiere que la columna tenga el mismo nombre en ambas tablas."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "USING puede combinarse con LEFT JOIN, siempre que la columna de relación tenga el mismo nombre en las dos tablas.",
+      "resumen": "USING funciona con LEFT JOIN cuando la columna de relación se llama igual en ambas tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · USING como alternativa",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "using"
+        }
+      ]
+    },
+    {
+      "id": "u03-varias-estrategia",
+      "tema": "Varias tablas",
+      "enunciado": "Al combinar más de dos tablas, ¿cuál es la estrategia recomendada para leer la consulta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Imaginar todas las tablas unidas al mismo tiempo para entender el resultado.",
+          "explicacion": "El material recomienda no hacer eso: conviene pensar cada unión por separado."
+        },
+        {
+          "id": "b",
+          "texto": "Leer la consulta de a pares: primero se relacionan dos tablas y luego el resultado con la siguiente.",
+          "explicacion": "Correcto: el material propone analizar la consulta de a pares, encadenando las uniones una a una."
+        },
+        {
+          "id": "c",
+          "texto": "Ordenar las tablas alfabéticamente antes de escribir los JOIN.",
+          "explicacion": "El orden alfabético no es un criterio que plantee el material."
+        },
+        {
+          "id": "d",
+          "texto": "Escribir los JOIN sin alias para evitar confusiones.",
+          "explicacion": "Los alias ayudan a evitar ambigüedades cuando hay varias tablas; el material los recomienda."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Con varias tablas, conviene pensar cada JOIN por separado y comprobar el resultado paso a paso.",
+      "resumen": "Con varias tablas, conviene analizar cada JOIN de a pares.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Combinar más de dos tablas",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "varias"
+        }
+      ]
+    },
+    {
+      "id": "u03-varias-alias",
+      "tema": "Varias tablas",
+      "enunciado": "¿Cuándo se vuelven especialmente importantes los alias en una consulta con varios JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Solo cuando la consulta usa RIGHT JOIN.",
+          "explicacion": "El material no limita los alias a un tipo de JOIN."
+        },
+        {
+          "id": "b",
+          "texto": "Cuando la consulta tiene una sola tabla.",
+          "explicacion": "Con una sola tabla no hay columnas de tablas distintas que resolver; el problema aparece al combinar varias."
+        },
+        {
+          "id": "c",
+          "texto": "Cuando las tablas no tienen claves primarias.",
+          "explicacion": "La presencia o ausencia de claves no determina la importancia de los alias."
+        },
+        {
+          "id": "d",
+          "texto": "Cuando varias tablas tienen columnas con el mismo nombre, como id_categoria, nombre o fecha.",
+          "explicacion": "Correcto: con nombres repetidos, los alias permiten indicar sin ambigüedad de qué tabla proviene cada columna."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Cuando se combinan varias tablas con columnas de igual nombre, el alias evita confusiones sobre el origen de cada columna.",
+      "resumen": "Los alias son clave cuando varias tablas tienen columnas con el mismo nombre.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Combinar más de dos tablas",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "varias"
+        }
+      ]
+    },
+    {
+      "id": "u03-varias-tercera-tabla",
+      "tema": "Varias tablas",
+      "enunciado": "En una consulta con tres tablas, ¿cómo se relaciona la tercera con las anteriores?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Mediante un UNION con el resultado de las dos primeras.",
+          "explicacion": "UNION apila filas; para relacionar tablas se usa JOIN con su condición ON."
+        },
+        {
+          "id": "b",
+          "texto": "Sin condición, porque el motor la relaciona automáticamente.",
+          "explicacion": "Sin una condición explícita no hay relación definida; el motor no la deduce y se corre el riesgo de un producto cartesiano."
+        },
+        {
+          "id": "c",
+          "texto": "Mediante otro JOIN que indique con ON la columna que la relaciona con una tabla ya presente.",
+          "explicacion": "Correcto: cada tabla adicional se agrega con su propio JOIN y su condición ON."
+        },
+        {
+          "id": "d",
+          "texto": "Cambiando el tipo de JOIN de la primera unión por UNION ALL.",
+          "explicacion": "UNION ALL apila resultados y no relaciona la tercera tabla con las demás."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Al encadenar varias tablas, cada JOIN nuevo necesita su propia condición ON con una tabla ya incluida.",
+      "resumen": "Cada tabla adicional se agrega con su propio JOIN y su condición ON.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Combinar más de dos tablas",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "varias"
+        }
+      ]
+    },
+    {
+      "id": "u03-sin-coincidencia-significado",
+      "tema": "Filas sin coincidencia",
+      "enunciado": "Después de un LEFT JOIN, una columna de la tabla derecha aparece en NULL. ¿Qué indica esto?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Que no hubo coincidencia en la tabla derecha para esa fila.",
+          "explicacion": "Correcto: el NULL indica que la fila de la izquierda no encontró correspondencia en la derecha."
+        },
+        {
+          "id": "b",
+          "texto": "Que el dato original de la tabla izquierda estaba guardado como NULL.",
+          "explicacion": "El NULL puede indicar falta de coincidencia; no necesariamente que el dato de la tabla izquierda sea NULL."
+        },
+        {
+          "id": "c",
+          "texto": "Que la fila se duplicó durante la combinación.",
+          "explicacion": "Un NULL no indica duplicación; indica ausencia de correspondencia."
+        },
+        {
+          "id": "d",
+          "texto": "Que existe un error de integridad en la base de datos.",
+          "explicacion": "No es un error: el NULL aparece al conservar filas que no tienen correspondencia."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "En un LEFT JOIN, las columnas de la tabla derecha quedan en NULL cuando no existe una fila coincidente.",
+      "resumen": "Un NULL de un JOIN externo indica ausencia de coincidencia, no necesariamente un dato nulo.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Filas sin coincidencia",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "sin-coincidencia"
+        }
+      ]
+    },
+    {
+      "id": "u03-sin-coincidencia-patron",
+      "tema": "Filas sin coincidencia",
+      "enunciado": "¿Cómo se buscan las filas de una tabla A que no tienen relación con una tabla B?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Con INNER JOIN entre A y B, sin condición WHERE adicional.",
+          "explicacion": "INNER JOIN solo devuelve las coincidencias, por lo que no muestra las filas sin relación."
+        },
+        {
+          "id": "b",
+          "texto": "Con LEFT JOIN de A con B y WHERE sobre una columna de A que sea NULL.",
+          "explicacion": "Filtrar por columnas de A no detecta las filas de A que no encuentran coincidencia en B."
+        },
+        {
+          "id": "c",
+          "texto": "Con UNION entre A y B.",
+          "explicacion": "UNION apila resultados compatibles; no detecta filas sin relación."
+        },
+        {
+          "id": "d",
+          "texto": "Con LEFT JOIN de A con B y WHERE una columna de B IS NULL.",
+          "explicacion": "Correcto: el LEFT JOIN conserva todas las filas de A, y WHERE ... IS NULL sobre B se queda con las que no tienen correspondencia."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "LEFT JOIN conserva todas las filas de la tabla izquierda; las que no encuentran coincidencia tienen NULL en las columnas de la derecha, y WHERE ... IS NULL las filtra.",
+      "resumen": "Para filas sin relación: LEFT JOIN más WHERE con IS NULL sobre una columna de la tabla derecha.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Filas sin coincidencia",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "sin-coincidencia"
+        }
+      ]
+    },
+    {
+      "id": "u03-cartesiano-definicion",
+      "tema": "Productos cartesianos",
+      "enunciado": "¿Qué es un producto cartesiano en una consulta con varias tablas?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El resultado de unir solo las filas que coinciden según ON.",
+          "explicacion": "Eso es INNER JOIN, no un producto cartesiano."
+        },
+        {
+          "id": "b",
+          "texto": "La combinación de todas las filas de una tabla con todas las de la otra cuando no se indica cómo se relacionan.",
+          "explicacion": "Correcto: sin un criterio de relación, cada fila de una tabla se combina con cada fila de la otra."
+        },
+        {
+          "id": "c",
+          "texto": "Una tabla temporal que guarda las claves primarias.",
+          "explicacion": "Un producto cartesiano no es una tabla temporal; es un conjunto de combinaciones de filas."
+        },
+        {
+          "id": "d",
+          "texto": "Un conjunto de filas duplicadas que UNION elimina.",
+          "explicacion": "UNION elimina duplicados, pero eso no define un producto cartesiano."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Si no se expresa la relación entre las tablas, el resultado incluye todas las combinaciones posibles de sus filas.",
+      "resumen": "Sin criterio de relación se obtienen todas las combinaciones posibles entre filas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Productos cartesianos",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "cartesiano"
+        }
+      ]
+    },
+    {
+      "id": "u03-cartesiano-regla",
+      "tema": "Productos cartesianos",
+      "enunciado": "¿Qué pregunta conviene hacerse cada vez que se agrega una tabla a una consulta?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "¿Cuántas filas tiene la tabla y cuánto ocupa en disco?",
+          "explicacion": "El tamaño no define cómo se relaciona la tabla; lo importante es la relación con las demás."
+        },
+        {
+          "id": "b",
+          "texto": "¿Qué alias corto puede usarse para la tabla?",
+          "explicacion": "El alias ayuda a escribir la consulta, pero no responde a cómo se relaciona la tabla."
+        },
+        {
+          "id": "c",
+          "texto": "¿Con qué tabla se relaciona y mediante qué columnas?",
+          "explicacion": "Correcto: es la regla práctica que evita productos cartesiano accidentales."
+        },
+        {
+          "id": "d",
+          "texto": "¿Qué tipo de índice conviene crear en el servidor?",
+          "explicacion": "Esa no es la pregunta que propone el material al agregar una tabla; lo esencial es expresar la relación entre tablas."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Preguntarse con qué tabla se relaciona la nueva y por qué columnas permite expresar cada condición ON.",
+      "resumen": "Al agregar una tabla, identificar con qué tabla se relaciona y mediante qué columnas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Productos cartesianos",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "cartesiano"
+        }
+      ]
+    },
+    {
+      "id": "u03-cartesiano-solucion",
+      "tema": "Productos cartesianos",
+      "enunciado": "¿Cuál es la forma correcta de evitar un producto cartesiano accidental?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Expresar la relación entre tablas con JOIN ... ON ...",
+          "explicacion": "Correcto: la relación se indica en la unión, con su condición ON."
+        },
+        {
+          "id": "b",
+          "texto": "Filtrar el resultado con DISTINCT después de ejecutar la consulta.",
+          "explicacion": "DISTINCT quita duplicados, pero no corrige la falta de relación. El material indica que la solución no es arreglar el resultado después."
+        },
+        {
+          "id": "c",
+          "texto": "Ordenar el resultado con ORDER BY.",
+          "explicacion": "ORDER BY cambia el orden de las filas, no la relación entre tablas."
+        },
+        {
+          "id": "d",
+          "texto": "Reemplazar el JOIN por UNION ALL.",
+          "explicacion": "UNION ALL apila resultados compatibles y no relaciona filas de tablas distintas."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "La solución es expresar correctamente la relación con JOIN ... ON, y no corregir el resultado después.",
+      "resumen": "Para evitar un producto cartesiano, cada unión de tablas debe tener su condición ON.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Productos cartesianos",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "cartesiano"
+        }
+      ]
+    },
+    {
+      "id": "u03-union-vs-join",
+      "tema": "JOIN y UNION",
+      "enunciado": "¿Cuál es la diferencia principal entre JOIN y UNION?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "JOIN apila filas y UNION combina columnas.",
+          "explicacion": "Es al revés: JOIN combina columnas relacionando filas, y UNION apila filas."
+        },
+        {
+          "id": "b",
+          "texto": "Ambos combinan columnas, pero UNION elimina las filas no relacionadas.",
+          "explicacion": "UNION no combina columnas ni relaciona filas; apila resultados."
+        },
+        {
+          "id": "c",
+          "texto": "No hay diferencia; ambos cumplen la misma función con distinta sintaxis.",
+          "explicacion": "Relacionar tablas y apilar resultados son operaciones distintas."
+        },
+        {
+          "id": "d",
+          "texto": "JOIN combina columnas relacionando filas de tablas distintas; UNION apila resultados compatibles.",
+          "explicacion": "Correcto: JOIN arma un resultado más ancho y UNION un resultado más largo."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "JOIN relaciona filas de tablas distintas y combina sus columnas; UNION junta resultados compatibles uno debajo del otro.",
+      "resumen": "JOIN agrega columnas relacionando tablas; UNION agrega filas de resultados compatibles.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · JOIN no es lo mismo que UNION",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "union"
+        }
+      ]
+    },
+    {
+      "id": "u03-union-requisitos",
+      "tema": "JOIN y UNION",
+      "enunciado": "¿Qué requisito deben cumplir las consultas que se combinan con UNION?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Deben usar la misma clave foránea.",
+          "explicacion": "No es un requisito; lo necesario es la compatibilidad de las columnas."
+        },
+        {
+          "id": "b",
+          "texto": "Deben devolver la misma cantidad de columnas, en las mismas posiciones y con tipos compatibles.",
+          "explicacion": "Correcto: esa compatibilidad estructural es lo que permite apilar los resultados."
+        },
+        {
+          "id": "c",
+          "texto": "Deben incluir un JOIN cada una.",
+          "explicacion": "No es necesario; cada consulta puede ser una selección simple."
+        },
+        {
+          "id": "d",
+          "texto": "Deben consultar tablas con el mismo nombre.",
+          "explicacion": "Las tablas pueden tener nombres distintos; lo que se compara es la estructura del resultado."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Para usar UNION, las consultas deben devolver la misma cantidad de columnas, en las mismas posiciones y con tipos compatibles.",
+      "resumen": "UNION requiere la misma cantidad de columnas, en el mismo orden y con tipos compatibles.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · JOIN no es lo mismo que UNION",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "union"
+        }
+      ]
+    },
+    {
+      "id": "u03-union-distinct",
+      "tema": "JOIN y UNION",
+      "enunciado": "¿Qué diferencia hay entre UNION y UNION ALL?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "UNION ALL elimina las filas duplicadas y UNION las conserva.",
+          "explicacion": "Es al revés: UNION elimina duplicados y UNION ALL los conserva."
+        },
+        {
+          "id": "b",
+          "texto": "Ambos conservan las filas duplicadas.",
+          "explicacion": "UNION elimina las filas duplicadas; solo UNION ALL las conserva."
+        },
+        {
+          "id": "c",
+          "texto": "UNION elimina las filas duplicadas y UNION ALL las conserva.",
+          "explicacion": "Correcto: esa es la diferencia que indica el material."
+        },
+        {
+          "id": "d",
+          "texto": "UNION ordena el resultado por fecha y UNION ALL no lo ordena.",
+          "explicacion": "El orden no es lo que distingue a ambas; la diferencia está en el tratamiento de los duplicados."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "UNION quita las filas duplicadas del resultado combinado; UNION ALL las mantiene todas.",
+      "resumen": "UNION quita duplicados; UNION ALL los conserva.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · JOIN no es lo mismo que UNION",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "union"
+        }
+      ]
+    },
+    {
+      "id": "u03-union-all-motivo",
+      "tema": "JOIN y UNION",
+      "enunciado": "¿Cuándo conviene usar UNION ALL en lugar de UNION?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Cuando dos filas iguales en todas sus columnas representan operaciones distintas que deben aparecer ambas.",
+          "explicacion": "Correcto: UNION ALL no elimina duplicados, así que conserva ambos registros."
+        },
+        {
+          "id": "b",
+          "texto": "Cuando se quiere eliminar las filas repetidas del resultado.",
+          "explicacion": "Para eliminar repetidas se usa UNION, no UNION ALL."
+        },
+        {
+          "id": "c",
+          "texto": "Cuando las consultas tienen distinta cantidad de columnas.",
+          "explicacion": "Las consultas de UNION deben tener la misma cantidad de columnas; esto no habilita UNION ALL."
+        },
+        {
+          "id": "d",
+          "texto": "Cuando se quiere relacionar filas de tablas distintas por una clave.",
+          "explicacion": "Para relacionar filas por una clave se usa JOIN, no UNION ALL."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "UNION ALL conserva todas las filas, incluso las que son idénticas en sus columnas, porque no busca duplicados.",
+      "resumen": "UNION ALL conserva todas las filas, incluso las idénticas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · JOIN no es lo mismo que UNION",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "union"
+        }
+      ]
+    },
+    {
+      "id": "u03-criterio-calificar",
+      "tema": "Buenas prácticas en JOIN",
+      "enunciado": "¿Por qué conviene calificar las columnas con el nombre de la tabla o su alias (por ejemplo, p.nombre)?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque es obligatorio en MySQL para cualquier columna de una consulta.",
+          "explicacion": "No es obligatorio; se califica cuando puede existir ambigüedad."
+        },
+        {
+          "id": "b",
+          "texto": "Porque mejora el uso de índices en todas las consultas.",
+          "explicacion": "El material no atribuye a la calificación una mejora de índices; su razón es evitar ambigüedades."
+        },
+        {
+          "id": "c",
+          "texto": "Porque permite cambiar el tipo de JOIN sin modificar la consulta.",
+          "explicacion": "El tipo de JOIN se escribe en la consulta; calificar columnas no lo modifica."
+        },
+        {
+          "id": "d",
+          "texto": "Porque evita la ambigüedad cuando dos tablas tienen columnas con el mismo nombre.",
+          "explicacion": "Correcto: si el nombre se repite entre tablas, la calificación indica de cuál se toma la columna."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "Calificar columnas indica sin ambigüedad de qué tabla proviene cada una, algo que se vuelve necesario cuando hay nombres repetidos.",
+      "resumen": "Calificar columnas evita ambigüedades cuando hay nombres repetidos entre tablas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Criterios prácticos",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u03-criterio-select-star",
+      "tema": "Buenas prácticas en JOIN",
+      "enunciado": "¿Por qué se recomienda evitar SELECT * en consultas reales?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "Porque SELECT * no puede usarse en consultas con JOIN.",
+          "explicacion": "Sí puede usarse; la recomendación se basa en las columnas que trae de más."
+        },
+        {
+          "id": "b",
+          "texto": "Porque trae columnas innecesarias cuando solo se necesitan algunas.",
+          "explicacion": "Correcto: conviene pedir solamente las columnas que la consulta realmente necesita."
+        },
+        {
+          "id": "c",
+          "texto": "Porque siempre devuelve filas duplicadas.",
+          "explicacion": "SELECT * no genera duplicados por sí mismo."
+        },
+        {
+          "id": "d",
+          "texto": "Porque obliga a escribir un JOIN por cada columna.",
+          "explicacion": "No hay relación entre SELECT * y la cantidad de JOIN de una consulta."
+        }
+      ],
+      "respuestaCorrecta": "b",
+      "explicacion": "Pedir solo las columnas necesarias hace la consulta más clara y evita traer datos que no se usan.",
+      "resumen": "Evitar SELECT * cuando solo se necesitan algunas columnas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Criterios prácticos",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u03-criterio-rendimiento",
+      "tema": "Buenas prácticas en JOIN",
+      "enunciado": "Según la unidad, ¿qué conviene tener en cuenta sobre el rendimiento de los JOIN?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El orden en que se escriben los JOIN determina el plan físico de ejecución.",
+          "explicacion": "El material indica que el optimizador decide el plan; no conviene inventarlo mirando el orden de escritura."
+        },
+        {
+          "id": "b",
+          "texto": "Conviene forzar manualmente el orden de ejecución de cada JOIN.",
+          "explicacion": "La unidad indica que el optimizador de MySQL decide el plan físico; no propone forzarlo."
+        },
+        {
+          "id": "c",
+          "texto": "Conviene unir solo las tablas necesarias, usar condiciones de relación correctas y trabajar con claves apropiadas.",
+          "explicacion": "Correcto: esas son las ideas básicas de rendimiento que plantea la unidad."
+        },
+        {
+          "id": "d",
+          "texto": "Cuantas más tablas se unan, más rápida será la consulta.",
+          "explicacion": "Unir tablas innecesarias no mejora la consulta; la unidad recomienda unir solo las necesarias."
+        }
+      ],
+      "respuestaCorrecta": "c",
+      "explicacion": "Para el rendimiento, la unidad propone unir solo lo necesario, con condiciones correctas y claves apropiadas; el optimizador decide el plan de ejecución.",
+      "resumen": "Para el rendimiento, unir solo las tablas necesarias con condiciones y claves correctas.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Criterios prácticos",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "criterio"
+        }
+      ]
+    },
+    {
+      "id": "u03-cierre-idea",
+      "tema": "Idea central de la unidad",
+      "enunciado": "¿Cuál es la idea central de la unidad?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "El modelo relacional separa los datos para almacenarlos correctamente, y los JOIN los reúnen cuando una consulta necesita verlos juntos.",
+          "explicacion": "Correcto: la separación es parte del diseño y el JOIN la compensa al consultar."
+        },
+        {
+          "id": "b",
+          "texto": "El modelo relacional guarda todos los datos juntos, y los JOIN los separan en tablas para consultarlos.",
+          "explicacion": "Es al revés: el modelo separa los datos y los JOIN los reúnen."
+        },
+        {
+          "id": "c",
+          "texto": "Los JOIN reemplazan a las claves primarias para acelerar el acceso a las tablas.",
+          "explicacion": "Los JOIN no reemplazan claves; las claves expresan las relaciones del modelo."
+        },
+        {
+          "id": "d",
+          "texto": "UNION y JOIN son la misma operación escrita de distinta manera.",
+          "explicacion": "Son operaciones distintas: JOIN relaciona tablas por columnas y UNION apila filas de resultados compatibles."
+        }
+      ],
+      "respuestaCorrecta": "a",
+      "explicacion": "El diseño relacional separa los datos para evitar repeticiones, y los JOIN permiten volver a verlos juntos cuando hace falta.",
+      "resumen": "El diseño separa los datos y los JOIN los vuelven a reunir cuando la consulta lo necesita.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Idea central",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "cierre"
+        }
+      ]
+    },
+    {
+      "id": "u03-cierre-union-operacion",
+      "tema": "Idea central de la unidad",
+      "enunciado": "Si se quieren reunir dos listados con la misma estructura, uno debajo del otro, ¿qué operación corresponde?",
+      "opciones": [
+        {
+          "id": "a",
+          "texto": "INNER JOIN",
+          "explicacion": "INNER JOIN relaciona tablas por una condición ON; no apila listados."
+        },
+        {
+          "id": "b",
+          "texto": "LEFT JOIN",
+          "explicacion": "LEFT JOIN conserva las filas de la izquierda y agrega datos de la derecha; no apila listados."
+        },
+        {
+          "id": "c",
+          "texto": "RIGHT JOIN",
+          "explicacion": "RIGHT JOIN conserva las filas de la derecha y agrega datos de la izquierda; no apila listados."
+        },
+        {
+          "id": "d",
+          "texto": "UNION o UNION ALL",
+          "explicacion": "Correcto: UNION y UNION ALL juntan resultados compatibles uno debajo del otro."
+        }
+      ],
+      "respuestaCorrecta": "d",
+      "explicacion": "La síntesis de la unidad distingue JOIN, que combina columnas de tablas relacionadas, de UNION, que apila resultados compatibles.",
+      "resumen": "Para apilar listados con la misma estructura se usa UNION o UNION ALL.",
+      "material": [
+        {
+          "titulo": "Unidad 3 · Síntesis",
+          "ruta": "unidad-03-JoinUnion/1 - Join y Union.html",
+          "seccion": "cierre"
+        }
+      ]
+    }
+  ]
+}

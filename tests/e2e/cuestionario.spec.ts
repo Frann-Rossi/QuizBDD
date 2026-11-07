@@ -1,6 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
 import { idIncorrecta, leerBanco, posicionEnPantalla, preguntaEnPantalla } from './ayudas';
 
+import { readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+/** Cantidad de unidades = cantidad de archivos JSON del banco (así no se rompe al agregar una unidad). */
+const CANTIDAD_UNIDADES = readdirSync(resolve(process.cwd(), 'src/content/preguntas')).filter((a) => a.endsWith('.json')).length;
+
 const LETRAS = ['A', 'B', 'C', 'D'];
 
 async function abrir(page: Page, ruta = '/quiz/unidad-5/') {
@@ -152,7 +158,7 @@ test.describe('Cuestionario individual', () => {
 
   test('el modo mezclado incluye preguntas de varias unidades', async ({ page }) => {
     const { raiz, banco } = await abrir(page, '/quiz/todas/');
-    expect(new Set(banco.map((p) => p.unidad)).size).toBe(3);
+    expect(new Set(banco.map((p) => p.unidad)).size).toBe(CANTIDAD_UNIDADES);
     await expect(raiz.locator('[data-etiqueta]')).toContainText(/Unidad \d/);
   });
 });

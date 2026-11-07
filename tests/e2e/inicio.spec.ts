@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { esperarSinDesbordeHorizontal } from './ayudas';
+import { readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+/** Cantidad de unidades = cantidad de archivos JSON del banco (así no se rompe al agregar una unidad). */
+const CANTIDAD_UNIDADES = readdirSync(resolve(process.cwd(), 'src/content/preguntas')).filter((a) => a.endsWith('.json')).length;
 
 test.describe('Inicio', () => {
   test('muestra los modos de práctica y una tarjeta por unidad', async ({ page }) => {
@@ -10,7 +15,7 @@ test.describe('Inicio', () => {
     await expect(page.getByRole('link', { name: /Modo juego/ })).toHaveAttribute('href', '/juego/');
 
     const unidades = page.locator('a[href^="/quiz/unidad-"]');
-    await expect(unidades).toHaveCount(3);
+    await expect(unidades).toHaveCount(CANTIDAD_UNIDADES);
   });
 
   test('el total de preguntas coincide con la suma de las unidades', async ({ page }) => {
