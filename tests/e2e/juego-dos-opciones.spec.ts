@@ -52,3 +52,24 @@ test.describe('Modo juego con preguntas de dos opciones', () => {
     }
   });
 });
+
+test.describe('Modo juego sin material de estudio', () => {
+  test('al revelar, el bloque de material se oculta si la pregunta no tiene referencias', async ({ page }) => {
+    await page.route('**/juego/', async (ruta) => {
+      const respuesta = await ruta.fetch();
+      const html = await respuesta.text();
+      const nuevo = html.replace(/(<script[^>]*data-preguntas[^>]*>)([\s\S]*?)(<\/script>)/, (_m, a, json, c) => {
+        const preguntas = JSON.parse(json).map((p: object) => ({ ...p, material: [] }));
+        return a + JSON.stringify(preguntas).replace(/</g, '\u003c') + c;
+      });
+      await ruta.fulfill({ response: respuesta, body: nuevo });
+    });
+    const raiz = await empezar(page);
+    await raiz.locator('[data-opciones] [data-opcion="a"]').getByRole('button', { name: /Ana vota/ }).click();
+    await raiz.locator('[data-opciones] [data-opcion="a"]').getByRole('button', { name: /Bruno vota/ }).click();
+    await raiz.locator('[data-opciones] [data-opcion="b"]').getByRole('button', { name: /Carla vota/ }).click();
+    await raiz.getByRole('button', { name: /Revelar respuesta/ }).click();
+    await expect(raiz.locator('[data-revelacion-titulo]')).toBeVisible();
+    await expect(raiz.locator('[data-enlaces]').locator('..')).toBeHidden();
+  });
+});

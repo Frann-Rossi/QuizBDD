@@ -379,6 +379,8 @@ export function iniciarJuego(raiz: HTMLElement): void {
     if (actual.resumen) bloques.push(crearBloque('Resumen', actual.resumen));
     explicacion.replaceChildren(...bloques);
     enlaces.replaceChildren(...actual.material.map(crearEnlaceMaterial));
+    // El material es opcional: sin referencias no se muestra el bloque.
+    enlaces.parentElement?.classList.toggle('hidden', actual.material.length === 0);
 
     botonSiguiente.textContent = indice === preguntas.length - 1 ? 'Ver ranking ▶' : 'Siguiente ▶';
 
