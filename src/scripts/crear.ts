@@ -1,5 +1,8 @@
 /** Página /crear: arma una pregunta desde el formulario y descarga el JSON de su unidad actualizado. */
+import { leerImportacion } from '@/lib/crear/importar';
+import { MODELO_PREGUNTAS } from '@/lib/crear/modelo';
 import {
+  agregarPreguntas,
   agregarPregunta,
   aArchivoJson,
   construirPregunta,
@@ -417,6 +420,62 @@ export function iniciarCrear(): void {
     elemento('aviso-edicion').classList.remove('hidden');
     elemento('id-en-edicion').textContent = pregunta.id;
     mostrarMensaje(`Guardado en ${destino.archivo}.`, 'ok');
+  });
+
+  // ---------- Modelo y importación de JSON ----------
+
+  elemento('boton-descargar-modelo').addEventListener('click', () => {
+    const blob = new Blob([`${JSON.stringify(MODELO_PREGUNTAS, null, 2)}\n`], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement('a');
+    enlace.href = url;
+    enlace.download = 'modelo-preguntas.json';
+    enlace.click();
+    URL.revokeObjectURL(url);
+  });
+
+  const campoJson = elemento<HTMLInputElement>('campo-json');
+  const estadoImportacion = elemento<HTMLParagraphElement>('estado-importacion');
+  const listaImportacion = elemento<HTMLUListElement>('lista-importacion');
+
+  elemento('boton-importar').addEventListener('click', async () => {
+    listaImportacion.replaceChildren();
+    const archivo = campoJson.files?.[0];
+    if (!archivo) {
+      estadoImportacion.textContent = 'Elegí un archivo JSON.';
+      estadoImportacion.className = 'mt-2 text-sm text-error';
+      return;
+    }
+    const destino = datos.bancos.find((b) => b.banco.unidad === Number(campoUnidad.value));
+    if (!destino) return;
+
+    const idsExistentes = datos.bancos.flatMap((b) => b.banco.preguntas.map((p) => p.id));
+    const resultado = leerImportacion(await archivo.text(), idsExistentes);
+    if (!resultado.ok) {
+      listaImportacion.replaceChildren(
+        ...resultado.errores.map((texto) => {
+          const li = document.createElement('li');
+          li.textContent = `• ${texto}`;
+          return li;
+        }),
+      );
+      estadoImportacion.textContent = 'No se importó nada: corregí el archivo y volvé a intentar.';
+      estadoImportacion.className = 'mt-2 text-sm text-error';
+      return;
+    }
+
+    const actualizado = agregarPreguntas(destino.banco, resultado.preguntas);
+    try {
+      await guardarEnDisco(destino.archivo, actualizado);
+    } catch (error) {
+      estadoImportacion.textContent = `${error instanceof Error ? error.message : 'Error desconocido.'} (Importar solo funciona con npm run dev.)`;
+      estadoImportacion.className = 'mt-2 text-sm text-error';
+      return;
+    }
+    destino.banco = actualizado;
+    estadoImportacion.textContent = `Importadas ${resultado.preguntas.length} pregunta(s) en ${destino.archivo}.`;
+    estadoImportacion.className = 'mt-2 text-sm text-ok';
+    campoJson.value = '';
   });
 
   aplicarCantidadOpciones();

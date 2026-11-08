@@ -7,6 +7,7 @@ import { obtenerDocumentosMaterial } from '@/services/material';
 import { serializarParaScript } from '@/utils/serializar';
 import { listarCarpetasMaterial } from '../../autoria/servidor.mjs';
 import { join } from 'node:path';
+import { MODELO_PREGUNTAS } from '@/lib/crear/modelo';
 
 // Herramienta de autoría: carga la pregunta y genera el JSON de la unidad para reemplazarlo.
 const entradas = await getCollection('preguntas');
@@ -221,6 +222,39 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
         <div id="mensaje-estado" class="mt-4 text-sm" role="status" aria-live="polite"></div>
         <ul id="lista-errores" class="mt-2 flex flex-col gap-1 text-sm text-error" aria-live="assertive"></ul>
         <pre id="vista-previa" class="mt-4 hidden max-h-96 overflow-auto border-[3px] border-borde bg-panel-2 p-4 text-xs text-tinta"></pre>
+      </section>
+
+      <!-- Importar un JSON con preguntas ya armadas (por ejemplo, a partir de un PDF) -->
+      <section class={clasesSeccion} aria-labelledby="t-importar">
+        <h2 id="t-importar" class="text-xl font-bold text-tinta">6. Importar preguntas desde un JSON</h2>
+        <p class="mt-2 text-sm text-tenue">
+          Si ya tenés las preguntas armadas en un JSON, subilo acá: se revisa con las mismas reglas del banco y, si está bien,
+          se agregan a la unidad elegida en el paso 1. Solo funciona con <code class="text-sql-cadena">npm run dev</code>.
+        </p>
+
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button type="button" id="boton-descargar-modelo" class="boton-pixel bg-panel-2 text-tinta">⬇ Descargar modelo</button>
+        </div>
+
+        <details class="mt-4 border-[3px] border-borde bg-panel-2 p-3">
+          <summary class="cursor-pointer text-sm font-bold text-primario">Ver el modelo completo</summary>
+          <p class="mt-3 text-xs text-tenue">
+            Las reglas: de 2 a 4 opciones (a, b, c, d en ese orden), una respuesta correcta que sea una de ellas, y ids únicos.
+            La explicación general, el resumen y el material son opcionales. Un material puede ser un HTML del material
+            (con <code>seccion</code> = id de una sección) o un PDF (con <code>seccion</code> = <code>pagina-N</code>).
+          </p>
+          <pre id="modelo-json" class="mt-3 max-h-96 overflow-auto text-xs text-tinta">{JSON.stringify(MODELO_PREGUNTAS, null, 2)}</pre>
+        </details>
+
+        <div class="mt-5 grid gap-3 sm:grid-cols-2">
+          <div>
+            <label for="campo-json" class={clasesEtiqueta}>Archivo JSON</label>
+            <input id="campo-json" type="file" accept=".json,application/json" class={clasesInput} />
+          </div>
+        </div>
+        <button type="button" id="boton-importar" class="boton-pixel mt-4 bg-acento text-sobre-acento">⬆ Importar a la unidad elegida</button>
+        <p id="estado-importacion" class="mt-2 text-sm text-tenue" role="status"></p>
+        <ul id="lista-importacion" class="mt-2 flex flex-col gap-1 text-sm text-error"></ul>
       </section>
     </form>
 

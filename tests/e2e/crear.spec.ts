@@ -151,3 +151,35 @@ test.describe('Crear pregunta', () => {
     await expect(page.locator('#mensaje-estado')).toContainText('Indicá la página del PDF');
   });
 });
+
+test.describe('Importar preguntas desde un JSON', () => {
+  test('el modelo se muestra y se puede descargar como JSON válido', async ({ page }) => {
+    await page.goto('/crear/');
+    await expect(page.locator('#modelo-json')).toContainText('u05-modelo-escalar');
+    const [descarga] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('#boton-descargar-modelo').click(),
+    ]);
+    expect(descarga.suggestedFilename()).toBe('modelo-preguntas.json');
+    const { readFile } = await import('node:fs/promises');
+    const contenido = JSON.parse(await readFile((await descarga.path()) ?? '', 'utf-8'));
+    expect(contenido.preguntas).toHaveLength(2);
+  });
+
+  test('un archivo inválido muestra los errores y no envía nada', async ({ page }) => {
+    const pedidos: string[] = [];
+    page.on('request', (pedido) => {
+      if (pedido.url().includes('/__autoria/')) pedidos.push(pedido.url());
+    });
+    await page.goto('/crear/');
+    await page.locator('#campo-json').setInputFiles({
+      name: 'malo.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify([{ id: 'x', tema: 't' }])),
+    });
+    await page.locator('#boton-importar').click();
+    await expect(page.locator('#lista-importacion')).toContainText('Pregunta 1:');
+    await expect(page.locator('#estado-importacion')).toContainText('No se importó nada');
+    expect(pedidos).toHaveLength(0);
+  });
+});

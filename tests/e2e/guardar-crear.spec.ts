@@ -45,3 +45,47 @@ test('cambiar la unidad de una pregunta la mueve al banco nuevo', async ({ page 
   expect(leer(ARCHIVO_1).preguntas.some((p) => p.id === ID)).toBe(false);
   expect(leer(ARCHIVO_2).preguntas.some((p) => p.id === ID)).toBe(true);
 });
+
+test('importar un JSON válido agrega sus preguntas a la unidad elegida', async ({ page }) => {
+  const preguntas = [
+    {
+      id: 'u01-prueba-importar-1',
+      tema: 'Importación de prueba',
+      enunciado: '¿Pregunta importada?',
+      opciones: [
+        { id: 'a', texto: 'Sí', explicacion: 'Correcta.' },
+        { id: 'b', texto: 'No', explicacion: 'Incorrecta.' },
+      ],
+      respuestaCorrecta: 'a',
+      material: [],
+    },
+    {
+      id: 'u01-prueba-importar-2',
+      tema: 'Importación de prueba con material',
+      enunciado: '¿Otra pregunta importada?',
+      opciones: [
+        { id: 'a', texto: 'No', explicacion: 'Incorrecta.' },
+        { id: 'b', texto: 'Sí', explicacion: 'Correcta.' },
+        { id: 'c', texto: 'Tal vez', explicacion: 'Incorrecta.' },
+      ],
+      respuestaCorrecta: 'b',
+      explicacion: 'Explicación general.',
+      material: [{ titulo: 'Subconsultas', ruta: 'unidad-05-subconsultas/subconsultas.html', seccion: 'escalares' }],
+    },
+  ];
+  await page.goto('/crear/');
+  await page.locator('#campo-unidad').selectOption('1');
+  await page.locator('#campo-json').setInputFiles({
+    name: 'preguntas.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(preguntas)),
+  });
+  await expect(async () => {
+    await page.locator('#boton-importar').click();
+    await expect(page.locator('#estado-importacion')).toContainText('Importadas 2', { timeout: 2000 });
+  }).toPass();
+
+  const ids = leer(ARCHIVO_1).preguntas.map((p) => p.id);
+  expect(ids).toContain('u01-prueba-importar-1');
+  expect(ids).toContain('u01-prueba-importar-2');
+});

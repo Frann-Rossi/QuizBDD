@@ -125,3 +125,8 @@ export function reemplazarPregunta(banco: BancoPreguntas, idOriginal: string, pr
 export function quitarPregunta(banco: BancoPreguntas, id: string): BancoPreguntas {
   return { ...banco, preguntas: banco.preguntas.filter((p) => p.id !== id) };
 }
+
+/** Devuelve un banco nuevo con varias preguntas al final. No modifica el original. */
+export function agregarPreguntas(banco: BancoPreguntas, preguntas: readonly Pregunta[]): BancoPreguntas {
+  return { ...banco, preguntas: [...banco.preguntas, ...preguntas] };
+}
