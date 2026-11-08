@@ -29,6 +29,7 @@ test.describe('Preguntas (herramienta de autoría)', () => {
   test('editar abre el formulario de Crear con la pregunta cargada', async ({ page }) => {
     await page.goto('/preguntas/');
     const pregunta = leerBanco().preguntas.find((p: { id: string }) => p.id === 'u01-clave-candidata');
+    await page.locator('section[data-unidad="1"] summary').click();
     await page.locator('li[data-pregunta="u01-clave-candidata"] a', { hasText: 'Editar' }).click();
 
     await expect(page).toHaveURL(/\/crear\/\?editar=u01-clave-candidata$/);
@@ -47,6 +48,7 @@ test.describe('Preguntas (herramienta de autoría)', () => {
 
     await page.goto('/preguntas/');
     const antes = await page.locator('section[data-unidad="1"] li[data-pregunta]').count();
+    await page.locator('section[data-unidad="1"] summary').click();
     await page.locator('button[data-eliminar="u01-clave-candidata"]').click();
 
     await expect(page.locator('section[data-unidad="1"] li[data-pregunta]')).toHaveCount(antes);

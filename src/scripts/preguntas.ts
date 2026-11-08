@@ -26,6 +26,9 @@ export function iniciarPreguntas(): void {
     document.querySelectorAll<HTMLElement>('section[data-unidad]').forEach((seccion) => {
       const visibles = [...seccion.querySelectorAll<HTMLElement>('li[data-pregunta]')].some((item) => !item.hidden);
       seccion.hidden = !visibles;
+      // Al buscar, se abren las unidades con coincidencias para verlas.
+      const plegable = seccion.querySelector<HTMLDetailsElement>('details');
+      if (plegable && texto !== '') plegable.open = visibles;
     });
   });
 

@@ -98,15 +98,15 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
           {
             ['a', 'b', 'c', 'd'].map((letra, indice) => (
               <div class="border-[3px] border-borde bg-panel-2 p-4" data-bloque-opcion={indice + 1}>
-                <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <input
                     type="radio"
                     name="respuesta"
                     value={letra}
                     id={`respuesta-${letra}`}
-                    class="size-4 accent-ok"
+                    class="size-4 shrink-0 accent-ok"
                   />
-                  <label for={`respuesta-${letra}`} class="font-pixel text-lg font-bold uppercase text-tinta">
+                  <label for={`respuesta-${letra}`} class="whitespace-nowrap font-pixel text-lg font-bold uppercase text-tinta">
                     Opción {letra.toUpperCase()}
                   </label>
                   <span class="text-xs text-tenue">marcar si es la correcta</span>
