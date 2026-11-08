@@ -20,7 +20,7 @@ const enlaces: { href: string; texto: string; siempreVisible?: boolean }[] = [
   ...(import.meta.env.DEV
     ? [
         { href: '/crear/', texto: 'Crear', siempreVisible: true },
-        { href: '/preguntas/', texto: 'Preguntas' },
+        { href: '/preguntas/', texto: 'Preguntas', siempreVisible: true },
       ]
     : []),
 ];

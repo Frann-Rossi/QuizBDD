@@ -49,3 +49,14 @@ test.describe('Preguntas (herramienta de autoría)', () => {
     expect(pedidos).toHaveLength(0);
   });
 });
+
+test.describe('Preguntas en el menú y en celular', () => {
+  test('el menú muestra Preguntas en cualquier tamaño y la página no desborda', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Preguntas' })).toBeVisible();
+
+    await page.goto('/preguntas/');
+    const desborde = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(desborde).toBeLessThanOrEqual(0);
+  });
+});
