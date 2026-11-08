@@ -6,11 +6,13 @@ export interface DatosFormulario {
   id: string;
   tema: string;
   enunciado: string;
-  /** Exactamente cuatro, en el orden a, b, c, d. */
+  /** Entre dos y cuatro opciones, en el orden a, b, c, d (solo las que se usan). */
   opciones: { texto: string; explicacion: string }[];
   respuestaCorrecta: OpcionId | '';
+  /** Explicación general (opcional). */
   explicacion: string;
   resumen: string;
+  /** Material de estudio (opcional). */
   material: MaterialReferencia[];
 }
 
@@ -18,10 +20,13 @@ export type ResultadoConstruccion = { ok: true; pregunta: Pregunta } | { ok: fal
 
 const OPCION_IDS: readonly OpcionId[] = ['a', 'b', 'c', 'd'];
 const PATRON_ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export const MIN_OPCIONES = 2;
+export const MAX_OPCIONES = 4;
 
 /**
  * Convierte los datos del formulario en una `Pregunta` válida.
  * Los mensajes de error están en español y pensados para quien carga la pregunta.
+ * La explicación general y el material son opcionales: si están vacíos, no se guardan.
  * @param idsExistentes identificadores ya usados en el banco, para evitar duplicados.
  */
 export function construirPregunta(datos: DatosFormulario, idsExistentes: readonly string[] = []): ResultadoConstruccion {
@@ -35,18 +40,23 @@ export function construirPregunta(datos: DatosFormulario, idsExistentes: readonl
   if (!datos.tema.trim()) errores.push('Falta el tema.');
   if (!datos.enunciado.trim()) errores.push('Falta el enunciado.');
 
+  if (datos.opciones.length < MIN_OPCIONES || datos.opciones.length > MAX_OPCIONES) {
+    errores.push(`La pregunta debe tener entre ${MIN_OPCIONES} y ${MAX_OPCIONES} opciones.`);
+  }
   datos.opciones.forEach((opcion, indice) => {
     const letra = (OPCION_IDS[indice] ?? '').toUpperCase();
     if (!opcion.texto.trim()) errores.push(`Falta el texto de la opción ${letra}.`);
     if (!opcion.explicacion.trim()) errores.push(`Falta la explicación de la opción ${letra}.`);
   });
 
-  if (!datos.respuestaCorrecta) errores.push('Elegí cuál es la respuesta correcta.');
-  if (!datos.explicacion.trim()) errores.push('Falta la explicación general.');
-  if (datos.material.length === 0) errores.push('Agregá al menos un material de estudio.');
+  const usadas = OPCION_IDS.slice(0, datos.opciones.length);
+  if (!datos.respuestaCorrecta || !usadas.includes(datos.respuestaCorrecta)) {
+    errores.push('Elegí cuál es la respuesta correcta.');
+  }
 
   if (errores.length > 0) return { ok: false, errores };
 
+  const explicacion = datos.explicacion.trim();
   const resumen = datos.resumen.trim();
   const candidata = {
     id,
@@ -58,7 +68,7 @@ export function construirPregunta(datos: DatosFormulario, idsExistentes: readonl
       explicacion: opcion.explicacion.trim(),
     })),
     respuestaCorrecta: datos.respuestaCorrecta,
-    explicacion: datos.explicacion.trim(),
+    ...(explicacion ? { explicacion } : {}),
     ...(resumen ? { resumen } : {}),
     material: datos.material,
   };

@@ -39,6 +39,7 @@ export function iniciarCrear(): void {
   const bloqueSeccion = elemento<HTMLDivElement>('bloque-seccion');
   const bloquePagina = elemento<HTMLLabelElement>('bloque-pagina');
   const campoPagina = elemento<HTMLInputElement>('campo-pagina');
+  const campoCantidad = elemento<HTMLSelectElement>('campo-cantidad');
   const campoCarpetaSubida = elemento<HTMLSelectElement>('campo-carpeta-subida');
   const campoArchivo = elemento<HTMLInputElement>('campo-archivo');
   const botonSubir = elemento<HTMLButtonElement>('boton-subir');
@@ -65,13 +66,34 @@ export function iniciarCrear(): void {
     );
   }
 
+  /** Cuántas opciones usa la pregunta (2, 3 o 4). Las demás bloques quedan ocultas y no se guardan. */
+  function cantidadOpciones(): number {
+    return Number(campoCantidad.value) || 4;
+  }
+
+  function aplicarCantidadOpciones() {
+    const cantidad = cantidadOpciones();
+    document.querySelectorAll<HTMLElement>('[data-bloque-opcion]').forEach((bloque) => {
+      const indice = Number(bloque.dataset['bloqueOpcion']);
+      const usada = indice <= cantidad;
+      bloque.hidden = !usada;
+      const radio = bloque.querySelector<HTMLInputElement>('input[name="respuesta"]');
+      if (radio) {
+        radio.disabled = !usada;
+        if (!usada) radio.checked = false;
+      }
+    });
+  }
+
+  campoCantidad.addEventListener('change', aplicarCantidadOpciones);
+
   function leerFormulario(): DatosFormulario {
     const respuesta = document.querySelector<HTMLInputElement>('input[name="respuesta"]:checked');
     return {
       id: campoId.value,
       tema: campoTema.value,
       enunciado: elemento<HTMLTextAreaElement>('campo-enunciado').value,
-      opciones: LETRAS.map((letra) => ({
+      opciones: LETRAS.slice(0, cantidadOpciones()).map((letra) => ({
         texto: elemento<HTMLInputElement>(`opcion-${letra}-texto`).value,
         explicacion: elemento<HTMLTextAreaElement>(`opcion-${letra}-explicacion`).value,
       })),
@@ -297,6 +319,7 @@ export function iniciarCrear(): void {
     vistaPrevia.classList.add('hidden');
     campoId.dataset.auto = 'true';
     actualizarSugerenciaId();
+    aplicarCantidadOpciones();
     cargarSecciones();
     mostrarMensaje('Formulario limpio.');
   });
@@ -311,13 +334,15 @@ export function iniciarCrear(): void {
     campoId.value = pregunta.id;
     campoId.dataset.auto = 'false';
     campoTema.value = pregunta.tema;
+    campoCantidad.value = String(pregunta.opciones.length);
+    aplicarCantidadOpciones();
     elemento<HTMLTextAreaElement>('campo-enunciado').value = pregunta.enunciado;
     pregunta.opciones.forEach((opcion) => {
       elemento<HTMLInputElement>(`opcion-${opcion.id}-texto`).value = opcion.texto;
       elemento<HTMLTextAreaElement>(`opcion-${opcion.id}-explicacion`).value = opcion.explicacion;
     });
     elemento<HTMLInputElement>(`respuesta-${pregunta.respuestaCorrecta}`).checked = true;
-    elemento<HTMLTextAreaElement>('campo-explicacion').value = pregunta.explicacion;
+    elemento<HTMLTextAreaElement>('campo-explicacion').value = pregunta.explicacion ?? '';
     elemento<HTMLTextAreaElement>('campo-resumen').value = pregunta.resumen ?? '';
     material.length = 0;
     material.push(...pregunta.material);
@@ -391,6 +416,7 @@ export function iniciarCrear(): void {
     mostrarMensaje(`Guardado en ${destino.archivo}.`, 'ok');
   });
 
+  aplicarCantidadOpciones();
   cargarSecciones();
   actualizarSugerenciaId();
 }

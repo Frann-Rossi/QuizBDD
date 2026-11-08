@@ -21,11 +21,11 @@ export interface Pregunta {
   id: string;
   tema: string;
   enunciado: string;
-  /** Exactamente cuatro opciones, con identificadores `a`, `b`, `c` y `d`. */
-  opciones: [Opcion, Opcion, Opcion, Opcion];
+  /** Entre dos y cuatro opciones, con identificadores `a`, `b`, `c` y `d` (en ese orden). */
+  opciones: Opcion[];
   respuestaCorrecta: OpcionId;
-  /** Explicación general del concepto evaluado. */
-  explicacion: string;
+  /** Explicación general del concepto evaluado (opcional). */
+  explicacion?: string | undefined;
   /** Resumen breve del concepto (opcional). */
   resumen?: string | undefined;
   material: MaterialReferencia[];
@@ -56,6 +56,6 @@ export interface ResultadoRespuesta {
   esCorrecta: boolean;
   opcionSeleccionada: Opcion;
   opcionCorrecta: Opcion;
-  explicacion: string;
+  explicacion?: string | undefined;
   material: MaterialReferencia[];
 }

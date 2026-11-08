@@ -84,11 +84,20 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
           <textarea id="campo-enunciado" class={clasesInput} rows="3" placeholder="¿Qué devuelve una subconsulta escalar?"></textarea>
         </label>
 
-        <fieldset class="mt-6 flex flex-col gap-4">
+        <div class="mt-6">
+          <label for="campo-cantidad" class={clasesEtiqueta}>Cantidad de opciones</label>
+          <select id="campo-cantidad" class={`${clasesInput} sm:w-48`}>
+            <option value="2">2 opciones</option>
+            <option value="3">3 opciones</option>
+            <option value="4" selected>4 opciones</option>
+          </select>
+        </div>
+
+        <fieldset class="mt-4 flex flex-col gap-4">
           <legend class="text-sm font-bold text-tinta">Opciones (marcá la correcta)</legend>
           {
-            ['a', 'b', 'c', 'd'].map((letra) => (
-              <div class="border-[3px] border-borde bg-panel-2 p-4">
+            ['a', 'b', 'c', 'd'].map((letra, indice) => (
+              <div class="border-[3px] border-borde bg-panel-2 p-4" data-bloque-opcion={indice + 1}>
                 <div class="flex items-center gap-3">
                   <input
                     type="radio"
@@ -118,9 +127,9 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
 
       <!-- Explicación y resumen -->
       <section class={clasesSeccion} aria-labelledby="t-explicacion">
-        <h2 id="t-explicacion" class="text-xl font-bold text-tinta">3. Explicación</h2>
+        <h2 id="t-explicacion" class="text-xl font-bold text-tinta">3. Explicación <span class="font-sans text-sm font-normal text-tenue">(opcional)</span></h2>
         <label class={`${clasesEtiqueta} mt-4`}>
-          Explicación general del concepto
+          Explicación general del concepto <span class="font-normal text-tenue">(opcional)</span>
           <textarea id="campo-explicacion" class={clasesInput} rows="3"></textarea>
         </label>
         <label class={`${clasesEtiqueta} mt-4`}>
@@ -132,9 +141,10 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
 
       <!-- Material de estudio -->
       <section class={clasesSeccion} aria-labelledby="t-material">
-        <h2 id="t-material" class="text-xl font-bold text-tinta">4. Material de estudio</h2>
+        <h2 id="t-material" class="text-xl font-bold text-tinta">4. Material de estudio <span class="font-sans text-sm font-normal text-tenue">(opcional)</span></h2>
         <p class="mt-2 text-sm text-tenue">
-          Elegí el documento y la sección donde está el tema. El enlace se arma solo.
+          Si querés que la pregunta enlace a un documento, elegí el documento y la sección (o la página, si es un PDF).
+          El enlace se arma solo. Si no hace falta, dejá esta sección vacía.
         </p>
 
         <!-- Subida desde la PC: copia el archivo a materialEstudio/ (solo con npm run dev). -->

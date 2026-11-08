@@ -28,16 +28,22 @@ export const preguntaSchema = z
     id: textoRequerido,
     tema: textoRequerido,
     enunciado: textoRequerido,
-    opciones: z.tuple([opcionSchema, opcionSchema, opcionSchema, opcionSchema]),
+    opciones: z.array(opcionSchema).min(2).max(4),
     respuestaCorrecta: z.enum(OPCION_IDS),
-    explicacion: textoRequerido,
+    /** Explicación general opcional. */
+    explicacion: textoRequerido.optional(),
     /** Resumen opcional del concepto; no es obligatorio en el banco. */
     resumen: textoRequerido.optional(),
-    material: z.array(materialSchema).min(1),
+    /** Material opcional: una pregunta puede no tener referencias. */
+    material: z.array(materialSchema),
   })
-  .refine((pregunta) => new Set(pregunta.opciones.map((o) => o.id)).size === OPCION_IDS.length, {
-    message: 'Las cuatro opciones deben tener identificadores distintos (a, b, c, d).',
+  .refine((pregunta) => new Set(pregunta.opciones.map((o) => o.id)).size === pregunta.opciones.length, {
+    message: 'Las opciones deben tener identificadores distintos.',
     path: ['opciones'],
+  })
+  .refine((pregunta) => pregunta.opciones.some((o) => o.id === pregunta.respuestaCorrecta), {
+    message: 'La respuesta correcta debe ser una de las opciones.',
+    path: ['respuestaCorrecta'],
   }) satisfies z.ZodType<Pregunta>;
 
 export const bancoPreguntasSchema = z

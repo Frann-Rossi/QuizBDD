@@ -375,7 +375,7 @@ export function iniciarJuego(raiz: HTMLElement): void {
         bloques.push(crearBloque(`Por qué la ${letraDe(opcion.id)} no es correcta`, opcion.explicacion));
       }
     }
-    bloques.push(crearBloque('Para repasar el concepto', actual.explicacion));
+    if (actual.explicacion) bloques.push(crearBloque('Para repasar el concepto', actual.explicacion));
     explicacion.replaceChildren(...bloques);
     enlaces.replaceChildren(...actual.material.map(crearEnlaceMaterial));
 

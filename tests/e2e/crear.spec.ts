@@ -64,7 +64,29 @@ test.describe('Crear pregunta', () => {
     await expect(page.getByRole('combobox', { name: 'Sección', exact: true })).toBeVisible();
     await page.getByRole('button', { name: /Vista previa/ }).click();
     await expect(page.locator('#lista-errores')).toContainText('Falta el enunciado.');
-    await expect(page.locator('#lista-errores')).toContainText('Agregá al menos un material de estudio.');
+    await expect(page.locator('#lista-errores')).toContainText('Elegí cuál es la respuesta correcta.');
+  });
+
+  test('una pregunta de dos opciones se arma sin explicación ni material', async ({ page }) => {
+    await page.goto('/crear/');
+    await page.locator('#campo-unidad').selectOption('5');
+    await page.locator('#campo-cantidad').selectOption('2');
+    // Las opciones C y D quedan ocultas.
+    await expect(page.locator('[data-bloque-opcion="3"]')).toBeHidden();
+    await expect(page.locator('[data-bloque-opcion="4"]')).toBeHidden();
+
+    await page.locator('#campo-tema').fill('Pregunta corta');
+    await page.locator('#campo-enunciado').fill('¿Verdadero o falso?');
+    await page.locator('#opcion-a-texto').fill('Verdadero');
+    await page.locator('#opcion-a-explicacion').fill('Es verdadero.');
+    await page.locator('#opcion-b-texto').fill('Falso');
+    await page.locator('#opcion-b-explicacion').fill('No lo es.');
+    await page.locator('#respuesta-a').check();
+
+    await page.getByRole('button', { name: /Vista previa/ }).click();
+    await expect(page.locator('#vista-previa')).toContainText('"respuestaCorrecta": "a"');
+    await expect(page.locator('#vista-previa')).not.toContainText('"explicacion": ""');
+    await expect(page.locator('#lista-errores')).toBeEmpty();
   });
 
   test('no agrega material si no se eligió documento ni sección', async ({ page }) => {

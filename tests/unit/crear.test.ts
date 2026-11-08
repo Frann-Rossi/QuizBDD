@@ -57,9 +57,28 @@ describe('construirPregunta', () => {
         'Falta el tema.',
         'Falta el enunciado.',
         'Elegí cuál es la respuesta correcta.',
-        'Agregá al menos un material de estudio.',
       ]),
     );
+    // La explicación general y el material ya no son obligatorios.
+    expect(resultado.errores).not.toContain('Agregá al menos un material de estudio.');
+    expect(resultado.errores).not.toContain('Falta la explicación general.');
+  });
+
+  it('arma una pregunta de dos opciones sin explicación ni material', () => {
+    const resultado = construirPregunta(
+      { ...datosValidos(), opciones: datosValidos().opciones.slice(0, 2), explicacion: '', material: [], resumen: '' },
+      [],
+    );
+    expect(resultado.ok).toBe(true);
+    if (!resultado.ok) return;
+    expect(resultado.pregunta.opciones).toHaveLength(2);
+    expect('explicacion' in resultado.pregunta).toBe(false);
+    expect(resultado.pregunta.material).toEqual([]);
+  });
+
+  it('rechaza una pregunta con menos de dos opciones', () => {
+    const resultado = construirPregunta({ ...datosValidos(), opciones: datosValidos().opciones.slice(0, 1) }, []);
+    expect(resultado.ok).toBe(false);
   });
 
   it('rechaza identificadores repetidos o con formato inválido', () => {

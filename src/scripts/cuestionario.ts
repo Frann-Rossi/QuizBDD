@@ -163,6 +163,8 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
     const letraCorrecta = LETRAS[posicionCorrecta(pregunta)] ?? '';
     // El resumen es opcional: solo se muestra si la pregunta lo tiene.
     const bloqueResumen = pregunta.resumen ? [crearBloque('Resumen', pregunta.resumen)] : [];
+    // La explicación general y el material son opcionales: solo se muestran si la pregunta los tiene.
+    const bloqueGeneral = (titulo: string) => (resultado.explicacion ? [crearBloque(titulo, resultado.explicacion)] : []);
 
     if (resultado.esCorrecta) {
       retro.className = 'caja-pixel mt-5 border-ok bg-ok-suave shadow-pixel-ok';
@@ -172,7 +174,7 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
       retroTitulo.textContent = '¡Correcto!';
       retroCuerpo.replaceChildren(
         crearBloque('Por qué es correcta', resultado.opcionSeleccionada.explicacion),
-        crearBloque('Para reforzar el concepto', resultado.explicacion),
+        ...bloqueGeneral('Para reforzar el concepto'),
         ...bloqueResumen,
       );
     } else {
@@ -185,12 +187,14 @@ export function iniciarCuestionario(raiz: HTMLElement): void {
         crearBloque(`La respuesta correcta es la ${letraCorrecta}`, resultado.opcionCorrecta.texto),
         crearBloque('Por qué tu respuesta no es correcta', resultado.opcionSeleccionada.explicacion),
         crearBloque(`Por qué la ${letraCorrecta} es correcta`, resultado.opcionCorrecta.explicacion),
-        crearBloque('Para repasar el concepto', resultado.explicacion),
+        ...bloqueGeneral('Para repasar el concepto'),
         ...bloqueResumen,
       );
     }
 
     retroEnlaces.replaceChildren(...resultado.material.map(crearEnlaceMaterial));
+    // El material es opcional: sin referencias no se muestra el bloque.
+    retroEnlaces.parentElement?.classList.toggle('hidden', resultado.material.length === 0);
     botonSiguiente.textContent = indice === preguntas.length - 1 ? 'Ver resultado ▶' : 'Siguiente ▶';
     botonSiguiente.classList.remove('hidden');
   }
