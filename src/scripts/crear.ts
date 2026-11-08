@@ -8,7 +8,7 @@ import {
 } from '@/lib/crear/pregunta';
 import type { DocumentoMaterial } from '@/services/material';
 import type { BancoPreguntas, MaterialReferencia, OpcionId } from '@/types/quiz';
-import { urlMaterial } from '@/utils/rutas';
+import { esPdf, urlMaterial } from '@/utils/rutas';
 
 interface DatosPagina {
   bancos: { archivo: string; banco: BancoPreguntas }[];
@@ -34,6 +34,13 @@ export function iniciarCrear(): void {
   const campoDocumento = elemento<HTMLSelectElement>('campo-documento');
   const campoSeccion = elemento<HTMLSelectElement>('campo-seccion');
   const campoTituloMaterial = elemento<HTMLInputElement>('campo-titulo-material');
+  const bloqueSeccion = elemento<HTMLDivElement>('bloque-seccion');
+  const bloquePagina = elemento<HTMLLabelElement>('bloque-pagina');
+  const campoPagina = elemento<HTMLInputElement>('campo-pagina');
+  const campoCarpetaSubida = elemento<HTMLSelectElement>('campo-carpeta-subida');
+  const campoArchivo = elemento<HTMLInputElement>('campo-archivo');
+  const botonSubir = elemento<HTMLButtonElement>('boton-subir');
+  const estadoSubida = elemento<HTMLParagraphElement>('estado-subida');
   const listaMaterial = elemento<HTMLUListElement>('lista-material');
   const listaErrores = elemento<HTMLUListElement>('lista-errores');
   const vistaPrevia = elemento<HTMLPreElement>('vista-previa');
@@ -116,9 +123,52 @@ export function iniciarCrear(): void {
     );
     campoSeccion.disabled = !documento;
     campoTituloMaterial.value = '';
+
+    // Un PDF no tiene secciones con id: se referencia por página.
+    const pdf = esPdf(campoDocumento.value);
+    bloqueSeccion.classList.toggle('hidden', pdf);
+    bloquePagina.classList.toggle('hidden', !pdf);
+    if (pdf) campoTituloMaterial.value = documento?.titulo ?? '';
   }
 
   campoDocumento.addEventListener('change', cargarSecciones);
+
+  /** Sube el archivo elegido a la carpeta de la unidad (servidor de desarrollo) y lo agrega a los documentos. */
+  botonSubir.addEventListener('click', async () => {
+    const archivo = campoArchivo.files?.[0];
+    if (!archivo) {
+      estadoSubida.textContent = 'Elegí un archivo PDF o HTML de tu PC.';
+      estadoSubida.className = 'mt-2 text-sm text-error';
+      return;
+    }
+    const carpeta = campoCarpetaSubida.value;
+    estadoSubida.textContent = `Subiendo ${archivo.name}…`;
+    estadoSubida.className = 'mt-2 text-sm text-tenue';
+    botonSubir.disabled = true;
+
+    try {
+      const url = `/__autoria/material?carpeta=${encodeURIComponent(carpeta)}&nombre=${encodeURIComponent(archivo.name)}`;
+      const respuesta = await fetch(url, { method: 'POST', body: archivo });
+      const cuerpo = (await respuesta.json().catch(() => null)) as { ruta?: string; titulo?: string; error?: string } | null;
+      if (!respuesta.ok || !cuerpo?.ruta || !cuerpo.titulo) {
+        throw new Error(cuerpo?.error ?? 'No se pudo subir el archivo.');
+      }
+      const documento = { ruta: cuerpo.ruta, titulo: cuerpo.titulo, secciones: [] };
+      datos.documentos.push(documento);
+      campoDocumento.append(new Option(documento.titulo, documento.ruta));
+      campoDocumento.value = documento.ruta;
+      cargarSecciones();
+      estadoSubida.textContent = `Listo: ${cuerpo.ruta} ya está en el material y seleccionado en Documento.`;
+      estadoSubida.className = 'mt-2 text-sm text-ok';
+    } catch (error) {
+      // Fuera del servidor de desarrollo la petición no tiene respuesta JSON.
+      const detalle = error instanceof Error ? error.message : 'Error desconocido.';
+      estadoSubida.textContent = `${detalle} (Subir archivos solo funciona con npm run dev.)`;
+      estadoSubida.className = 'mt-2 text-sm text-error';
+    } finally {
+      botonSubir.disabled = false;
+    }
+  });
   campoSeccion.addEventListener('change', () => {
     const seccion = datos.documentos
       .find((doc) => doc.ruta === campoDocumento.value)
@@ -160,13 +210,20 @@ export function iniciarCrear(): void {
 
   elemento('boton-agregar-material').addEventListener('click', () => {
     const titulo = campoTituloMaterial.value.trim();
-    const seccion = campoSeccion.value;
     const ruta = campoDocumento.value;
     if (!ruta) {
       mostrarMensaje('Primero elegí un documento.', 'error');
       return;
     }
-    if (!seccion) {
+    let seccion = campoSeccion.value;
+    if (esPdf(ruta)) {
+      const pagina = Number(campoPagina.value);
+      if (!Number.isInteger(pagina) || pagina < 1) {
+        mostrarMensaje('Indicá la página del PDF (1 o más).', 'error');
+        return;
+      }
+      seccion = `pagina-${pagina}`;
+    } else if (!seccion) {
       mostrarMensaje('Elegí la sección del documento.', 'error');
       return;
     }

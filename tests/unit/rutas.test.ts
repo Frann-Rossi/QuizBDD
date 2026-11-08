@@ -15,4 +15,9 @@ describe('rutas', () => {
     });
     expect(url).toBe('/material/unidad-05-subconsultas/subconsultas.html#escalares');
   });
+
+  it('arma la URL de un PDF apuntando a la página', () => {
+    const url = urlMaterial({ titulo: 'Guía', ruta: 'unidad-01-introduccion/guia.pdf', seccion: 'pagina-3' });
+    expect(url).toBe('/material/unidad-01-introduccion/guia.pdf#page=3');
+  });
 });

@@ -11,11 +11,17 @@ const opcionSchema = z.object({
   explicacion: textoRequerido,
 }) satisfies z.ZodType<Opcion>;
 
-const materialSchema = z.object({
-  titulo: textoRequerido,
-  ruta: textoRequerido,
-  seccion: z.string().regex(/^[a-z0-9-]+$/, 'La sección debe ser un id HTML en minúsculas.'),
-}) satisfies z.ZodType<MaterialReferencia>;
+const materialSchema = z
+  .object({
+    titulo: textoRequerido,
+    ruta: textoRequerido,
+    seccion: z.string().regex(/^[a-z0-9-]+$/, 'La sección debe ser un id HTML en minúsculas.'),
+  })
+  // Sin imports del proyecto: este esquema también lo carga el servidor de autoría (ver autoria/servidor.mjs).
+  .refine((material) => !/\.pdf$/i.test(material.ruta) || /^pagina-\d+$/.test(material.seccion), {
+    message: 'Para un PDF, la sección debe ser una página con el formato "pagina-N".',
+    path: ['seccion'],
+  }) satisfies z.ZodType<MaterialReferencia>;
 
 export const preguntaSchema = z
   .object({

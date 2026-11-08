@@ -5,6 +5,8 @@ import CabeceraPagina from '@/components/CabeceraPagina.astro';
 import VolverInicio from '@/components/VolverInicio.astro';
 import { obtenerDocumentosMaterial } from '@/services/material';
 import { serializarParaScript } from '@/utils/serializar';
+import { listarCarpetasMaterial } from '../../autoria/servidor.mjs';
+import { join } from 'node:path';
 
 // Herramienta de autoría: carga la pregunta y genera el JSON de la unidad para reemplazarlo.
 const entradas = await getCollection('preguntas');
@@ -12,6 +14,8 @@ const bancos = entradas
   .map((entrada) => ({ archivo: `${entrada.id}.json`, banco: entrada.data }))
   .sort((a, b) => a.banco.unidad - b.banco.unidad);
 const documentos = await obtenerDocumentosMaterial();
+// Carpetas de unidad donde se puede subir un archivo desde la PC (en el build no se usan).
+const carpetas = await listarCarpetasMaterial(join(process.cwd(), 'materialEstudio'));
 const idsExistentes = bancos.flatMap(({ banco }) => banco.preguntas.map((p) => p.id));
 
 const clasesInput =
@@ -122,6 +126,30 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
         <p class="mt-2 text-sm text-tenue">
           Elegí el documento y la sección donde está el tema. El enlace se arma solo.
         </p>
+
+        <!-- Subida desde la PC: copia el archivo a materialEstudio/ (solo con npm run dev). -->
+        <div class="mt-4 border-[3px] border-dashed border-borde/50 p-4">
+          <p class="text-sm font-bold text-tinta">¿Querés usar un archivo de tu PC?</p>
+          <p class={clasesAyuda}>
+            Elegí la unidad donde se guarda y el archivo (PDF o HTML). Se copia a <code class="text-sql-cadena">materialEstudio/</code> y
+            queda en la lista de documentos. Solo funciona con <code class="text-sql-cadena">npm run dev</code>.
+          </p>
+          <div class="mt-3 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label for="campo-carpeta-subida" class={clasesEtiqueta}>Guardar en</label>
+              <select id="campo-carpeta-subida" class={clasesInput}>
+                {carpetas.map((carpeta) => <option value={carpeta}>{carpeta}</option>)}
+              </select>
+            </div>
+            <div>
+              <label for="campo-archivo" class={clasesEtiqueta}>Archivo</label>
+              <input id="campo-archivo" type="file" accept=".pdf,.html,application/pdf,text/html" class={clasesInput} />
+            </div>
+          </div>
+          <button type="button" id="boton-subir" class="boton-pixel mt-3 bg-primario text-sobre-primario">⬆ Subir al material</button>
+          <p id="estado-subida" class="mt-2 text-sm text-tenue" role="status"></p>
+        </div>
+
         <div class="mt-4 grid gap-4 sm:grid-cols-2">
           <div>
             <label for="campo-documento" class={clasesEtiqueta}>Documento</label>
@@ -136,13 +164,19 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
               }
             </select>
           </div>
-          <div>
+          <div id="bloque-seccion">
             <label for="campo-seccion" class={clasesEtiqueta}>Sección</label>
             <select id="campo-seccion" class={clasesInput} disabled>
               <option value="">— Primero elegí un documento —</option>
             </select>
           </div>
         </div>
+        <!-- Para un PDF se indica la página en lugar de una sección. -->
+        <label id="bloque-pagina" class={`${clasesEtiqueta} mt-4 hidden`}>
+          Página del PDF
+          <input id="campo-pagina" class={clasesInput} type="number" min="1" step="1" placeholder="Ej.: 3" />
+          <span class={clasesAyuda}>El enlace abre el PDF en esa página.</span>
+        </label>
         <label class={`${clasesEtiqueta} mt-4`}>
           Nombre que verá quien estudie
           <input id="campo-titulo-material" class={clasesInput} type="text" />

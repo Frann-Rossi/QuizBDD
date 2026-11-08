@@ -73,13 +73,13 @@ test.describe('Crear pregunta', () => {
 
     await page.getByRole('button', { name: '+ Agregar material' }).click();
     await expect(page.locator('#lista-material li')).toHaveCount(0);
-    await expect(page.getByRole('status')).toContainText('Primero elegí un documento.');
+    await expect(page.locator('#mensaje-estado')).toContainText('Primero elegí un documento.');
 
     await page.locator('#campo-documento').selectOption('unidad-05-subconsultas/subconsultas.html');
     await expect(page.locator('#campo-seccion')).toBeEnabled();
     await page.getByRole('button', { name: '+ Agregar material' }).click();
     await expect(page.locator('#lista-material li')).toHaveCount(0);
-    await expect(page.getByRole('status')).toContainText('Elegí la sección del documento.');
+    await expect(page.locator('#mensaje-estado')).toContainText('Elegí la sección del documento.');
   });
 
   test('la pestaña Crear está en el menú, visible en escritorio y celular, y lleva al formulario', async ({ page }) => {
@@ -100,5 +100,32 @@ test.describe('Crear pregunta', () => {
     await page.goto('/crear/');
     const desborde = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(desborde).toBeLessThanOrEqual(0);
+  });
+
+  test('subir sin elegir archivo avisa y no envía nada', async ({ page }) => {
+    const pedidos: string[] = [];
+    page.on('request', (pedido) => {
+      if (pedido.url().includes('/__autoria/')) pedidos.push(pedido.url());
+    });
+    await page.goto('/crear/');
+    await page.locator('#boton-subir').click();
+    await expect(page.locator('#estado-subida')).toContainText('Elegí un archivo PDF o HTML de tu PC.');
+    expect(pedidos).toHaveLength(0);
+  });
+
+  test('para un PDF se pide la página en lugar de la sección', async ({ page }) => {
+    await page.goto('/crear/');
+    await expect(page.locator('#bloque-pagina')).toBeHidden();
+    // Simula un PDF ya presente en el material (el selector se alimenta de la página, sin subir nada).
+    await page.evaluate(() => {
+      const select = document.getElementById('campo-documento') as HTMLSelectElement;
+      select.append(new Option('Guía de prueba', 'unidad-01-introduccion/guia.pdf'));
+      select.value = 'unidad-01-introduccion/guia.pdf';
+      select.dispatchEvent(new Event('change'));
+    });
+    await expect(page.locator('#bloque-pagina')).toBeVisible();
+    await expect(page.locator('#bloque-seccion')).toBeHidden();
+    await page.getByRole('button', { name: '+ Agregar material' }).click();
+    await expect(page.locator('#mensaje-estado')).toContainText('Indicá la página del PDF');
   });
 });
