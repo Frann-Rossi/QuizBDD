@@ -376,6 +376,7 @@ export function iniciarJuego(raiz: HTMLElement): void {
       }
     }
     if (actual.explicacion) bloques.push(crearBloque('Para repasar el concepto', actual.explicacion));
+    if (actual.resumen) bloques.push(crearBloque('Resumen', actual.resumen));
     explicacion.replaceChildren(...bloques);
     enlaces.replaceChildren(...actual.material.map(crearEnlaceMaterial));
 

@@ -29,3 +29,35 @@ test.describe('Resumen en la explicación', () => {
     await expect(raiz.locator('[data-retro-cuerpo]').getByText('Resumen', { exact: true })).toHaveCount(0);
   });
 });
+
+test.describe('Resumen en el modo juego', () => {
+  test('la explicación al revelar muestra el resumen de la pregunta', async ({ page }) => {
+    // Todas las preguntas reciben un resumen de prueba (en el navegador, sin tocar el banco).
+    await page.route('**/juego/', async (ruta) => {
+      const respuesta = await ruta.fetch();
+      const html = await respuesta.text();
+      const nuevo = html.replace(/(<script[^>]*data-preguntas[^>]*>)([\s\S]*?)(<\/script>)/, (_m, a, json, c) => {
+        const preguntas = JSON.parse(json);
+        const conResumen = preguntas.map((p: { resumen?: string }) => ({ ...p, resumen: 'Resumen de prueba.' }));
+        return a + JSON.stringify(conResumen).replace(/</g, '\\u003c') + c;
+      });
+      await ruta.fulfill({ response: respuesta, body: nuevo });
+    });
+
+    await page.goto('/juego/');
+    const raiz = page.locator('[data-juego]');
+    const inputs = raiz.locator('input[data-nombre]');
+    while ((await inputs.count()) < 2) await raiz.getByRole('button', { name: /Agregar jugador/ }).click();
+    await inputs.nth(0).fill('Ana');
+    await inputs.nth(1).fill('Bruno');
+    await raiz.getByRole('button', { name: /Empezar partida/ }).click();
+    await expect(raiz.locator('[data-vista-ronda]')).toBeVisible();
+
+    await raiz.locator('[data-opciones] [data-opcion]').first().getByRole('button', { name: /Ana vota/ }).click();
+    await raiz.locator('[data-opciones] [data-opcion]').first().getByRole('button', { name: /Bruno vota/ }).click();
+    await raiz.getByRole('button', { name: /Revelar respuesta/ }).click();
+
+    await expect(raiz.locator('[data-explicacion]').getByText('Resumen', { exact: true })).toBeVisible();
+    await expect(raiz.locator('[data-explicacion]')).toContainText('Resumen de prueba.');
+  });
+});
