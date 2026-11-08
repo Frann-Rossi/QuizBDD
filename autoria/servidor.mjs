@@ -131,6 +131,13 @@ function leerCuerpo(req) {
   });
 }
 
+const DIRECCIONES_LOCALES = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
+
+/** Solo se acepta la petición si viene de esta misma PC (aunque el servidor esté expuesto con --host). */
+export function esLocal(req) {
+  return DIRECCIONES_LOCALES.has(req.socket?.remoteAddress ?? '');
+}
+
 function responder(res, estado, cuerpo) {
   res.statusCode = estado;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -149,6 +156,7 @@ export function crearMiddlewareAutoria({ raiz }) {
   return async (req, res, next) => {
     const url = new URL(req.url ?? '/', 'http://localhost');
     if (!url.pathname.startsWith(RUTA_AUTORIA)) return next();
+    if (!esLocal(req)) return responder(res, 403, { error: 'Solo disponible desde esta misma PC.' });
 
     try {
       if (req.method !== 'POST') throw new ErrorAutoria(405, 'Método no permitido.');

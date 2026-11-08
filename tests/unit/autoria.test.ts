@@ -4,6 +4,8 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   ErrorAutoria,
+  crearMiddlewareAutoria,
+  esLocal,
   guardarBanco,
   guardarMaterial,
   listarCarpetasMaterial,
@@ -138,5 +140,37 @@ describe('guardarBanco', () => {
     await expect(
       guardarBanco({ carpetaPreguntas, carpetaMaterial, archivo: '../x.json', datos: bancoConPdf() }),
     ).rejects.toMatchObject({ status: 400 });
+  });
+});
+
+describe('acceso solo desde esta PC', () => {
+  function respuestaFalsa() {
+    return {
+      statusCode: 0,
+      headers: {} as Record<string, string>,
+      body: '',
+      setHeader(nombre: string, valor: string) {
+        this.headers[nombre] = valor;
+      },
+      end(cuerpo: string) {
+        this.body = cuerpo;
+      },
+    };
+  }
+
+  it('reconoce solo las direcciones locales', () => {
+    expect(esLocal({ socket: { remoteAddress: '127.0.0.1' } })).toBe(true);
+    expect(esLocal({ socket: { remoteAddress: '::1' } })).toBe(true);
+    expect(esLocal({ socket: { remoteAddress: '192.168.1.5' } })).toBe(false);
+    expect(esLocal({ socket: {} })).toBe(false);
+  });
+
+  it('responde 403 a una petición de otra máquina, sin tocar archivos', async () => {
+    const middleware = crearMiddlewareAutoria({ raiz });
+    const res = respuestaFalsa();
+    const req = { method: 'POST', url: `/__autoria/banco?archivo=${BANCO}`, socket: { remoteAddress: '192.168.1.5' } };
+    await middleware(req, res, () => {});
+    expect(res.statusCode).toBe(403);
+    expect(JSON.parse(await readFile(join(carpetaPreguntas, BANCO), 'utf-8')).preguntas).toEqual([]);
   });
 });
