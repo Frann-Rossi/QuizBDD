@@ -6,25 +6,29 @@ import { expect, test } from '@playwright/test';
  * Estos tests solo leen y abren formularios: no guardan ni eliminan nada del banco real.
  * El borrado se cancela en el diálogo de confirmación.
  */
-const banco = JSON.parse(readFileSync(join(process.cwd(), 'src/content/preguntas/unidad-01-introduccion.json'), 'utf-8'));
+const leerBanco = () => JSON.parse(readFileSync(join(process.cwd(), 'src/content/preguntas/unidad-01-introduccion.json'), 'utf-8'));
 
 test.describe('Preguntas (herramienta de autoría)', () => {
   test('lista las preguntas de cada unidad con su cantidad', async ({ page }) => {
     await page.goto('/preguntas/');
     await expect(page.getByRole('heading', { level: 1, name: 'Preguntas' })).toBeVisible();
-    await expect(page.locator('section[data-unidad="1"] li[data-pregunta]')).toHaveCount(banco.preguntas.length);
+    await expect(page.locator('section[data-unidad="1"] li[data-pregunta]')).toHaveCount(leerBanco().preguntas.length);
   });
 
   test('el buscador muestra solo las preguntas que coinciden', async ({ page }) => {
     await page.goto('/preguntas/');
-    await page.locator('#buscar-pregunta').fill('u01-clave-candidata');
-    await expect(page.locator('li[data-pregunta]:visible')).toHaveCount(1);
+    // El script de la página se carga después del HTML: se reintenta hasta que el filtro responda.
+    await expect(async () => {
+      await page.locator('#buscar-pregunta').fill('');
+      await page.locator('#buscar-pregunta').fill('u01-clave-candidata');
+      await expect(page.locator('li[data-pregunta]:visible')).toHaveCount(1, { timeout: 1000 });
+    }).toPass();
     await expect(page.locator('li[data-pregunta]:visible')).toContainText('u01-clave-candidata');
   });
 
   test('editar abre el formulario de Crear con la pregunta cargada', async ({ page }) => {
     await page.goto('/preguntas/');
-    const pregunta = banco.preguntas.find((p: { id: string }) => p.id === 'u01-clave-candidata');
+    const pregunta = leerBanco().preguntas.find((p: { id: string }) => p.id === 'u01-clave-candidata');
     await page.locator('li[data-pregunta="u01-clave-candidata"] a', { hasText: 'Editar' }).click();
 
     await expect(page).toHaveURL(/\/crear\/\?editar=u01-clave-candidata$/);
@@ -56,7 +60,10 @@ test.describe('Preguntas en el menú y en celular', () => {
     await expect(page.getByRole('navigation', { name: 'Principal' }).getByRole('link', { name: 'Preguntas' })).toBeVisible();
 
     await page.goto('/preguntas/');
-    const desborde = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(desborde).toBeLessThanOrEqual(0);
+    // El servidor de desarrollo puede recargar la página si otro test acaba de escribir un banco: se reintenta.
+    await expect(async () => {
+      const desborde = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(desborde).toBeLessThanOrEqual(0);
+    }).toPass();
   });
 });

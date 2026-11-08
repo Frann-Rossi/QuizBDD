@@ -6,6 +6,8 @@ const PUERTO_DESARROLLO = 4321;
 
 /** Herramientas de autoría (Crear, Preguntas): solo existen con el servidor de desarrollo. */
 const SOLO_DESARROLLO = /(crear|preguntas)\.spec\.ts/;
+/** Tests que escriben en los bancos: van aparte, al final, para no chocar con los demás. */
+const ESCRITURAS = /guardar-crear\.spec\.ts/;
 
 /**
  * Tests de interfaz (end-to-end). Usan el Chrome instalado en la máquina (channel: 'chrome'),
@@ -41,12 +43,20 @@ export default defineConfig({
     {
       name: 'desarrollo-escritorio',
       testMatch: SOLO_DESARROLLO,
+      testIgnore: ESCRITURAS,
       use: { ...devices['Desktop Chrome'], channel: 'chrome', baseURL: `http://localhost:${PUERTO_DESARROLLO}` },
     },
     {
       name: 'desarrollo-celular',
       testMatch: SOLO_DESARROLLO,
+      testIgnore: ESCRITURAS,
       use: { ...devices['Pixel 7'], channel: 'chrome', baseURL: `http://localhost:${PUERTO_DESARROLLO}` },
+    },
+    {
+      name: 'desarrollo-escrituras',
+      testMatch: ESCRITURAS,
+      dependencies: ['desarrollo-escritorio', 'desarrollo-celular'],
+      use: { ...devices['Desktop Chrome'], channel: 'chrome', baseURL: `http://localhost:${PUERTO_DESARROLLO}` },
     },
   ],
   webServer: [
