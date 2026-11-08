@@ -45,29 +45,35 @@ Los tests de interfaz usan el Google Chrome instalado en la máquina (no descarg
 
 ```text
 QuizBDD/
-├── materialEstudio/              # Material de estudio, una carpeta por unidad
+├── autoria/                      # Servidor de autoría (solo con npm run dev): subir material y guardar bancos
+├── materialEstudio/              # Material de estudio, una carpeta por unidad (HTML y PDF)
+│   ├── unidad-01-introduccion/
+│   ├── unidad-02-consultasBasicas/
+│   ├── unidad-03-JoinUnion/
+│   ├── unidad-04-funcionesDeAgrupacionAgregacion/
 │   ├── unidad-05-subconsultas/
 │   ├── unidad-06-cte/
 │   └── unidad-07-vistas/
 ├── public/                       # Recursos estáticos servidos tal cual (favicon, imágenes)
 ├── src/
-│   ├── components/               # Componentes reutilizables de interfaz
+│   ├── components/               # Componentes reutilizables: cabecera, volver al inicio, cuestionario, juego, tarjetas
 │   ├── content/
 │   │   └── preguntas/            # Banco de preguntas: un JSON por unidad
-│   ├── layouts/                  # Estructuras HTML base de las páginas
+│   ├── layouts/                  # Estructura HTML base, menú y tema
 │   ├── lib/
-│   │   ├── quiz/                 # Reglas del cuestionario: esquemas, evaluación, mezcla de opciones, selección de unidades
+│   │   ├── quiz/                 # Reglas del cuestionario: esquemas, evaluación, mezcla, selección de unidades
 │   │   ├── juego/                # Reglas del modo juego: jugadores, votos, puntos y ranking
-│   │   └── crear/                # Armado y validación de preguntas nuevas (formulario /crear/)
+│   │   └── crear/                # Armado y validación de preguntas (formulario de Crear)
 │   ├── pages/                    # Rutas: cada archivo es una página
 │   │   ├── index.astro           # Inicio: modos y unidades
 │   │   ├── quiz/[modo].astro     # /quiz/todas/ y /quiz/unidad-N/
 │   │   ├── juego.astro           # /juego/ (votación multijugador)
-│   │   ├── crear.astro           # /crear/ (formulario para armar preguntas nuevas)
 │   │   ├── seleccion.astro       # /seleccion/ (elegir varias unidades para repasar)
-│   │   └── material/[...ruta].ts # Publica materialEstudio/ en /material/...
-│   ├── scripts/                  # Código del navegador: cuestionario, juego, /crear/ y utilidades de DOM
-│   ├── services/                 # Acceso a datos (colecciones de contenido y lista de material)
+│   │   ├── crear.astro           # /crear/ (solo desarrollo)
+│   │   ├── preguntas.astro       # /preguntas/ (solo desarrollo: ver, editar y eliminar)
+│   │   └── material/[...ruta].ts # Publica materialEstudio/ (HTML y PDF) en /material/...
+│   ├── scripts/                  # Código del navegador: cuestionario, juego, Crear, Preguntas, utilidades de DOM
+│   ├── services/                 # Acceso a datos: colecciones de contenido y lista de material
 │   ├── styles/                   # Estilos globales y tokens de Tailwind
 │   ├── types/                    # Tipos e interfaces TypeScript del dominio
 │   ├── utils/                    # Funciones auxiliares puras
@@ -75,7 +81,7 @@ QuizBDD/
 ├── tests/
 │   ├── unit/                     # Tests unitarios (Vitest)
 │   └── e2e/                      # Tests de interfaz (Playwright)
-├── astro.config.mjs
+├── astro.config.mjs              # Integraciones: servidor de autoría (dev) y limpieza del build
 ├── playwright.config.ts
 ├── tsconfig.json
 └── vitest.config.ts
@@ -84,9 +90,10 @@ QuizBDD/
 ### Responsabilidades
 
 - **`src/types`**: el modelo del dominio (`Pregunta`, `Opcion`, `BancoPreguntas`, …). No depende de nada.
-- **`src/lib/quiz`** y **`src/lib/juego`**: reglas del cuestionario y del juego, sin dependencias de la interfaz y cubiertas por tests.
+- **`src/lib/quiz`**, **`src/lib/juego`** y **`src/lib/crear`**: reglas del cuestionario, del juego y del armado de preguntas, sin dependencias de la interfaz y cubiertas por tests.
 - **`src/scripts`**: controladores del navegador; solo manejan el DOM y delegan las reglas en `src/lib`.
-- **`src/services`**: obtiene los datos (hoy, desde las colecciones de contenido de Astro). Si en el futuro los datos vienen de otro origen, solo cambia esta capa.
+- **`src/services`**: obtiene los datos (colecciones de contenido de Astro y la lista de material).
+- **`autoria/`**: escrituras en disco (material y bancos). Solo existe con `astro dev`, y solo acepta peticiones desde esta PC.
 - **`src/components`, `src/layouts`, `src/pages`**: presentación.
 
 El alias `@/` apunta a `src/` (p. ej. `import { evaluarRespuesta } from '@/lib/quiz/evaluar'`).
