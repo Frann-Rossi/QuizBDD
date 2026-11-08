@@ -92,6 +92,21 @@ export async function verificarMateriales(banco, carpetaMaterial) {
   return errores;
 }
 
+/** Ids de las preguntas de todos los bancos, salvo el que se está guardando. */
+async function idsDeOtrosBancos(carpetaPreguntas, archivoActual) {
+  const ids = new Set();
+  const archivos = (await readdir(carpetaPreguntas)).filter((a) => a.endsWith('.json') && a !== archivoActual);
+  for (const archivo of archivos) {
+    try {
+      const banco = JSON.parse(await readFile(join(carpetaPreguntas, archivo), 'utf-8'));
+      for (const pregunta of banco.preguntas ?? []) ids.add(pregunta.id);
+    } catch {
+      // Un banco que no se puede leer no bloquea el guardado: el build lo señala aparte.
+    }
+  }
+  return ids;
+}
+
 /**
  * Reemplaza un banco existente por el que llega desde el formulario, después de validarlo con
  * el mismo esquema que usa el build. No crea bancos nuevos.
@@ -108,6 +123,13 @@ export async function guardarBanco({ carpetaPreguntas, carpetaMaterial, archivo,
   }
   const erroresMaterial = await verificarMateriales(validacion.data, carpetaMaterial);
   if (erroresMaterial.length > 0) throw new ErrorAutoria(422, erroresMaterial.join(' · '));
+
+  // Los ids deben ser únicos en todo el banco, no solo dentro de cada unidad.
+  const idsDeOtros = await idsDeOtrosBancos(carpetaPreguntas, archivo);
+  const repetidos = validacion.data.preguntas.map((p) => p.id).filter((id) => idsDeOtros.has(id));
+  if (repetidos.length > 0) {
+    throw new ErrorAutoria(422, `Ya existe otra pregunta con el id: ${repetidos.join(', ')}.`);
+  }
 
   await writeFile(destino, `${JSON.stringify(validacion.data, null, 2)}\n`, 'utf-8');
   return { archivo, preguntas: validacion.data.preguntas.length };

@@ -20,14 +20,14 @@ let carpetaMaterial: string;
 let carpetaPreguntas: string;
 
 /** Banco mínimo válido que referencia un PDF por página. */
-function bancoConPdf(ruta = `${CARPETA}/guia.pdf`, seccion = 'pagina-2') {
+function bancoConPdf(ruta = `${CARPETA}/guia.pdf`, seccion = 'pagina-2', id = 'u01-prueba') {
   const opciones = ['a', 'b', 'c', 'd'].map((id) => ({ id, texto: `Opción ${id}`, explicacion: `Explicación ${id}` }));
   return {
     unidad: 1,
     titulo: 'Introducción',
     preguntas: [
       {
-        id: 'u01-prueba',
+        id,
         tema: 'Prueba',
         enunciado: '¿Pregunta de prueba?',
         opciones,
@@ -172,5 +172,18 @@ describe('acceso solo desde esta PC', () => {
     await middleware(req, res, () => {});
     expect(res.statusCode).toBe(403);
     expect(JSON.parse(await readFile(join(carpetaPreguntas, BANCO), 'utf-8')).preguntas).toEqual([]);
+  });
+});
+
+describe('ids únicos en todo el banco', () => {
+  it('rechaza guardar una pregunta con un id que ya existe en otra unidad', async () => {
+    const otro = bancoConPdf(undefined, undefined, 'u02-ajena');
+    otro.unidad = 2;
+    await writeFile(join(carpetaPreguntas, 'unidad-02-otra.json'), JSON.stringify(otro));
+
+    const datos = bancoConPdf(undefined, undefined, 'u02-ajena');
+    await expect(
+      guardarBanco({ carpetaPreguntas, carpetaMaterial, archivo: BANCO, datos }),
+    ).rejects.toMatchObject({ status: 422 });
   });
 });
