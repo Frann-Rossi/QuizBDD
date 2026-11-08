@@ -48,7 +48,7 @@ const totalPreguntas = bancos.reduce((suma, banco) => suma + banco.preguntas.len
         <div class="flex items-start gap-4">
           <PixelSprite nombre="tabla" escala={4} class="shrink-0" />
           <div>
-            <p class="text-xs uppercase tracking-widest opacity-80">Repaso general · Individual</p>
+            <p class="text-xs uppercase tracking-widest">Repaso general · Individual</p>
             <h2 class="mt-1 text-2xl font-bold">Todas las unidades</h2>
             <p class="mt-2 text-sm opacity-90">
               {pluralizar(totalPreguntas, 'pregunta', 'preguntas')} de {pluralizar(bancos.length, 'unidad', 'unidades')}, en orden aleatorio.
