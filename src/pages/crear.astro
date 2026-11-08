@@ -37,6 +37,16 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
       </Fragment>
     </CabeceraPagina>
 
+    <!-- Modo edición: aparece cuando la pregunta se abre desde la lista de Preguntas. -->
+    <div id="aviso-edicion" class="caja-pixel mt-6 hidden bg-aviso-suave p-4 text-sm text-tinta" role="status">
+      <p>
+        Editando <code id="id-en-edicion" class="text-sql-clave"></code>. Al guardar, la pregunta se reemplaza en el banco.
+      </p>
+    </div>
+    <p class="mt-4 text-sm">
+      <a href="/preguntas/" class="font-bold text-primario underline underline-offset-4">Ver las preguntas existentes →</a>
+    </p>
+
     <form id="formulario-pregunta" class="mt-8 flex flex-col gap-6" novalidate>
       <!-- Unidad e identificador -->
       <section class={clasesSeccion} aria-labelledby="t-unidad">
@@ -192,7 +202,8 @@ const clasesSeccion = 'caja-pixel bg-panel p-5 sm:p-6';
         <h2 id="t-acciones" class="text-xl font-bold text-tinta">5. Vista previa y guardado</h2>
         <div class="mt-4 flex flex-wrap gap-3">
           <button type="button" id="boton-vista-previa" class="boton-pixel bg-panel-2 text-tinta">👁 Vista previa</button>
-          <button type="button" id="boton-descargar" class="boton-pixel bg-primario text-sobre-primario">⬇ Descargar JSON de la unidad</button>
+          <button type="button" id="boton-guardar-banco" class="boton-pixel bg-primario text-sobre-primario">💾 Guardar en el banco</button>
+          <button type="button" id="boton-descargar" class="boton-pixel bg-panel-2 text-tinta">⬇ Descargar JSON de la unidad</button>
           <button type="button" id="boton-copiar" class="boton-pixel bg-panel-2 text-tinta">⧉ Copiar solo la pregunta</button>
           <button type="button" id="boton-limpiar" class="boton-pixel bg-panel-2 text-tenue">Limpiar</button>
         </div>

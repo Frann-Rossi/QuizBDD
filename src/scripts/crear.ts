@@ -3,11 +3,13 @@ import {
   agregarPregunta,
   aArchivoJson,
   construirPregunta,
+  quitarPregunta,
+  reemplazarPregunta,
   sugerirId,
   type DatosFormulario,
 } from '@/lib/crear/pregunta';
 import type { DocumentoMaterial } from '@/services/material';
-import type { BancoPreguntas, MaterialReferencia, OpcionId } from '@/types/quiz';
+import type { BancoPreguntas, MaterialReferencia, OpcionId, Pregunta } from '@/types/quiz';
 import { esPdf, urlMaterial } from '@/utils/rutas';
 
 interface DatosPagina {
@@ -297,6 +299,96 @@ export function iniciarCrear(): void {
     actualizarSugerenciaId();
     cargarSecciones();
     mostrarMensaje('Formulario limpio.');
+  });
+
+  // ---------- Guardar en el banco y edición (servidor de desarrollo) ----------
+
+  /** Pregunta que se está editando desde la lista de Preguntas, si hay una. */
+  let edicion: { archivo: string; unidad: number; id: string } | null = null;
+
+  function cargarPregunta(pregunta: Pregunta, unidad: number) {
+    campoUnidad.value = String(unidad);
+    campoId.value = pregunta.id;
+    campoId.dataset.auto = 'false';
+    campoTema.value = pregunta.tema;
+    elemento<HTMLTextAreaElement>('campo-enunciado').value = pregunta.enunciado;
+    pregunta.opciones.forEach((opcion) => {
+      elemento<HTMLInputElement>(`opcion-${opcion.id}-texto`).value = opcion.texto;
+      elemento<HTMLTextAreaElement>(`opcion-${opcion.id}-explicacion`).value = opcion.explicacion;
+    });
+    elemento<HTMLInputElement>(`respuesta-${pregunta.respuestaCorrecta}`).checked = true;
+    elemento<HTMLTextAreaElement>('campo-explicacion').value = pregunta.explicacion;
+    elemento<HTMLTextAreaElement>('campo-resumen').value = pregunta.resumen ?? '';
+    material.length = 0;
+    material.push(...pregunta.material);
+    renderizarMaterial();
+  }
+
+  const idEditar = new URLSearchParams(window.location.search).get('editar');
+  if (idEditar) {
+    for (const { archivo, banco } of datos.bancos) {
+      const pregunta = banco.preguntas.find((p) => p.id === idEditar);
+      if (pregunta) {
+        edicion = { archivo, unidad: banco.unidad, id: pregunta.id };
+        cargarPregunta(pregunta, banco.unidad);
+        elemento('aviso-edicion').classList.remove('hidden');
+        elemento('id-en-edicion').textContent = pregunta.id;
+        break;
+      }
+    }
+  }
+
+  async function guardarEnDisco(archivo: string, banco: BancoPreguntas) {
+    const respuesta = await fetch(`/__autoria/banco?archivo=${encodeURIComponent(archivo)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(banco),
+    });
+    const cuerpo = (await respuesta.json().catch(() => null)) as { error?: string } | null;
+    if (!respuesta.ok) throw new Error(cuerpo?.error ?? 'No se pudo guardar.');
+  }
+
+  elemento('boton-guardar-banco').addEventListener('click', async () => {
+    const pregunta = prepararPregunta();
+    if (!pregunta) return;
+    const unidad = Number(campoUnidad.value);
+    const destino = datos.bancos.find((b) => b.banco.unidad === unidad);
+    if (!destino) return;
+
+    // Cambios a escribir: si la pregunta cambia de unidad, se quita del banco de origen y se agrega al de destino.
+    let cambios: { archivo: string; banco: BancoPreguntas }[];
+    if (edicion && edicion.unidad !== unidad) {
+      const origen = datos.bancos.find((b) => b.banco.unidad === edicion?.unidad);
+      if (!origen) return;
+      cambios = [
+        { archivo: origen.archivo, banco: quitarPregunta(origen.banco, edicion.id) },
+        { archivo: destino.archivo, banco: agregarPregunta(destino.banco, pregunta) },
+      ];
+    } else if (edicion) {
+      cambios = [{ archivo: destino.archivo, banco: reemplazarPregunta(destino.banco, edicion.id, pregunta) }];
+    } else {
+      cambios = [{ archivo: destino.archivo, banco: agregarPregunta(destino.banco, pregunta) }];
+    }
+
+    try {
+      for (const cambio of cambios) await guardarEnDisco(cambio.archivo, cambio.banco);
+    } catch (error) {
+      mostrarMensaje(
+        `${error instanceof Error ? error.message : 'Error desconocido.'} (Guardar solo funciona con npm run dev.)`,
+        'error',
+      );
+      return;
+    }
+
+    // Se actualiza el estado local para que las siguientes operaciones partan de lo guardado.
+    for (const cambio of cambios) {
+      const entrada = datos.bancos.find((b) => b.archivo === cambio.archivo);
+      if (entrada) entrada.banco = cambio.banco;
+    }
+    edicion = { archivo: destino.archivo, unidad, id: pregunta.id };
+    elemento('aviso-edicion').classList.remove('hidden');
+    elemento('id-en-edicion').textContent = pregunta.id;
+    mostrarMensaje(`Guardado en ${destino.archivo}.`, 'ok');
   });
 
   cargarSecciones();

@@ -4,12 +4,15 @@ const PUERTO = 4322;
 // Puerto por defecto de `astro dev`: si ya hay un servidor de desarrollo, Playwright lo reutiliza.
 const PUERTO_DESARROLLO = 4321;
 
+/** Herramientas de autoría (Crear, Preguntas): solo existen con el servidor de desarrollo. */
+const SOLO_DESARROLLO = /(crear|preguntas)\.spec\.ts/;
+
 /**
  * Tests de interfaz (end-to-end). Usan el Chrome instalado en la máquina (channel: 'chrome'),
  * sin descargar navegadores aparte.
  *
  * - Escritorio y celular: sobre el sitio construido (producción).
- * - Desarrollo (`crear.spec.ts`): la página Crear solo existe con el servidor de desarrollo.
+ * - Desarrollo (crear.spec.ts y preguntas.spec.ts): Crear y Preguntas solo existen con `astro dev`.
  */
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -27,22 +30,22 @@ export default defineConfig({
   projects: [
     {
       name: 'escritorio',
-      testIgnore: /crear\.spec\.ts/,
+      testIgnore: SOLO_DESARROLLO,
       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
     {
       name: 'celular',
-      testIgnore: /crear\.spec\.ts/,
+      testIgnore: SOLO_DESARROLLO,
       use: { ...devices['Pixel 7'], channel: 'chrome' },
     },
     {
       name: 'desarrollo-escritorio',
-      testMatch: /crear\.spec\.ts/,
+      testMatch: SOLO_DESARROLLO,
       use: { ...devices['Desktop Chrome'], channel: 'chrome', baseURL: `http://localhost:${PUERTO_DESARROLLO}` },
     },
     {
       name: 'desarrollo-celular',
-      testMatch: /crear\.spec\.ts/,
+      testMatch: SOLO_DESARROLLO,
       use: { ...devices['Pixel 7'], channel: 'chrome', baseURL: `http://localhost:${PUERTO_DESARROLLO}` },
     },
   ],

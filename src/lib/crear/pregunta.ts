@@ -100,3 +100,18 @@ export function sugerirId(unidad: number, tema: string): string {
     .slice(0, 50);
   return slug ? `u${String(unidad).padStart(2, '0')}-${slug}` : '';
 }
+
+/**
+ * Devuelve un banco nuevo donde la pregunta con `idOriginal` queda reemplazada por `pregunta`.
+ * Si no existe, la agrega al final. No modifica el original.
+ */
+export function reemplazarPregunta(banco: BancoPreguntas, idOriginal: string, pregunta: Pregunta): BancoPreguntas {
+  const indice = banco.preguntas.findIndex((p) => p.id === idOriginal);
+  if (indice === -1) return agregarPregunta(banco, pregunta);
+  return { ...banco, preguntas: banco.preguntas.map((p, i) => (i === indice ? pregunta : p)) };
+}
+
+/** Devuelve un banco nuevo sin la pregunta con ese id. No modifica el original. */
+export function quitarPregunta(banco: BancoPreguntas, id: string): BancoPreguntas {
+  return { ...banco, preguntas: banco.preguntas.filter((p) => p.id !== id) };
+}

@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CabeceraPagina from '@/components/CabeceraPagina.astro';
+import VolverInicio from '@/components/VolverInicio.astro';
+import { pluralizar } from '@/utils/formato';
+import { serializarParaScript } from '@/utils/serializar';
+
+// Herramienta de autoría: lista las preguntas existentes para editarlas o eliminarlas (solo con npm run dev).
+const entradas = await getCollection('preguntas');
+const bancos = entradas
+  .map((entrada) => ({ archivo: `${entrada.id}.json`, banco: entrada.data }))
+  .sort((a, b) => a.banco.unidad - b.banco.unidad);
+const letras = ['a', 'b', 'c', 'd'];
+const claseBoton = 'boton-pixel px-3 py-1 text-sm';
+---
+
+<BaseLayout title="Preguntas · Quiz BDD">
+  <main class="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+    <VolverInicio />
+
+    <CabeceraPagina titulo="Preguntas">
+      <span class="font-bold text-sql-clave">SELECT</span>{' * '}<span class="font-bold text-sql-clave">FROM</span>{' banco '}<span class="font-bold text-sql-clave">ORDER BY</span>{' unidad;'}
+      <Fragment slot="descripcion">
+        Revisá las preguntas existentes. Podés editarlas (se abren en el formulario de Crear) o eliminarlas. Los cambios
+        se guardan en el archivo de la unidad. Solo funciona con <code class="text-sql-cadena">npm run dev</code>.
+      </Fragment>
+    </CabeceraPagina>
+
+    <div class="mt-6">
+      <label for="buscar-pregunta" class="block text-sm font-bold text-tinta">Buscar</label>
+      <input
+        id="buscar-pregunta"
+        type="search"
+        placeholder="Tema, enunciado o id…"
+        class="mt-1 w-full border-[3px] border-borde bg-panel px-3 py-2 text-sm text-tinta placeholder:text-tenue focus:outline-none focus:bg-panel-2"
+      />
+    </div>
+
+    <p id="estado-preguntas" class="mt-3 text-sm text-tenue" role="status"></p>
+
+    {
+      bancos.map(({ archivo, banco }) => (
+        <section class="mt-8" data-unidad={banco.unidad} aria-labelledby={`unidad-${banco.unidad}`}>
+          <h2 id={`unidad-${banco.unidad}`} class="text-xl font-bold text-tinta">
+            <span class="font-sans text-base font-normal text-tenue">--</span> Unidad {banco.unidad} · {banco.titulo}
+          </h2>
+          <p class="mt-1 text-xs text-tenue">{pluralizar(banco.preguntas.length, 'pregunta', 'preguntas')} · {archivo}</p>
+          <ul class="mt-4 flex flex-col gap-3">
+            {banco.preguntas.map((pregunta) => (
+              <li class="caja-pixel bg-panel p-4" data-pregunta={pregunta.id} data-buscable={`${pregunta.id} ${pregunta.tema} ${pregunta.enunciado}`.toLowerCase()}>
+                <p class="text-xs text-tenue">
+                  <span class="font-bold text-sql-clave">{pregunta.id}</span> · {pregunta.tema}
+                </p>
+                <p class="mt-2 text-sm text-tinta">{pregunta.enunciado}</p>
+                <p class="mt-2 text-xs text-tenue">
+                  Correcta: <span class="font-bold text-ok">{pregunta.respuestaCorrecta.toUpperCase()}</span>
+                  {' · '}
+                  {letras.map((letra) => (
+                    <span class={letra === pregunta.respuestaCorrecta ? 'font-bold text-ok' : ''}>
+                      {letra.toUpperCase()}
+                    </span>
+                  ))}
+                </p>
+                <div class="mt-3 flex flex-wrap gap-3">
+                  <a href={`/crear/?editar=${encodeURIComponent(pregunta.id)}`} class={`${claseBoton} bg-panel-2 text-tinta`}>
+                    ✎ Editar
+                  </a>
+                  <button type="button" data-eliminar={pregunta.id} data-unidad={banco.unidad} class={`${claseBoton} bg-error text-panel`}>
+                    🗑 Eliminar
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+
+    <script
+      is:inline
+      type="application/json"
+      id="datos-preguntas"
+      set:html={serializarParaScript(bancos.map(({ archivo, banco }) => ({ archivo, unidad: banco.unidad, titulo: banco.titulo, preguntas: banco.preguntas })))}
+    ></script>
+  </main>
+</BaseLayout>
+
+<script>
+  import { iniciarPreguntas } from '@/scripts/preguntas';
+  iniciarPreguntas();
+</script>

@@ -17,7 +17,9 @@ const herramientasDeAutoria = {
       server.middlewares.use(crearMiddlewareAutoria({ raiz: process.cwd() }));
     }),
     'astro:build:done': /** @type {(opciones: { dir: URL }) => Promise<void>} */ (async ({ dir }) => {
-      await rm(new URL('./crear/', dir), { recursive: true, force: true });
+      for (const pagina of ['crear/', 'preguntas/']) {
+        await rm(new URL(`./${pagina}`, dir), { recursive: true, force: true });
+      }
     }),
   },
 };

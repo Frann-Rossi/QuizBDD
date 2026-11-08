@@ -16,8 +16,13 @@ const rutaActual = Astro.url.pathname;
 const enlaces: { href: string; texto: string; siempreVisible?: boolean }[] = [
   { href: '/', texto: 'Inicio' },
   { href: '/juego/', texto: 'Juego', siempreVisible: true },
-  // «Crear» es herramienta de autoría: solo aparece en desarrollo.
-  ...(import.meta.env.DEV ? [{ href: '/crear/', texto: 'Crear', siempreVisible: true }] : []),
+  // «Crear» y «Preguntas» son herramientas de autoría: solo aparecen en desarrollo.
+  ...(import.meta.env.DEV
+    ? [
+        { href: '/crear/', texto: 'Crear', siempreVisible: true },
+        { href: '/preguntas/', texto: 'Preguntas' },
+      ]
+    : []),
 ];
 ---
 

@@ -4,6 +4,8 @@ import {
   aArchivoJson,
   construirPregunta,
   nombreArchivoUnidad,
+  quitarPregunta,
+  reemplazarPregunta,
   sugerirId,
   type DatosFormulario,
 } from '@/lib/crear/pregunta';
@@ -128,5 +130,37 @@ describe('extraerSecciones', () => {
       { id: 'escalares', titulo: 'Subconsultas escalares' },
       { id: 'listas', titulo: 'Listas' },
     ]);
+  });
+});
+
+describe('reemplazar y quitar preguntas', () => {
+  const crearBanco = (ids: string[]): BancoPreguntas => {
+    const base = construirPregunta(datosValidos(), []);
+    if (!base.ok) throw new Error('la pregunta de prueba debería ser válida');
+    return { unidad: 5, titulo: 'Subconsultas', preguntas: ids.map((id) => ({ ...base.pregunta, id })) };
+  };
+
+  it('reemplaza la pregunta con ese id sin tocar las demás', () => {
+    const banco = crearBanco(['u05-a', 'u05-b']);
+    const original = banco.preguntas.find((p) => p.id === 'u05-b');
+    if (!original) throw new Error('falta la pregunta de prueba');
+    const actualizado = reemplazarPregunta(banco, 'u05-b', { ...original, tema: 'Nuevo tema' });
+    expect(actualizado.preguntas.map((p) => p.id)).toEqual(['u05-a', 'u05-b']);
+    expect(actualizado.preguntas[1]?.tema).toBe('Nuevo tema');
+    expect(original.tema).not.toBe('Nuevo tema');
+  });
+
+  it('agrega la pregunta si el id original no existe', () => {
+    const banco = crearBanco(['u05-a']);
+    const base = banco.preguntas[0];
+    if (!base) throw new Error('falta la pregunta de prueba');
+    const actualizado = reemplazarPregunta(banco, 'u05-x', { ...base, id: 'u05-nueva' });
+    expect(actualizado.preguntas.map((p) => p.id)).toEqual(['u05-a', 'u05-nueva']);
+  });
+
+  it('quita la pregunta con ese id', () => {
+    const banco = crearBanco(['u05-a', 'u05-b']);
+    expect(quitarPregunta(banco, 'u05-a').preguntas.map((p) => p.id)).toEqual(['u05-b']);
+    expect(banco.preguntas).toHaveLength(2);
   });
 });
