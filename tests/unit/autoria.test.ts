@@ -72,8 +72,22 @@ describe('guardarMaterial', () => {
       nombre: 'Clase 2.pdf',
       contenido: Buffer.from('contenido'),
     });
-    expect(resultado).toEqual({ ruta: `${CARPETA}/Clase 2.pdf`, titulo: 'Clase 2' });
+    expect(resultado).toEqual({ ruta: `${CARPETA}/Clase 2.pdf`, titulo: 'Clase 2', secciones: [] });
     expect(await readFile(join(carpetaMaterial, CARPETA, 'Clase 2.pdf'), 'utf-8')).toBe('contenido');
+  });
+
+  it('devuelve las secciones de un HTML subido', async () => {
+    const html = '<section id="ej1"><h2>Ejercicio 1</h2></section><section id="ej2"><h2>Ejercicio 2</h2></section>';
+    const resultado = await guardarMaterial({
+      carpetaMaterial,
+      carpeta: CARPETA,
+      nombre: 'tp.html',
+      contenido: Buffer.from(html),
+    });
+    expect(resultado.secciones).toEqual([
+      { id: 'ej1', titulo: 'Ejercicio 1' },
+      { id: 'ej2', titulo: 'Ejercicio 2' },
+    ]);
   });
 
   it('no sobrescribe un archivo que ya existe', async () => {

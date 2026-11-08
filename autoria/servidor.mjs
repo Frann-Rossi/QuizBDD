@@ -10,6 +10,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, extname, join } from 'node:path';
 import { bancoPreguntasSchema } from '../src/lib/quiz/esquemas.ts';
+import { extraerSecciones } from './secciones.mjs';
 
 export const RUTA_AUTORIA = '/__autoria';
 
@@ -68,7 +69,9 @@ export async function guardarMaterial({ carpetaMaterial, carpeta, nombre, conten
   }
   await mkdir(dir, { recursive: true });
   await writeFile(destino, contenido, { flag: 'wx' });
-  return { ruta: `${carpeta}/${archivo}`, titulo: archivo.replace(/\.[^.]+$/, '') };
+  // Un HTML trae sus secciones (ids); un PDF se referencia por página, así que no tiene.
+  const secciones = archivo.toLowerCase().endsWith('.html') ? extraerSecciones(contenido.toString('utf-8')) : [];
+  return { ruta: `${carpeta}/${archivo}`, titulo: archivo.replace(/\.[^.]+$/, ''), secciones };
 }
 
 /** Comprueba que cada material del banco exista (y, en HTML, que la sección sea un id presente). */

@@ -173,11 +173,14 @@ export function iniciarCrear(): void {
     try {
       const url = `/__autoria/material?carpeta=${encodeURIComponent(carpeta)}&nombre=${encodeURIComponent(archivo.name)}`;
       const respuesta = await fetch(url, { method: 'POST', body: archivo });
-      const cuerpo = (await respuesta.json().catch(() => null)) as { ruta?: string; titulo?: string; error?: string } | null;
+      const cuerpo = (await respuesta.json().catch(() => null)) as
+        | { ruta?: string; titulo?: string; secciones?: { id: string; titulo: string }[]; error?: string }
+        | null;
       if (!respuesta.ok || !cuerpo?.ruta || !cuerpo.titulo) {
         throw new Error(cuerpo?.error ?? 'No se pudo subir el archivo.');
       }
-      const documento = { ruta: cuerpo.ruta, titulo: cuerpo.titulo, secciones: [] };
+      // Un HTML llega con sus secciones; un PDF llega sin secciones (se elige la página).
+      const documento = { ruta: cuerpo.ruta, titulo: cuerpo.titulo, secciones: cuerpo.secciones ?? [] };
       datos.documentos.push(documento);
       campoDocumento.append(new Option(documento.titulo, documento.ruta));
       campoDocumento.value = documento.ruta;

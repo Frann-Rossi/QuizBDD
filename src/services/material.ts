@@ -1,5 +1,6 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { extraerSecciones } from '../../autoria/secciones.mjs';
 
 export interface SeccionMaterial {
   /** `id` HTML de la sección, p. ej. `escalares`. */
@@ -33,13 +34,5 @@ export async function obtenerDocumentosMaterial(): Promise<DocumentoMaterial[]> 
   );
 }
 
-/** Busca cada `<section id="...">` y el primer `h2` que aparece dentro de ella (sin cruzar a otra sección). */
-export function extraerSecciones(html: string): SeccionMaterial[] {
-  const patron = /<section[^>]*\sid="([^"]+)"((?:(?!<section)[\s\S])*?)(?=<section|$)/g;
-  return [...html.matchAll(patron)].flatMap(([, id = '', contenido = '']) => {
-    if (!id) return [];
-    const h2 = contenido.match(/<h2[^>]*>([\s\S]*?)<\/h2>/)?.[1] ?? '';
-    const titulo = h2.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
-    return [{ id, titulo: titulo || id }];
-  });
-}
+/** Secciones de un HTML del material (la lógica vive en autoria/secciones.mjs, compartida con el servidor). */
+export { extraerSecciones };
